@@ -24,17 +24,7 @@ import Foundation
 /// let pairs = WHATWG_URL_Encoding.parse("name=John+Doe&email=john%40example.com")
 /// // Result: [("name", "John Doe"), ("email", "john@example.com")]
 /// ```
-public enum WHATWG_URL_Encoding {
-  /// Form-encoded data namespace for parser implementations
-  ///
-  /// This namespace type is extended by parser libraries (e.g., swift-url-routing)
-  /// to provide parsing and printing functionality for application/x-www-form-urlencoded
-  /// data in specific contexts.
-  ///
-  /// The underlying serialization and parsing is provided by `WHATWG_URL_Encoding.serialize()`
-  /// and `WHATWG_URL_Encoding.parse()`.
-  public enum FormData {}
-}
+public enum WHATWG_URL_Encoding {}
 
 extension WHATWG_URL_Encoding {
     /// Serializes name-value pairs to application/x-www-form-urlencoded format
