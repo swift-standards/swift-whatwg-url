@@ -1,4 +1,3 @@
-import Foundation
 
 /// WHATWG URL Standard implementation for application/x-www-form-urlencoded
 ///

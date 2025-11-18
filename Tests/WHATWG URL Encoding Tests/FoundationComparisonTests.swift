@@ -1,4 +1,3 @@
-import Foundation
 import Testing
 
 @testable import WHATWG_URL_Encoding
