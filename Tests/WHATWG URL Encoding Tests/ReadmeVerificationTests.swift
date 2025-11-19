@@ -2,11 +2,11 @@ import Testing
 
 @testable import WHATWG_URL_Encoding
 
-@Suite("README Verification")
-struct ReadmeVerificationTests {
+@Suite
+struct `README Verification` {
 
-    @Test("Example from source: Serialize to application/x-www-form-urlencoded")
-    func exampleSerialize() throws {
+    @Test
+    func `Example from source: Serialize to application/x-www-form-urlencoded`() throws {
         let encoded = WHATWG_URL_Encoding.serialize([
             ("name", "John Doe"),
             ("email", "john@example.com"),
@@ -15,8 +15,8 @@ struct ReadmeVerificationTests {
         #expect(encoded == "name=John+Doe&email=john%40example.com")
     }
 
-    @Test("Example from source: Parse application/x-www-form-urlencoded")
-    func exampleParse() throws {
+    @Test
+    func `Example from source: Parse application/x-www-form-urlencoded`() throws {
         let pairs = WHATWG_URL_Encoding.parse("name=John+Doe&email=john%40example.com")
 
         #expect(pairs.count == 2)
@@ -26,20 +26,20 @@ struct ReadmeVerificationTests {
         #expect(pairs[1].1 == "john@example.com")
     }
 
-    @Test("Example from source: Percent encode with space as plus")
-    func examplePercentEncode() throws {
+    @Test
+    func `Example from source: Percent encode with space as plus`() throws {
         let encoded = WHATWG_URL_Encoding.percentEncode("Hello World!", spaceAsPlus: true)
         #expect(encoded == "Hello+World%21")
     }
 
-    @Test("Example from source: Percent decode with plus as space")
-    func examplePercentDecode() throws {
+    @Test
+    func `Example from source: Percent decode with plus as space`() throws {
         let decoded = WHATWG_URL_Encoding.percentDecode("Hello+World%21", plusAsSpace: true)
         #expect(decoded == "Hello World!")
     }
 
-    @Test("Round trip: Serialize and parse")
-    func roundTripSerializeAndParse() throws {
+    @Test
+    func `Round trip: Serialize and parse`() throws {
         let original = [
             ("username", "john_doe"),
             ("email", "john@example.com"),
@@ -56,8 +56,8 @@ struct ReadmeVerificationTests {
         }
     }
 
-    @Test("Round trip: Encode and decode")
-    func roundTripEncodeAndDecode() throws {
+    @Test
+    func `Round trip: Encode and decode`() throws {
         let strings = [
             "Hello World",
             "foo@bar.com",
@@ -74,22 +74,22 @@ struct ReadmeVerificationTests {
         }
     }
 
-    @Test("WHATWG Character Set: Alphanumeric unencoded")
-    func alphanumericUnencoded() throws {
+    @Test
+    func `WHATWG Character Set: Alphanumeric unencoded`() throws {
         let input = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
         let encoded = WHATWG_URL_Encoding.percentEncode(input, spaceAsPlus: true)
         #expect(encoded == input)
     }
 
-    @Test("WHATWG Character Set: Allowed special characters unencoded")
-    func allowedSpecialCharactersUnencoded() throws {
+    @Test
+    func `WHATWG Character Set: Allowed special characters unencoded`() throws {
         let input = "*-._"
         let encoded = WHATWG_URL_Encoding.percentEncode(input, spaceAsPlus: true)
         #expect(encoded == input)
     }
 
-    @Test("WHATWG Character Set: Space encoding")
-    func spaceEncoding() throws {
+    @Test
+    func `WHATWG Character Set: Space encoding`() throws {
         let input = "hello world"
 
         let encodedAsPlus = WHATWG_URL_Encoding.percentEncode(input, spaceAsPlus: true)
@@ -99,8 +99,8 @@ struct ReadmeVerificationTests {
         #expect(encodedAsPercent == "hello%20world")
     }
 
-    @Test("WHATWG Character Set: Special characters encoded")
-    func specialCharactersEncoded() throws {
+    @Test
+    func `WHATWG Character Set: Special characters encoded`() throws {
         // All these should be percent-encoded
         let testCases: [(String, String)] = [
             ("!", "%21"),
@@ -141,8 +141,8 @@ struct ReadmeVerificationTests {
         }
     }
 
-    @Test("Parse: Empty values")
-    func parseEmptyValues() throws {
+    @Test
+    func `Parse: Empty values`() throws {
         let pairs = WHATWG_URL_Encoding.parse("name=&email=test%40example.com")
 
         #expect(pairs.count == 2)
@@ -152,8 +152,8 @@ struct ReadmeVerificationTests {
         #expect(pairs[1].1 == "test@example.com")
     }
 
-    @Test("Parse: Multiple equals signs")
-    func parseMultipleEquals() throws {
+    @Test
+    func `Parse: Multiple equals signs`() throws {
         let pairs = WHATWG_URL_Encoding.parse("equation=a%3Db%2Bc")
 
         #expect(pairs.count == 1)
@@ -161,8 +161,8 @@ struct ReadmeVerificationTests {
         #expect(pairs[0].1 == "a=b+c")
     }
 
-    @Test("Parse: Empty pairs filtered out")
-    func parseEmptyPairsFilteredOut() throws {
+    @Test
+    func `Parse: Empty pairs filtered out`() throws {
         let pairs = WHATWG_URL_Encoding.parse("name=value&&")
 
         // Empty pairs (between &&) should be filtered by compactMap
@@ -171,16 +171,16 @@ struct ReadmeVerificationTests {
         #expect(pairs[0].1 == "value")
     }
 
-    @Test("Decode: Invalid percent encoding returns nil")
-    func decodeInvalidPercentEncodingReturnsNil() throws {
+    @Test
+    func `Decode: Invalid percent encoding returns nil`() throws {
         #expect(WHATWG_URL_Encoding.percentDecode("%", plusAsSpace: true) == nil)
         #expect(WHATWG_URL_Encoding.percentDecode("%2", plusAsSpace: true) == nil)
         #expect(WHATWG_URL_Encoding.percentDecode("%GG", plusAsSpace: true) == nil)
         #expect(WHATWG_URL_Encoding.percentDecode("test%", plusAsSpace: true) == nil)
     }
 
-    @Test("Decode: Plus handling")
-    func decodePlusHandling() throws {
+    @Test
+    func `Decode: Plus handling`() throws {
         let input = "hello+world"
 
         let decodedAsSpace = WHATWG_URL_Encoding.percentDecode(input, plusAsSpace: true)
@@ -190,26 +190,26 @@ struct ReadmeVerificationTests {
         #expect(decodedAsPlus == "hello+world")
     }
 
-    @Test("Serialize: Empty array")
-    func serializeEmptyArray() throws {
+    @Test
+    func `Serialize: Empty array`() throws {
         let encoded = WHATWG_URL_Encoding.serialize([])
         #expect(encoded == "")
     }
 
-    @Test("Serialize: Single pair")
-    func serializeSinglePair() throws {
+    @Test
+    func `Serialize: Single pair`() throws {
         let encoded = WHATWG_URL_Encoding.serialize([("key", "value")])
         #expect(encoded == "key=value")
     }
 
-    @Test("Parse: Empty string")
-    func parseEmptyString() throws {
+    @Test
+    func `Parse: Empty string`() throws {
         let pairs = WHATWG_URL_Encoding.parse("")
         #expect(pairs.isEmpty)
     }
 
-    @Test("UTF-8 Encoding: Multi-byte characters")
-    func utf8MultiByteCharacters() throws {
+    @Test
+    func `UTF-8 Encoding: Multi-byte characters`() throws {
         let testCases = [
             ("🌍", "%F0%9F%8C%8D"),
             ("中文", "%E4%B8%AD%E6%96%87"),

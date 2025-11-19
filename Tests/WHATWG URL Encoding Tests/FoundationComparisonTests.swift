@@ -8,13 +8,13 @@ import Testing
 /// 1. Space encoding: WHATWG uses `+`, Foundation uses `%20`
 /// 2. Character set: WHATWG only leaves alphanumeric + `*-._` unencoded
 /// 3. Specification compliance: WHATWG follows the exact WHATWG algorithm
-@Suite("Foundation Comparison Tests")
-struct FoundationComparisonTests {
+@Suite
+struct `Foundation Comparison Tests` {
 
     // MARK: - Space Encoding Differences
 
-    @Test("Space encoding: WHATWG uses + vs Foundation uses %20")
-    func spaceEncodingDifference() throws {
+    @Test
+    func `Space encoding: WHATWG uses + vs Foundation uses %20`() throws {
         let input = "Hello World"
 
         // WHATWG encoding (this package)
@@ -31,8 +31,8 @@ struct FoundationComparisonTests {
         #expect(whatwgEncoded != foundationEncoded, "WHATWG and Foundation should differ on space encoding")
     }
 
-    @Test("Multiple spaces: WHATWG vs Foundation")
-    func multipleSpacesDifference() throws {
+    @Test
+    func `Multiple spaces: WHATWG vs Foundation`() throws {
         let input = "first second third"
 
         let whatwgEncoded = WHATWG_URL_Encoding.percentEncode(input, spaceAsPlus: true)
@@ -46,8 +46,8 @@ struct FoundationComparisonTests {
 
     // MARK: - Character Set Differences
 
-    @Test("Exclamation mark: WHATWG encodes, Foundation may not")
-    func exclamationMarkDifference() throws {
+    @Test
+    func `Exclamation mark: WHATWG encodes, Foundation may not`() throws {
         let input = "Hello World!"
 
         // WHATWG encoding
@@ -63,8 +63,8 @@ struct FoundationComparisonTests {
         #expect(foundationEncoded == "Hello%20World!", "Foundation leaves ! unencoded")
     }
 
-    @Test("Tilde: WHATWG encodes, Foundation leaves unencoded")
-    func tildeDifference() throws {
+    @Test
+    func `Tilde: WHATWG encodes, Foundation leaves unencoded`() throws {
         let input = "test~value"
 
         // WHATWG encoding - tilde is NOT in the allowed set (*-._)
@@ -78,8 +78,8 @@ struct FoundationComparisonTests {
         #expect(foundationEncoded == "test~value", "Foundation leaves ~ unencoded")
     }
 
-    @Test("Parentheses: WHATWG encodes, Foundation may not")
-    func parenthesesDifference() throws {
+    @Test
+    func `Parentheses: WHATWG encodes, Foundation may not`() throws {
         let input = "func(arg)"
 
         // WHATWG encoding
@@ -95,8 +95,8 @@ struct FoundationComparisonTests {
         #expect(foundationEncoded == "func(arg)", "Foundation leaves parentheses unencoded")
     }
 
-    @Test("WHATWG allowed characters remain unencoded")
-    func whatwgAllowedCharactersUnencoded() throws {
+    @Test
+    func `WHATWG allowed characters remain unencoded`() throws {
         // WHATWG only allows: alphanumeric + *-._
         let input = "abc123*-._"
 
@@ -111,8 +111,8 @@ struct FoundationComparisonTests {
 
     // MARK: - Form Data Serialization Differences
 
-    @Test("Form serialization: Complete comparison")
-    func formSerializationComparison() throws {
+    @Test
+    func `Form serialization: Complete comparison`() throws {
         let pairs = [
             ("name", "John Doe"),
             ("email", "john@example.com"),
@@ -135,8 +135,8 @@ struct FoundationComparisonTests {
         #expect(whatwgEncoded != foundationEncoded)
     }
 
-    @Test("Plus sign encoding: WHATWG vs Foundation")
-    func plusSignEncoding() throws {
+    @Test
+    func `Plus sign encoding: WHATWG vs Foundation`() throws {
         let input = "a+b"
 
         // WHATWG: + must be encoded as %2B
@@ -152,8 +152,8 @@ struct FoundationComparisonTests {
 
     // MARK: - Edge Cases
 
-    @Test("Empty string: Both handle the same")
-    func emptyStringHandling() throws {
+    @Test
+    func `Empty string: Both handle the same`() throws {
         let input = ""
 
         let whatwgEncoded = WHATWG_URL_Encoding.percentEncode(input, spaceAsPlus: true)
@@ -165,8 +165,8 @@ struct FoundationComparisonTests {
         #expect(foundationEncoded == "")
     }
 
-    @Test("Only spaces: Encoding difference")
-    func onlySpaces() throws {
+    @Test
+    func `Only spaces: Encoding difference`() throws {
         let input = "   "
 
         let whatwgEncoded = WHATWG_URL_Encoding.percentEncode(input, spaceAsPlus: true)
@@ -178,8 +178,8 @@ struct FoundationComparisonTests {
         #expect(foundationEncoded == "%20%20%20")
     }
 
-    @Test("Unicode emoji: Both encode similarly")
-    func unicodeEmojiEncoding() throws {
+    @Test
+    func `Unicode emoji: Both encode similarly`() throws {
         let input = "🌍"
 
         // Both should percent-encode UTF-8 bytes
@@ -194,8 +194,8 @@ struct FoundationComparisonTests {
 
     // MARK: - README Example Verification
 
-    @Test("README example: Hello World! encoding difference")
-    func readmeExample() throws {
+    @Test
+    func `README example: Hello World! encoding difference`() throws {
         let input = "Hello World!"
 
         // WHATWG (this package) - from README
@@ -211,8 +211,8 @@ struct FoundationComparisonTests {
 
     // MARK: - Character Set Strictness
 
-    @Test("WHATWG is stricter: Only alphanumeric + *-._ unencoded")
-    func whatwgStrictnessVerification() throws {
+    @Test
+    func `WHATWG is stricter: Only alphanumeric + *-._ unencoded`() throws {
         let specialChars = "!@#$^&()+={}[]|\\:;\"'<>?,/~"
 
         // WHATWG should encode ALL of these
