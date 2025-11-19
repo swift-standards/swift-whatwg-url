@@ -1,3 +1,8 @@
+#if canImport(FoundationEssentials)
+public import FoundationEssentials
+#elseif canImport(Foundation)
+public import Foundation
+#endif
 
 /// WHATWG URL Standard implementation for application/x-www-form-urlencoded
 ///
@@ -191,6 +196,6 @@ extension WHATWG_URL_Encoding {
             }
         }
 
-        return String(bytes: bytes, encoding: .utf8)
+        return String(decoding: bytes, as: UTF8.self)
     }
 }
