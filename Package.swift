@@ -2,8 +2,19 @@
 
 import PackageDescription
 
+extension String {
+    static let whatwgURL: Self = "WHATWG URL"
+    static let whatwgFormURLEncoded: Self = "WHATWG Form URL Encoded"
+}
+
+extension Target.Dependency {
+    static var whatwgURL: Self { .target(name: .whatwgURL) }
+    static var whatwgFormURLEncoded: Self { .target(name: .whatwgFormURLEncoded) }
+    static var rfc3987: Self { .product(name: "RFC 3987", package: "swift-rfc-3987") }
+}
+
 let package = Package(
-    name: "swift-whatwg-url-encoding",
+    name: "swift-whatwg-url",
     platforms: [
         .macOS(.v15),
         .iOS(.v18),
@@ -11,21 +22,45 @@ let package = Package(
         .watchOS(.v11)
     ],
     products: [
+        // Main URL standard
         .library(
-            name: "WHATWG URL Encoding",
-            targets: ["WHATWG URL Encoding"]
-        )
+            name: .whatwgURL,
+            targets: [.whatwgURL]
+        ),
+        // Form URL encoding (application/x-www-form-urlencoded)
+        .library(
+            name: .whatwgFormURLEncoded,
+            targets: [.whatwgFormURLEncoded]
+        ),
     ],
-    dependencies: [],
+    dependencies: [
+        .package(path: "../swift-rfc-3987"),
+    ],
     targets: [
+        // Core URL implementation
         .target(
-            name: "WHATWG URL Encoding",
+            name: .whatwgURL,
+            dependencies: [
+                .whatwgFormURLEncoded,
+                .rfc3987,
+            ]
+        ),
+
+        // application/x-www-form-urlencoded (Section 5)
+        .target(
+            name: .whatwgFormURLEncoded,
             dependencies: []
         ),
+
+        // Tests
         .testTarget(
-            name: "WHATWG URL Encoding".tests,
-            dependencies: ["WHATWG URL Encoding"]
-        )
+            name: .whatwgURL.tests,
+            dependencies: [.whatwgURL]
+        ),
+        .testTarget(
+            name: .whatwgFormURLEncoded.tests,
+            dependencies: [.whatwgFormURLEncoded]
+        ),
     ],
     swiftLanguageModes: [.v6]
 )

@@ -18,19 +18,19 @@ public import Foundation
 ///
 /// ```swift
 /// // Serialize to application/x-www-form-urlencoded format
-/// let encoded = WHATWG_URL_Encoding.serialize([
+/// let encoded = WHATWG_Form_URL_Encoded.serialize([
 ///     ("name", "John Doe"),
 ///     ("email", "john@example.com")
 /// ])
 /// // Result: "name=John+Doe&email=john%40example.com"
 ///
 /// // Parse application/x-www-form-urlencoded format
-/// let pairs = WHATWG_URL_Encoding.parse("name=John+Doe&email=john%40example.com")
+/// let pairs = WHATWG_Form_URL_Encoded.parse("name=John+Doe&email=john%40example.com")
 /// // Result: [("name", "John Doe"), ("email", "john@example.com")]
 /// ```
-public enum WHATWG_URL_Encoding {}
+public enum WHATWG_Form_URL_Encoded {}
 
-extension WHATWG_URL_Encoding {
+extension WHATWG_Form_URL_Encoded {
     /// Serializes name-value pairs to application/x-www-form-urlencoded format
     ///
     /// Implements the WHATWG URL Standard's serialization algorithm.
@@ -41,7 +41,7 @@ extension WHATWG_URL_Encoding {
     /// ## Example
     ///
     /// ```swift
-    /// let encoded = WHATWG_URL_Encoding.serialize([
+    /// let encoded = WHATWG_Form_URL_Encoded.serialize([
     ///     ("name", "John Doe"),
     ///     ("active", "true")
     /// ])
@@ -67,7 +67,7 @@ extension WHATWG_URL_Encoding {
     /// ## Example
     ///
     /// ```swift
-    /// let pairs = WHATWG_URL_Encoding.parse("name=John+Doe&active=true")
+    /// let pairs = WHATWG_Form_URL_Encoded.parse("name=John+Doe&active=true")
     /// // Result: [("name", "John Doe"), ("active", "true")]
     /// ```
     public static func parse(_ input: String) -> [(String, String)] {
@@ -120,7 +120,7 @@ extension WHATWG_URL_Encoding {
     /// ## Example
     ///
     /// ```swift
-    /// let encoded = WHATWG_URL_Encoding.percentEncode("Hello World!", spaceAsPlus: true)
+    /// let encoded = WHATWG_Form_URL_Encoded.percentEncode("Hello World!", spaceAsPlus: true)
     /// // Result: "Hello+World%21"
     /// ```
     public static func percentEncode(_ string: String, spaceAsPlus: Bool = true) -> String {
@@ -164,7 +164,7 @@ extension WHATWG_URL_Encoding {
     /// ## Example
     ///
     /// ```swift
-    /// let decoded = WHATWG_URL_Encoding.percentDecode("Hello+World%21", plusAsSpace: true)
+    /// let decoded = WHATWG_Form_URL_Encoded.percentDecode("Hello+World%21", plusAsSpace: true)
     /// // Result: "Hello World!"
     /// ```
     public static func percentDecode(_ string: String, plusAsSpace: Bool = true) -> String? {

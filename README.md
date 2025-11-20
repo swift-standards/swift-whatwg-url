@@ -1,10 +1,13 @@
-# swift-whatwg-url-encoding
+# swift-whatwg-url
 
-WHATWG URL Standard implementation for `application/x-www-form-urlencoded` encoding in Swift.
+WHATWG URL Living Standard implementation in Swift.
 
 ## Overview
 
-This package implements the [WHATWG URL Living Standard](https://url.spec.whatwg.org/#application/x-www-form-urlencoded) specification for `application/x-www-form-urlencoded` encoding and decoding.
+This package implements the [WHATWG URL Living Standard](https://url.spec.whatwg.org/), providing:
+
+- **WHATWG URL**: Full URL parsing, serialization, and manipulation (planned)
+- **WHATWG Form URL Encoded**: Section 5 - `application/x-www-form-urlencoded` encoding and decoding
 
 The WHATWG URL Standard defines the precise character set and encoding rules for URL form encoding, which differs from Foundation's URL encoding in key ways:
 
@@ -20,7 +23,7 @@ Add to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/swift-standards/swift-whatwg-url-encoding", from: "0.1.0")
+    .package(url: "https://github.com/swift-standards/swift-whatwg-url", from: "0.1.0")
 ]
 ```
 
@@ -30,43 +33,49 @@ Then add the dependency to your target:
 .target(
     name: "YourTarget",
     dependencies: [
-        .product(name: "WHATWG URL Encoding", package: "swift-whatwg-url-encoding")
+        // For full URL support (planned)
+        .product(name: "WHATWG URL", package: "swift-whatwg-url"),
+
+        // Or just for form URL encoding
+        .product(name: "WHATWG Form URL Encoded", package: "swift-whatwg-url")
     ]
 )
 ```
 
 ## Usage
 
-### Serialize to application/x-www-form-urlencoded
+### WHATWG Form URL Encoded
+
+#### Serialize to application/x-www-form-urlencoded
 
 ```swift
-import WHATWG_URL_Encoding
+import WHATWG_Form_URL_Encoded
 
-let encoded = WHATWG_URL_Encoding.serialize([
+let encoded = WHATWG_Form_URL_Encoded.serialize([
     ("name", "John Doe"),
     ("email", "john@example.com")
 ])
 // Result: "name=John+Doe&email=john%40example.com"
 ```
 
-### Parse application/x-www-form-urlencoded
+#### Parse application/x-www-form-urlencoded
 
 ```swift
-let pairs = WHATWG_URL_Encoding.parse("name=John+Doe&email=john%40example.com")
+let pairs = WHATWG_Form_URL_Encoded.parse("name=John+Doe&email=john%40example.com")
 // Result: [("name", "John Doe"), ("email", "john@example.com")]
 ```
 
-### Percent Encoding
+#### Percent Encoding
 
 ```swift
-let encoded = WHATWG_URL_Encoding.percentEncode("Hello World!", spaceAsPlus: true)
+let encoded = WHATWG_Form_URL_Encoded.percentEncode("Hello World!", spaceAsPlus: true)
 // Result: "Hello+World%21"
 ```
 
-### Percent Decoding
+#### Percent Decoding
 
 ```swift
-let decoded = WHATWG_URL_Encoding.percentDecode("Hello+World%21", plusAsSpace: true)
+let decoded = WHATWG_Form_URL_Encoded.percentDecode("Hello+World%21", plusAsSpace: true)
 // Result: "Hello World!"
 ```
 
@@ -98,13 +107,14 @@ Additionally, Foundation's URL encoding is more permissive with special characte
 
 ## Reference
 
-- [WHATWG URL Living Standard - application/x-www-form-urlencoded](https://url.spec.whatwg.org/#application/x-www-form-urlencoded)
+- [WHATWG URL Living Standard](https://url.spec.whatwg.org/)
+- [Section 5: application/x-www-form-urlencoded](https://url.spec.whatwg.org/#application/x-www-form-urlencoded)
 
 ## Requirements
 
-- Swift 6.0+
-- macOS 14.0+, iOS 17.0+, tvOS 17.0+, watchOS 10.0+
+- Swift 6.2+
+- macOS 15.0+, iOS 18.0+, tvOS 18.0+, watchOS 11.0+
 
 ## License
 
-MIT
+Apache 2.0
