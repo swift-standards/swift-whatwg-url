@@ -43,7 +43,7 @@ extension WHATWG_URL {
 
             // Port (only if not the default for this scheme)
             if let port = port {
-                if URLScheme.defaultPort(for: scheme) != port {
+                if Scheme.defaultPort(for: scheme) != port {
                     output += ":"
                     output += String(port)
                 }
@@ -93,7 +93,7 @@ extension WHATWG_URL {
             output += host.serialized
         }
 
-        if let port = port, URLScheme.defaultPort(for: scheme) != port {
+        if let port = port, Scheme.defaultPort(for: scheme) != port {
             output += ":" + String(port)
         }
 

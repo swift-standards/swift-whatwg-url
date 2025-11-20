@@ -10,26 +10,28 @@
 //
 // ===----------------------------------------------------------------------===//
 
-/// A URL path as defined by the WHATWG URL Standard
-///
-/// A URL's path is either a URL path segment (opaque path) or a list of zero or more URL path segments.
-/// A URL path segment is an ASCII string.
-public enum URLPath: Hashable, Sendable {
-    /// An opaque path (single string) used for non-special URLs
-    case opaque(String)
+extension WHATWG_URL {
+    /// A URL path as defined by the WHATWG URL Standard
+    ///
+    /// A URL's path is either a URL path segment (opaque path) or a list of zero or more URL path segments.
+    /// A URL path segment is an ASCII string.
+    public enum Path: Hashable, Sendable {
+        /// An opaque path (single string) used for non-special URLs
+        case opaque(String)
 
-    /// A list of path segments (used for special URLs like http, https, file, etc.)
-    case list([String])
+        /// A list of path segments (used for special URLs like http, https, file, etc.)
+        case list([String])
+    }
 }
 
-extension URLPath {
+extension WHATWG_URL.Path {
     /// Returns an empty list path
-    public static var emptyList: URLPath {
+    public static var emptyList: Self {
         .list([])
     }
 
     /// Returns an empty opaque path
-    public static var emptyOpaque: URLPath {
+    public static var emptyOpaque: Self {
         .opaque("")
     }
 

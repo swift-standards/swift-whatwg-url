@@ -51,13 +51,13 @@ public struct WHATWG_URL: Hashable, Sendable {
     public var password: String
 
     /// The URL's host (domain, IPv4, IPv6, opaque, or empty)
-    public var host: URLHost?
+    public var host: Host?
 
     /// The URL's port (null or 16-bit unsigned integer)
     public var port: UInt16?
 
     /// The URL's path (opaque string or list of segments)
-    public var path: URLPath
+    public var path: Path
 
     /// The URL's query string (without leading "?")
     public var query: String?
@@ -70,9 +70,9 @@ public struct WHATWG_URL: Hashable, Sendable {
         scheme: String,
         username: String = "",
         password: String = "",
-        host: URLHost? = nil,
+        host: Host? = nil,
         port: UInt16? = nil,
-        path: URLPath = .emptyList,
+        path: Path = .emptyList,
         query: String? = nil,
         fragment: String? = nil
     ) {
@@ -87,10 +87,12 @@ public struct WHATWG_URL: Hashable, Sendable {
     }
 }
 
+// MARK: - Computed Properties
+
 extension WHATWG_URL {
     /// Whether this URL has a special scheme
     public var isSpecial: Bool {
-        URLScheme.isSpecial(scheme)
+        Scheme.isSpecial(scheme)
     }
 
     /// Whether this URL has an opaque path
@@ -115,13 +117,13 @@ extension WHATWG_URL {
         return scheme == "file"
     }
 
-    /// Returns URLSearchParams for this URL's query string
-    public var searchParams: URLSearchParams {
+    /// Returns Search.Params for this URL's query string
+    public var searchParams: Search.Params {
         get {
             if let query = query {
-                return URLSearchParams(query)
+                return Search.Params(query)
             }
-            return URLSearchParams()
+            return Search.Params()
         }
         set {
             let serialized = newValue.toString()

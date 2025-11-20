@@ -84,9 +84,9 @@ struct URLTests {
         #expect(href == "https://example.com:8443/path")
     }
 
-    @Test("URLSearchParams parsing")
+    @Test("WHATWG_URL.SearchParams parsing")
     func searchParamsParsing() throws {
-        let params = URLSearchParams("name=John+Doe&email=john%40example.com&age=30")
+        let params = WHATWG_URL.SearchParams("name=John+Doe&email=john%40example.com&age=30")
 
         #expect(params.get("name") == "John Doe")
         #expect(params.get("email") == "john@example.com")
@@ -94,9 +94,9 @@ struct URLTests {
         #expect(params.get("missing") == nil)
     }
 
-    @Test("URLSearchParams building")
+    @Test("WHATWG_URL.SearchParams building")
     func searchParamsBuilding() throws {
-        var params = URLSearchParams()
+        var params = WHATWG_URL.SearchParams()
         params.append("name", "John Doe")
         params.append("email", "john@example.com")
 
@@ -104,9 +104,9 @@ struct URLTests {
         #expect(query == "name=John+Doe&email=john%40example.com")
     }
 
-    @Test("URLSearchParams set and delete")
+    @Test("WHATWG_URL.SearchParams set and delete")
     func searchParamsSetDelete() throws {
-        var params = URLSearchParams()
+        var params = WHATWG_URL.SearchParams()
         params.append("key", "value1")
         params.append("key", "value2")
 
@@ -122,54 +122,54 @@ struct URLTests {
 
     @Test("URLHost IPv4 serialization")
     func hostIPv4() throws {
-        let host = URLHost.ipv4(192, 168, 1, 1)
+        let host = WHATWG_URL.Host.ipv4(192, 168, 1, 1)
         #expect(host.serialized == "192.168.1.1")
     }
 
     @Test("URLHost domain serialization")
     func hostDomain() throws {
-        let host = URLHost.domain(try Domain("example.com"))
+        let host = WHATWG_URL.Host.domain(try Domain("example.com"))
         #expect(host.serialized == "example.com")
     }
 
     @Test("URLPath list serialization")
     func pathList() throws {
-        let path = URLPath.list(["path", "to", "resource"])
+        let path = WHATWG_URL.Path.list(["path", "to", "resource"])
         #expect(path.serialized == "/path/to/resource")
     }
 
     @Test("URLPath empty list serialization")
     func pathEmptyList() throws {
-        let path = URLPath.emptyList
+        let path = WHATWG_URL.Path.emptyList
         #expect(path.serialized == "")
     }
 
     @Test("URLPath opaque serialization")
     func pathOpaque() throws {
-        let path = URLPath.opaque("opaque-data")
+        let path = WHATWG_URL.Path.opaque("opaque-data")
         #expect(path.serialized == "opaque-data")
     }
 
     @Test("URLScheme special schemes")
     func specialSchemes() throws {
-        #expect(URLScheme.isSpecial("http"))
-        #expect(URLScheme.isSpecial("https"))
-        #expect(URLScheme.isSpecial("ftp"))
-        #expect(URLScheme.isSpecial("file"))
-        #expect(URLScheme.isSpecial("ws"))
-        #expect(URLScheme.isSpecial("wss"))
-        #expect(!URLScheme.isSpecial("mailto"))
-        #expect(!URLScheme.isSpecial("data"))
+        #expect(WHATWG_URL.Scheme.isSpecial("http"))
+        #expect(WHATWG_URL.Scheme.isSpecial("https"))
+        #expect(WHATWG_URL.Scheme.isSpecial("ftp"))
+        #expect(WHATWG_URL.Scheme.isSpecial("file"))
+        #expect(WHATWG_URL.Scheme.isSpecial("ws"))
+        #expect(WHATWG_URL.Scheme.isSpecial("wss"))
+        #expect(!WHATWG_URL.Scheme.isSpecial("mailto"))
+        #expect(!WHATWG_URL.Scheme.isSpecial("data"))
     }
 
     @Test("URLScheme default ports")
     func defaultPorts() throws {
-        #expect(URLScheme.defaultPort(for: "http") == 80)
-        #expect(URLScheme.defaultPort(for: "https") == 443)
-        #expect(URLScheme.defaultPort(for: "ftp") == 21)
-        #expect(URLScheme.defaultPort(for: "ws") == 80)
-        #expect(URLScheme.defaultPort(for: "wss") == 443)
-        #expect(URLScheme.defaultPort(for: "file") == nil)
+        #expect(WHATWG_URL.Scheme.defaultPort(for: "http") == 80)
+        #expect(WHATWG_URL.Scheme.defaultPort(for: "https") == 443)
+        #expect(WHATWG_URL.Scheme.defaultPort(for: "ftp") == 21)
+        #expect(WHATWG_URL.Scheme.defaultPort(for: "ws") == 80)
+        #expect(WHATWG_URL.Scheme.defaultPort(for: "wss") == 443)
+        #expect(WHATWG_URL.Scheme.defaultPort(for: "file") == nil)
     }
 
     @Test("URL origin for special schemes")
@@ -214,7 +214,7 @@ struct URLTests {
         #expect(params.get("name") == "John")
         #expect(params.get("age") == "30")
 
-        var newParams = URLSearchParams()
+        var newParams = WHATWG_URL.SearchParams()
         newParams.append("email", "john@example.com")
         url.searchParams = newParams
 

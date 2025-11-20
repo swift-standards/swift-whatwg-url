@@ -12,33 +12,52 @@
 
 import WHATWG_Form_URL_Encoded
 
-/// URLSearchParams provides utilities for working with URL query strings
-///
-/// This type wraps the WHATWG Form URL Encoded functionality to provide
-/// a convenient API for parsing and serializing URL search parameters.
-///
-/// ## Example
-///
-/// ```swift
-/// // Parse query string
-/// let params = URLSearchParams("name=John+Doe&email=john%40example.com")
-/// print(params.get("name"))  // Optional("John Doe")
-///
-/// // Build query string
-/// var params = URLSearchParams()
-/// params.append("name", "John Doe")
-/// params.append("email", "john@example.com")
-/// print(params.toString())  // "name=John+Doe&email=john%40example.com"
-/// ```
-public struct URLSearchParams {
-    private var pairs: [(String, String)]
+extension WHATWG_URL {
+    /// Namespace for search/query-related types
+    ///
+    /// Provides semantic grouping for URL search functionality and allows
+    /// for future extensibility with additional search-related types.
+    public enum Search {
+        /// Params provides utilities for working with URL query strings
+        ///
+        /// This type wraps the WHATWG Form URL Encoded functionality to provide
+        /// a convenient API for parsing and serializing URL search parameters.
+        ///
+        /// ## Example
+        ///
+        /// ```swift
+        /// // Parse query string
+        /// let params = WHATWG_URL.Search.Params("name=John+Doe&email=john%40example.com")
+        /// print(params.get("name"))  // Optional("John Doe")
+        ///
+        /// // Build query string
+        /// var params = WHATWG_URL.Search.Params()
+        /// params.append("name", "John Doe")
+        /// params.append("email", "john@example.com")
+        /// print(params.toString())  // "name=John+Doe&email=john%40example.com"
+        /// ```
+        ///
+        /// ## Alternative Access
+        ///
+        /// This type is also accessible as `WHATWG_URL.SearchParams` for convenience.
+        public struct Params {
+            private var pairs: [(String, String)]
 
-    /// Creates an empty URLSearchParams
-    public init() {
-        self.pairs = []
+            /// Creates an empty Params
+            public init() {
+                self.pairs = []
+            }
+        }
     }
 
-    /// Creates URLSearchParams by parsing a query string
+    /// Type alias for Search.Params, providing convenient flat access
+    public typealias SearchParams = Search.Params
+}
+
+// MARK: - Initializers
+
+extension WHATWG_URL.Search.Params {
+    /// Creates Params by parsing a query string
     ///
     /// - Parameter query: The query string (with or without leading "?")
     public init(_ query: String) {
@@ -46,11 +65,15 @@ public struct URLSearchParams {
         self.pairs = WHATWG_Form_URL_Encoded.parse(cleaned)
     }
 
-    /// Creates URLSearchParams from name-value pairs
+    /// Creates Params from name-value pairs
     public init(_ pairs: [(String, String)]) {
         self.pairs = pairs
     }
+}
 
+// MARK: - Methods
+
+extension WHATWG_URL.Search.Params {
     /// Appends a new name-value pair
     public mutating func append(_ name: String, _ value: String) {
         pairs.append((name, value))
@@ -110,19 +133,21 @@ public struct URLSearchParams {
     }
 }
 
-extension URLSearchParams: Sequence {
+// MARK: - Protocol Conformances
+
+extension WHATWG_URL.Search.Params: Sequence {
     public func makeIterator() -> IndexingIterator<[(String, String)]> {
         return pairs.makeIterator()
     }
 }
 
-extension URLSearchParams: ExpressibleByDictionaryLiteral {
+extension WHATWG_URL.Search.Params: ExpressibleByDictionaryLiteral {
     public init(dictionaryLiteral elements: (String, String)...) {
         self.pairs = elements
     }
 }
 
-extension URLSearchParams: CustomStringConvertible {
+extension WHATWG_URL.Search.Params: CustomStringConvertible {
     public var description: String {
         return toString()
     }

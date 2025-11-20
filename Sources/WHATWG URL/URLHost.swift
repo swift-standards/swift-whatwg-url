@@ -12,29 +12,31 @@
 
 public import Domain_Standard
 
-/// A host as defined by the WHATWG URL Standard
-///
-/// A host is a domain, an IPv4 address, an IPv6 address, an opaque host, or an empty host.
-/// Typically a host serves as a network address, but it is sometimes used as an opaque identifier
-/// in URLs where a network address is not necessary.
-public enum URLHost: Hashable, Sendable {
-    /// A domain (e.g., "example.com", with IDNA support)
-    case domain(Domain)
+extension WHATWG_URL {
+    /// A host as defined by the WHATWG URL Standard
+    ///
+    /// A host is a domain, an IPv4 address, an IPv6 address, an opaque host, or an empty host.
+    /// Typically a host serves as a network address, but it is sometimes used as an opaque identifier
+    /// in URLs where a network address is not necessary.
+    public enum Host: Hashable, Sendable {
+        /// A domain (e.g., "example.com", with IDNA support)
+        case domain(Domain)
 
-    /// An IPv4 address represented as four 8-bit integers
-    case ipv4(UInt8, UInt8, UInt8, UInt8)
+        /// An IPv4 address represented as four 8-bit integers
+        case ipv4(UInt8, UInt8, UInt8, UInt8)
 
-    /// An IPv6 address represented as eight 16-bit integers
-    case ipv6(UInt16, UInt16, UInt16, UInt16, UInt16, UInt16, UInt16, UInt16)
+        /// An IPv6 address represented as eight 16-bit integers
+        case ipv6(UInt16, UInt16, UInt16, UInt16, UInt16, UInt16, UInt16, UInt16)
 
-    /// An opaque host (non-special schemes)
-    case opaque(String)
+        /// An opaque host (non-special schemes)
+        case opaque(String)
 
-    /// An empty host (allowed for file: URLs)
-    case empty
+        /// An empty host (allowed for file: URLs)
+        case empty
+    }
 }
 
-extension URLHost {
+extension WHATWG_URL.Host {
     /// Serializes the host to its string representation
     public var serialized: String {
         switch self {
