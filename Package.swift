@@ -11,6 +11,7 @@ extension Target.Dependency {
     static var whatwgURL: Self { .target(name: .whatwgURL) }
     static var whatwgFormURLEncoded: Self { .target(name: .whatwgFormURLEncoded) }
     static var rfc3987: Self { .product(name: "RFC 3987", package: "swift-rfc-3987") }
+    static var domainStandard: Self { .product(name: "Domain Standard", package: "swift-domain-standard") }
 }
 
 let package = Package(
@@ -35,6 +36,7 @@ let package = Package(
     ],
     dependencies: [
         .package(path: "../swift-rfc-3987"),
+        .package(path: "../swift-domain-standard"),
     ],
     targets: [
         // Core URL implementation
@@ -43,6 +45,7 @@ let package = Package(
             dependencies: [
                 .whatwgFormURLEncoded,
                 .rfc3987,
+                .domainStandard,
             ]
         ),
 

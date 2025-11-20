@@ -1,5 +1,6 @@
 import Testing
 @testable import WHATWG_URL
+import Domain_Standard
 
 @Suite("WHATWG URL Tests")
 struct URLTests {
@@ -10,7 +11,7 @@ struct URLTests {
             scheme: "https",
             username: "user",
             password: "pass",
-            host: .domain("example.com"),
+            host: .domain(try Domain("example.com")),
             port: 8080,
             path: .list(["path", "to", "resource"]),
             query: "key=value",
@@ -20,7 +21,7 @@ struct URLTests {
         #expect(url.scheme == "https")
         #expect(url.username == "user")
         #expect(url.password == "pass")
-        #expect(url.host == .domain("example.com"))
+        #expect(url.host == .domain(try Domain("example.com")))
         #expect(url.port == 8080)
         #expect(url.path == .list(["path", "to", "resource"]))
         #expect(url.query == "key=value")
@@ -33,7 +34,7 @@ struct URLTests {
             scheme: "https",
             username: "user",
             password: "pass",
-            host: .domain("example.com"),
+            host: .domain(try Domain("example.com")),
             port: 8080,
             path: .list(["path", "to", "resource"]),
             query: "key=value",
@@ -48,7 +49,7 @@ struct URLTests {
     func urlSerializationNoCredentials() throws {
         let url = WHATWG_URL(
             scheme: "https",
-            host: .domain("example.com"),
+            host: .domain(try Domain("example.com")),
             path: .list(["path"])
         )
 
@@ -61,7 +62,7 @@ struct URLTests {
         // HTTPS default port is 443
         let url = WHATWG_URL(
             scheme: "https",
-            host: .domain("example.com"),
+            host: .domain(try Domain("example.com")),
             port: 443,
             path: .list(["path"])
         )
@@ -74,7 +75,7 @@ struct URLTests {
     func urlSerializationNonDefaultPort() throws {
         let url = WHATWG_URL(
             scheme: "https",
-            host: .domain("example.com"),
+            host: .domain(try Domain("example.com")),
             port: 8443,
             path: .list(["path"])
         )
@@ -127,7 +128,7 @@ struct URLTests {
 
     @Test("URLHost domain serialization")
     func hostDomain() throws {
-        let host = URLHost.domain("example.com")
+        let host = URLHost.domain(try Domain("example.com"))
         #expect(host.serialized == "example.com")
     }
 
@@ -175,7 +176,7 @@ struct URLTests {
     func urlOrigin() throws {
         let url = WHATWG_URL(
             scheme: "https",
-            host: .domain("example.com"),
+            host: .domain(try Domain("example.com")),
             port: 443,
             path: .list(["path"])
         )
@@ -187,7 +188,7 @@ struct URLTests {
     func urlConvenienceProperties() throws {
         let url = WHATWG_URL(
             scheme: "https",
-            host: .domain("example.com"),
+            host: .domain(try Domain("example.com")),
             path: .list(["path"]),
             query: "key=value",
             fragment: "section"
@@ -204,7 +205,7 @@ struct URLTests {
     func urlSearchParams() throws {
         var url = WHATWG_URL(
             scheme: "https",
-            host: .domain("example.com"),
+            host: .domain(try Domain("example.com")),
             path: .list(["path"]),
             query: "name=John&age=30"
         )

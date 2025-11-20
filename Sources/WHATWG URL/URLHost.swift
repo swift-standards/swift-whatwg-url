@@ -10,14 +10,16 @@
 //
 // ===----------------------------------------------------------------------===//
 
+public import Domain_Standard
+
 /// A host as defined by the WHATWG URL Standard
 ///
 /// A host is a domain, an IPv4 address, an IPv6 address, an opaque host, or an empty host.
 /// Typically a host serves as a network address, but it is sometimes used as an opaque identifier
 /// in URLs where a network address is not necessary.
 public enum URLHost: Hashable, Sendable {
-    /// A domain string (e.g., "example.com")
-    case domain(String)
+    /// A domain (e.g., "example.com", with IDNA support)
+    case domain(Domain)
 
     /// An IPv4 address represented as four 8-bit integers
     case ipv4(UInt8, UInt8, UInt8, UInt8)
@@ -37,7 +39,7 @@ extension URLHost {
     public var serialized: String {
         switch self {
         case .domain(let domain):
-            return domain
+            return domain.name
 
         case .ipv4(let a, let b, let c, let d):
             return "\(a).\(b).\(c).\(d)"
