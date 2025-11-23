@@ -5,6 +5,8 @@
 
 import StandardsTestSupport
 import Testing
+import Domain_Standard
+import RFC_791
 
 @testable import WHATWG_URL
 

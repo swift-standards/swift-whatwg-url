@@ -43,6 +43,7 @@ let package = Package(
         .package(url: "https://github.com/swift-standards/swift-rfc-5952", from: "0.1.0"),
         .package(url: "https://github.com/swift-standards/swift-domain-standard", from: "0.1.0"),
         .package(url: "https://github.com/swift-standards/swift-rfc-4648", from: "0.1.0"),
+        .package(url: "https://github.com/swift-standards/swift-standards", from: "0.1.0"),
     ],
     targets: [
         // Core URL implementation
@@ -66,7 +67,10 @@ let package = Package(
         // Tests
         .testTarget(
             name: .whatwgURL.tests,
-            dependencies: [.whatwgURL]
+            dependencies: [
+                .whatwgURL,
+                .product(name: "StandardsTestSupport", package: "swift-standards")
+            ]
         ),
         .testTarget(
             name: .whatwgFormURLEncoded.tests,
