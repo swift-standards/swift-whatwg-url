@@ -12,7 +12,7 @@
 
 import WHATWG_Form_URL_Encoded
 
-extension WHATWG_URL {
+extension WHATWG_URL.URL {
     /// Namespace for search/query-related types
     ///
     /// Provides semantic grouping for URL search functionality and allows
@@ -27,11 +27,11 @@ extension WHATWG_URL {
         ///
         /// ```swift
         /// // Parse query string
-        /// let params = WHATWG_URL.Search.Params("name=John+Doe&email=john%40example.com")
+        /// let params = WHATWG_URL.URL.Search.Params("name=John+Doe&email=john%40example.com")
         /// print(params.get("name"))  // Optional("John Doe")
         ///
         /// // Build query string
-        /// var params = WHATWG_URL.Search.Params()
+        /// var params = WHATWG_URL.URL.Search.Params()
         /// params.append("name", "John Doe")
         /// params.append("email", "john@example.com")
         /// print(params.toString())  // "name=John+Doe&email=john%40example.com"
@@ -39,7 +39,7 @@ extension WHATWG_URL {
         ///
         /// ## Alternative Access
         ///
-        /// This type is also accessible as `WHATWG_URL.SearchParams` for convenience.
+        /// This type is also accessible as `WHATWG_URL.URL.SearchParams` for convenience.
         public struct Params {
             private var pairs: [(String, String)]
 
@@ -56,12 +56,12 @@ extension WHATWG_URL {
 
 // MARK: - Initializers
 
-extension WHATWG_URL.Search.Params {
+extension WHATWG_URL.URL.Search.Params {
     /// Creates Params by parsing a query string
     ///
     /// - Parameter query: The query string (with or without leading "?")
-    public init(_ query: String) {
-        let cleaned = query.hasPrefix("?") ? String(query.dropFirst()) : query
+    public init(_ query: some StringProtocol) {
+        let cleaned = query.hasPrefix("?") ? String(query.dropFirst()) : String(query)
         self.pairs = WHATWG_Form_URL_Encoded.parse(cleaned)
     }
 
@@ -73,29 +73,29 @@ extension WHATWG_URL.Search.Params {
 
 // MARK: - Methods
 
-extension WHATWG_URL.Search.Params {
+extension WHATWG_URL.URL.Search.Params {
     /// Appends a new name-value pair
     public mutating func append(_ name: String, _ value: String) {
         pairs.append((name, value))
     }
 
     /// Deletes all name-value pairs with the given name
-    public mutating func delete(_ name: String) {
+    public mutating func delete(_ name: some StringProtocol) {
         pairs.removeAll { $0.0 == name }
     }
 
     /// Returns the first value associated with the given name
-    public func get(_ name: String) -> String? {
+    public func get(_ name: some StringProtocol) -> String? {
         return pairs.first { $0.0 == name }?.1
     }
 
     /// Returns all values associated with the given name
-    public func getAll(_ name: String) -> [String] {
+    public func getAll(_ name: some StringProtocol) -> [String] {
         return pairs.filter { $0.0 == name }.map { $0.1 }
     }
 
     /// Checks if a name exists
-    public func has(_ name: String) -> Bool {
+    public func has(_ name: some StringProtocol) -> Bool {
         return pairs.contains { $0.0 == name }
     }
 
@@ -135,19 +135,19 @@ extension WHATWG_URL.Search.Params {
 
 // MARK: - Protocol Conformances
 
-extension WHATWG_URL.Search.Params: Sequence {
+extension WHATWG_URL.URL.Search.Params: Sequence {
     public func makeIterator() -> IndexingIterator<[(String, String)]> {
         return pairs.makeIterator()
     }
 }
 
-extension WHATWG_URL.Search.Params: ExpressibleByDictionaryLiteral {
+extension WHATWG_URL.URL.Search.Params: ExpressibleByDictionaryLiteral {
     public init(dictionaryLiteral elements: (String, String)...) {
         self.pairs = elements
     }
 }
 
-extension WHATWG_URL.Search.Params: CustomStringConvertible {
+extension WHATWG_URL.URL.Search.Params: CustomStringConvertible {
     public var description: String {
         return toString()
     }
