@@ -15,6 +15,7 @@ extension Target.Dependency {
     static var rfc5952: Self { .product(name: "RFC 5952", package: "swift-rfc-5952") }
     static var domainStandard: Self { .product(name: "Domain Standard", package: "swift-domain-standard") }
     static var rfc4648: Self { .product(name: "RFC 4648", package: "swift-rfc-4648") }
+    static var incits41986: Self { .product(name: "INCITS 4 1986", package: "swift-incits-4-1986") }
 }
 
 let package = Package(
@@ -43,6 +44,7 @@ let package = Package(
         .package(url: "https://github.com/swift-standards/swift-rfc-5952", from: "0.1.0"),
         .package(url: "https://github.com/swift-standards/swift-domain-standard", from: "0.1.0"),
         .package(url: "https://github.com/swift-standards/swift-rfc-4648", from: "0.1.0"),
+        .package(url: "https://github.com/swift-standards/swift-incits-4-1986", from: "0.1.0"),
         .package(url: "https://github.com/swift-standards/swift-standards", from: "0.1.0"),
     ],
     targets: [
@@ -55,13 +57,17 @@ let package = Package(
                 .rfc791,
                 .rfc5952,
                 .domainStandard,
+                .incits41986,
             ]
         ),
 
         // application/x-www-form-urlencoded (Section 5)
         .target(
             name: .whatwgFormURLEncoded,
-            dependencies: [.rfc4648]
+            dependencies: [
+                .rfc4648,
+                .incits41986,
+            ]
         ),
 
         // Tests

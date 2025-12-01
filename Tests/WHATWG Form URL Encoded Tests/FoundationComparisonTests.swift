@@ -19,7 +19,7 @@ struct `Foundation Comparison Tests` {
         let input = "Hello World"
 
         // WHATWG encoding (this package)
-        let whatwgEncoded = WHATWG_Form_URL_Encoded.percentEncode(input, spaceAsPlus: true)
+        let whatwgEncoded = WHATWG_Form_URL_Encoded.PercentEncoding.encode(input, spaceAsPlus: true)
         #expect(whatwgEncoded == "Hello+World", "WHATWG should encode space as +")
 
         // Foundation encoding
@@ -36,7 +36,7 @@ struct `Foundation Comparison Tests` {
     func `Multiple spaces: WHATWG vs Foundation`() throws {
         let input = "first second third"
 
-        let whatwgEncoded = WHATWG_Form_URL_Encoded.percentEncode(input, spaceAsPlus: true)
+        let whatwgEncoded = WHATWG_Form_URL_Encoded.PercentEncoding.encode(input, spaceAsPlus: true)
         #expect(whatwgEncoded == "first+second+third")
 
         var components = URLComponents()
@@ -52,7 +52,7 @@ struct `Foundation Comparison Tests` {
         let input = "Hello World!"
 
         // WHATWG encoding
-        let whatwgEncoded = WHATWG_Form_URL_Encoded.percentEncode(input, spaceAsPlus: true)
+        let whatwgEncoded = WHATWG_Form_URL_Encoded.PercentEncoding.encode(input, spaceAsPlus: true)
         #expect(whatwgEncoded == "Hello+World%21", "WHATWG should encode ! as %21")
 
         // Foundation encoding
@@ -69,7 +69,7 @@ struct `Foundation Comparison Tests` {
         let input = "test~value"
 
         // WHATWG encoding - tilde is NOT in the allowed set (*-._)
-        let whatwgEncoded = WHATWG_Form_URL_Encoded.percentEncode(input, spaceAsPlus: true)
+        let whatwgEncoded = WHATWG_Form_URL_Encoded.PercentEncoding.encode(input, spaceAsPlus: true)
         #expect(whatwgEncoded == "test%7E" + "value", "WHATWG should encode ~ as %7E")
 
         // Foundation encoding - more permissive
@@ -84,7 +84,7 @@ struct `Foundation Comparison Tests` {
         let input = "func(arg)"
 
         // WHATWG encoding
-        let whatwgEncoded = WHATWG_Form_URL_Encoded.percentEncode(input, spaceAsPlus: true)
+        let whatwgEncoded = WHATWG_Form_URL_Encoded.PercentEncoding.encode(input, spaceAsPlus: true)
         #expect(whatwgEncoded == "func%28arg%29", "WHATWG should encode parentheses")
 
         // Foundation encoding
@@ -101,7 +101,7 @@ struct `Foundation Comparison Tests` {
         // WHATWG only allows: alphanumeric + *-._
         let input = "abc123*-._"
 
-        let whatwgEncoded = WHATWG_Form_URL_Encoded.percentEncode(input, spaceAsPlus: true)
+        let whatwgEncoded = WHATWG_Form_URL_Encoded.PercentEncoding.encode(input, spaceAsPlus: true)
         #expect(whatwgEncoded == input, "WHATWG allowed characters should remain unencoded")
 
         var components = URLComponents()
@@ -141,7 +141,7 @@ struct `Foundation Comparison Tests` {
         let input = "a+b"
 
         // WHATWG: + must be encoded as %2B
-        let whatwgEncoded = WHATWG_Form_URL_Encoded.percentEncode(input, spaceAsPlus: true)
+        let whatwgEncoded = WHATWG_Form_URL_Encoded.PercentEncoding.encode(input, spaceAsPlus: true)
         #expect(whatwgEncoded == "a%2Bb")
 
         // Foundation
@@ -157,7 +157,7 @@ struct `Foundation Comparison Tests` {
     func `Empty string: Both handle the same`() throws {
         let input = ""
 
-        let whatwgEncoded = WHATWG_Form_URL_Encoded.percentEncode(input, spaceAsPlus: true)
+        let whatwgEncoded = WHATWG_Form_URL_Encoded.PercentEncoding.encode(input, spaceAsPlus: true)
         #expect(whatwgEncoded == "")
 
         var components = URLComponents()
@@ -170,7 +170,7 @@ struct `Foundation Comparison Tests` {
     func `Only spaces: Encoding difference`() throws {
         let input = "   "
 
-        let whatwgEncoded = WHATWG_Form_URL_Encoded.percentEncode(input, spaceAsPlus: true)
+        let whatwgEncoded = WHATWG_Form_URL_Encoded.PercentEncoding.encode(input, spaceAsPlus: true)
         #expect(whatwgEncoded == "+++")
 
         var components = URLComponents()
@@ -184,7 +184,7 @@ struct `Foundation Comparison Tests` {
         let input = "🌍"
 
         // Both should percent-encode UTF-8 bytes
-        let whatwgEncoded = WHATWG_Form_URL_Encoded.percentEncode(input, spaceAsPlus: true)
+        let whatwgEncoded = WHATWG_Form_URL_Encoded.PercentEncoding.encode(input, spaceAsPlus: true)
         #expect(whatwgEncoded == "%F0%9F%8C%8D")
 
         var components = URLComponents()
@@ -200,7 +200,7 @@ struct `Foundation Comparison Tests` {
         let input = "Hello World!"
 
         // WHATWG (this package) - from README
-        let whatwgEncoded = WHATWG_Form_URL_Encoded.percentEncode(input, spaceAsPlus: true)
+        let whatwgEncoded = WHATWG_Form_URL_Encoded.PercentEncoding.encode(input, spaceAsPlus: true)
         #expect(whatwgEncoded == "Hello+World%21", "Should match README example")
 
         // Foundation - from README
@@ -213,11 +213,18 @@ struct `Foundation Comparison Tests` {
     // MARK: - Character Set Strictness
 
     @Test
+    func `Decode plus as space`() throws {
+        let input = "John+Doe"
+        let decoded = try WHATWG_Form_URL_Encoded.PercentEncoding.decode(input, plusAsSpace: true)
+        #expect(decoded == "John Doe")
+    }
+
+    @Test
     func `WHATWG is stricter: Only alphanumeric + *-._ unencoded`() throws {
         let specialChars = "!@#$^&()+={}[]|\\:;\"'<>?,/~"
 
         // WHATWG should encode ALL of these
-        let whatwgEncoded = WHATWG_Form_URL_Encoded.percentEncode(specialChars, spaceAsPlus: true)
+        let whatwgEncoded = WHATWG_Form_URL_Encoded.PercentEncoding.encode(specialChars, spaceAsPlus: true)
 
         // Should only contain percent-encoded sequences (no literal special chars except %)
         // Check that none of the original special characters appear unencoded

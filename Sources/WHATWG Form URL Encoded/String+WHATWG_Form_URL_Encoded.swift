@@ -138,7 +138,7 @@ extension WHATWG_Form_URL_Encoded.FormURLEncoded {
     /// - Returns: Decoded string, or nil if invalid
     @inlinable
     public static func decode(_ string: some StringProtocol, plusAsSpace: Bool = true) -> S? {
-        guard let decoded = WHATWG_Form_URL_Encoded.PercentEncoding.decode(String(string), plusAsSpace: plusAsSpace) else {
+        guard let decoded = WHATWG_Form_URL_Encoded.PercentEncoding.decodeOrNil(String(string), plusAsSpace: plusAsSpace) else {
             return nil
         }
         return S(decoded)
@@ -175,5 +175,44 @@ extension String {
     public init(formURLEncodingBytes bytes: [UInt8], spaceAsPlus: Bool = true) {
         let decoded = String(decoding: bytes, as: UTF8.self)
         self = WHATWG_Form_URL_Encoded.PercentEncoding.encode(decoded, spaceAsPlus: spaceAsPlus)
+    }
+}
+
+// MARK: - EncodedString Convenience
+
+extension String {
+    /// Encodes this string using application/x-www-form-urlencoded rules
+    ///
+    /// Returns an `EncodedString` wrapper for type-safe handling of encoded strings.
+    ///
+    /// - Parameter spaceAsPlus: If true, space encoded as '+', otherwise '%20'
+    /// - Returns: An EncodedString containing the percent-encoded value
+    ///
+    /// ## Example
+    ///
+    /// ```swift
+    /// let encoded = "Hello World!".formURLEncodedString()
+    /// print(encoded.rawValue)  // "Hello+World%21"
+    ///
+    /// let decoded = try encoded.decoded()  // "Hello World!"
+    /// ```
+    public func formURLEncodedString(spaceAsPlus: Bool = true) -> WHATWG_Form_URL_Encoded.EncodedString {
+        WHATWG_Form_URL_Encoded.EncodedString(encoding: self, spaceAsPlus: spaceAsPlus)
+    }
+
+    /// Decodes this string from application/x-www-form-urlencoded format
+    ///
+    /// - Parameter plusAsSpace: If true, '+' decoded as space (0x20)
+    /// - Returns: The decoded string
+    /// - Throws: `PercentEncoding.Error` if the encoding is invalid
+    ///
+    /// ## Example
+    ///
+    /// ```swift
+    /// let decoded = try "Hello+World%21".decodingFormURLEncoded()
+    /// // Result: "Hello World!"
+    /// ```
+    public func decodingFormURLEncoded(plusAsSpace: Bool = true) throws(WHATWG_Form_URL_Encoded.PercentEncoding.Error) -> String {
+        try WHATWG_Form_URL_Encoded.PercentEncoding.decode(self, plusAsSpace: plusAsSpace)
     }
 }

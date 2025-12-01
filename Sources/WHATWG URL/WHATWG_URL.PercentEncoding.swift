@@ -11,6 +11,7 @@
 // ===----------------------------------------------------------------------===//
 
 import Foundation
+import INCITS_4_1986
 
 extension WHATWG_URL {
     /// Percent-encoding utilities per WHATWG URL Standard Section 1.3
@@ -136,8 +137,11 @@ extension WHATWG_URL.PercentEncoding {
             let scalar = char.unicodeScalars.first!
             let value = scalar.value
 
-            // C0 controls: U+0000 to U+001F
-            let isC0Control = value <= 0x001F
+            // C0 controls: U+0000 to U+001F (NUL through US)
+            let isC0Control = value <= UInt32(UInt8.ascii.us)
+
+            // Non-ASCII: above tilde (0x7E)
+            let isNonASCII = value > UInt32(UInt8.ascii.tilde)
 
             // Characters always encoded
             let alwaysEncode = char == " " || char == "\"" || char == "<" || char == ">" || char == "`"
@@ -145,25 +149,25 @@ extension WHATWG_URL.PercentEncoding {
             // Check specific encode set rules
             switch self {
             case .c0Control:
-                return isC0Control || value > 0x007E
+                return isC0Control || isNonASCII
 
             case .fragment:
-                return isC0Control || value > 0x007E || alwaysEncode || char == "#"
+                return isC0Control || isNonASCII || alwaysEncode || char == "#"
 
             case .query, .specialQuery:
-                return isC0Control || value > 0x007E || alwaysEncode || char == "#"
+                return isC0Control || isNonASCII || alwaysEncode || char == "#"
 
             case .path:
-                return isC0Control || value > 0x007E || alwaysEncode || char == "?" || char == "{" || char == "}"
+                return isC0Control || isNonASCII || alwaysEncode || char == "?" || char == "{" || char == "}"
 
             case .userinfo:
-                return isC0Control || value > 0x007E || alwaysEncode ||
+                return isC0Control || isNonASCII || alwaysEncode ||
                        char == "/" || char == ":" || char == ";" || char == "=" ||
                        char == "@" || char == "[" || char == "\\" || char == "]" ||
                        char == "^" || char == "|"
 
             case .component:
-                return isC0Control || value > 0x007E || alwaysEncode ||
+                return isC0Control || isNonASCII || alwaysEncode ||
                        char == "/" || char == ":" || char == ";" || char == "=" ||
                        char == "@" || char == "[" || char == "\\" || char == "]" ||
                        char == "^" || char == "|" || char == "?" || char == "#"

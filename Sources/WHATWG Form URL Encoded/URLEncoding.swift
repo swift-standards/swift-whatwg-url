@@ -87,8 +87,8 @@ extension WHATWG_Form_URL_Encoded {
                 let name = String(components[0])
                 let value = components.count > 1 ? String(components[1]) : ""
 
-                guard let decodedName = PercentEncoding.decode(name, plusAsSpace: true),
-                    let decodedValue = PercentEncoding.decode(value, plusAsSpace: true)
+                guard let decodedName = PercentEncoding.decodeOrNil(name, plusAsSpace: true),
+                    let decodedValue = PercentEncoding.decodeOrNil(value, plusAsSpace: true)
                 else {
                     return nil
                 }

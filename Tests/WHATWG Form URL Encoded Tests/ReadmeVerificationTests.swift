@@ -28,13 +28,13 @@ struct `README Verification` {
 
     @Test
     func `Example from source: Percent encode with space as plus`() throws {
-        let encoded = WHATWG_Form_URL_Encoded.percentEncode("Hello World!", spaceAsPlus: true)
+        let encoded = WHATWG_Form_URL_Encoded.PercentEncoding.encode("Hello World!", spaceAsPlus: true)
         #expect(encoded == "Hello+World%21")
     }
 
     @Test
     func `Example from source: Percent decode with plus as space`() throws {
-        let decoded = WHATWG_Form_URL_Encoded.percentDecode("Hello+World%21", plusAsSpace: true)
+        let decoded = try WHATWG_Form_URL_Encoded.PercentEncoding.decode("Hello+World%21", plusAsSpace: true)
         #expect(decoded == "Hello World!")
     }
 
@@ -68,8 +68,8 @@ struct `README Verification` {
         ]
 
         for original in strings {
-            let encoded = WHATWG_Form_URL_Encoded.percentEncode(original, spaceAsPlus: true)
-            let decoded = WHATWG_Form_URL_Encoded.percentDecode(encoded, plusAsSpace: true)
+            let encoded = WHATWG_Form_URL_Encoded.PercentEncoding.encode(original, spaceAsPlus: true)
+            let decoded = try WHATWG_Form_URL_Encoded.PercentEncoding.decode(encoded, plusAsSpace: true)
             #expect(decoded == original)
         }
     }
@@ -77,14 +77,14 @@ struct `README Verification` {
     @Test
     func `WHATWG Character Set: Alphanumeric unencoded`() throws {
         let input = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-        let encoded = WHATWG_Form_URL_Encoded.percentEncode(input, spaceAsPlus: true)
+        let encoded = WHATWG_Form_URL_Encoded.PercentEncoding.encode(input, spaceAsPlus: true)
         #expect(encoded == input)
     }
 
     @Test
     func `WHATWG Character Set: Allowed special characters unencoded`() throws {
         let input = "*-._"
-        let encoded = WHATWG_Form_URL_Encoded.percentEncode(input, spaceAsPlus: true)
+        let encoded = WHATWG_Form_URL_Encoded.PercentEncoding.encode(input, spaceAsPlus: true)
         #expect(encoded == input)
     }
 
@@ -92,10 +92,10 @@ struct `README Verification` {
     func `WHATWG Character Set: Space encoding`() throws {
         let input = "hello world"
 
-        let encodedAsPlus = WHATWG_Form_URL_Encoded.percentEncode(input, spaceAsPlus: true)
+        let encodedAsPlus = WHATWG_Form_URL_Encoded.PercentEncoding.encode(input, spaceAsPlus: true)
         #expect(encodedAsPlus == "hello+world")
 
-        let encodedAsPercent = WHATWG_Form_URL_Encoded.percentEncode(input, spaceAsPlus: false)
+        let encodedAsPercent = WHATWG_Form_URL_Encoded.PercentEncoding.encode(input, spaceAsPlus: false)
         #expect(encodedAsPercent == "hello%20world")
     }
 
@@ -133,7 +133,7 @@ struct `README Verification` {
         ]
 
         for (input, expected) in testCases {
-            let encoded = WHATWG_Form_URL_Encoded.percentEncode(input, spaceAsPlus: true)
+            let encoded = WHATWG_Form_URL_Encoded.PercentEncoding.encode(input, spaceAsPlus: true)
             #expect(
                 encoded == expected,
                 "Character '\(input)' should encode to '\(expected)', got '\(encoded)'"
@@ -172,21 +172,29 @@ struct `README Verification` {
     }
 
     @Test
-    func `Decode: Invalid percent encoding returns nil`() throws {
-        #expect(WHATWG_Form_URL_Encoded.percentDecode("%", plusAsSpace: true) == nil)
-        #expect(WHATWG_Form_URL_Encoded.percentDecode("%2", plusAsSpace: true) == nil)
-        #expect(WHATWG_Form_URL_Encoded.percentDecode("%GG", plusAsSpace: true) == nil)
-        #expect(WHATWG_Form_URL_Encoded.percentDecode("test%", plusAsSpace: true) == nil)
+    func `Decode: Invalid percent encoding throws`() throws {
+        #expect(throws: WHATWG_Form_URL_Encoded.PercentEncoding.Error.self) {
+            try WHATWG_Form_URL_Encoded.PercentEncoding.decode("%", plusAsSpace: true)
+        }
+        #expect(throws: WHATWG_Form_URL_Encoded.PercentEncoding.Error.self) {
+            try WHATWG_Form_URL_Encoded.PercentEncoding.decode("%2", plusAsSpace: true)
+        }
+        #expect(throws: WHATWG_Form_URL_Encoded.PercentEncoding.Error.self) {
+            try WHATWG_Form_URL_Encoded.PercentEncoding.decode("%GG", plusAsSpace: true)
+        }
+        #expect(throws: WHATWG_Form_URL_Encoded.PercentEncoding.Error.self) {
+            try WHATWG_Form_URL_Encoded.PercentEncoding.decode("test%", plusAsSpace: true)
+        }
     }
 
     @Test
     func `Decode: Plus handling`() throws {
         let input = "hello+world"
 
-        let decodedAsSpace = WHATWG_Form_URL_Encoded.percentDecode(input, plusAsSpace: true)
+        let decodedAsSpace = try WHATWG_Form_URL_Encoded.PercentEncoding.decode(input, plusAsSpace: true)
         #expect(decodedAsSpace == "hello world")
 
-        let decodedAsPlus = WHATWG_Form_URL_Encoded.percentDecode(input, plusAsSpace: false)
+        let decodedAsPlus = try WHATWG_Form_URL_Encoded.PercentEncoding.decode(input, plusAsSpace: false)
         #expect(decodedAsPlus == "hello+world")
     }
 
@@ -218,16 +226,16 @@ struct `README Verification` {
         ]
 
         for (input, expected) in testCases {
-            let encoded = WHATWG_Form_URL_Encoded.percentEncode(input, spaceAsPlus: true)
+            let encoded = WHATWG_Form_URL_Encoded.PercentEncoding.encode(input, spaceAsPlus: true)
             #expect(
                 encoded == expected,
                 "'\(input)' should encode to '\(expected)', got '\(encoded)'"
             )
 
-            let decoded = WHATWG_Form_URL_Encoded.percentDecode(expected, plusAsSpace: true)
+            let decoded = try WHATWG_Form_URL_Encoded.PercentEncoding.decode(expected, plusAsSpace: true)
             #expect(
                 decoded == input,
-                "'\(expected)' should decode to '\(input)', got '\(decoded ?? "nil")'"
+                "'\(expected)' should decode to '\(input)', got '\(decoded)'"
             )
         }
     }

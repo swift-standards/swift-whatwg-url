@@ -92,7 +92,7 @@ extension WHATWG_Form_URL_Encoded.FormURLEncodedBytes {
     /// - Returns: Decoded bytes, or nil if invalid
     @inlinable
     public static func decode(_ string: some StringProtocol, plusAsSpace: Bool = true) -> [UInt8]? {
-        guard let decoded = WHATWG_Form_URL_Encoded.PercentEncoding.decode(String(string), plusAsSpace: plusAsSpace) else {
+        guard let decoded = WHATWG_Form_URL_Encoded.PercentEncoding.decodeOrNil(String(string), plusAsSpace: plusAsSpace) else {
             return nil
         }
         return Array(decoded.utf8)

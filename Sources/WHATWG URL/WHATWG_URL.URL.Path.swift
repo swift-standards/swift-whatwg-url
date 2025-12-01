@@ -10,6 +10,8 @@
 //
 // ===----------------------------------------------------------------------===//
 
+public import INCITS_4_1986
+
 extension WHATWG_URL.URL {
     /// A URL path as defined by the WHATWG URL Standard
     ///
@@ -24,6 +26,74 @@ extension WHATWG_URL.URL {
     }
 }
 
+extension WHATWG_URL.URL.Path: UInt8.ASCII.Serializable {
+    
+
+    /// Serialize the path into an ASCII byte buffer
+    ///
+    /// Per WHATWG URL Standard Section 4.5:
+    /// - Opaque: serialized as-is
+    /// - List: "/" + segments joined by "/"
+    public static func serialize<Buffer: RangeReplaceableCollection>(
+        ascii path: Self,
+        into buffer: inout Buffer
+    ) where Buffer.Element == UInt8 {
+        switch path {
+        case .opaque(let segment):
+            buffer.append(contentsOf: segment.utf8)
+
+        case .list(let segments):
+            guard !segments.isEmpty else { return }
+            for segment in segments {
+                buffer.append(UInt8.ascii.slash)
+                buffer.append(contentsOf: segment.utf8)
+            }
+        }
+    }
+
+    /// Parse a path from ASCII bytes
+    ///
+    /// Per WHATWG URL Standard:
+    /// - Opaque paths: no normalization
+    /// - List paths: split on "/", normalize "." and ".."
+    public init<Bytes: Collection>(
+        ascii bytes: Bytes,
+        in context: WHATWG_URL.URL.Path.Context
+    ) throws(Error) where Bytes.Element == UInt8 {
+        let input = String(decoding: Array(bytes), as: UTF8.self)
+
+        if context.isOpaque {
+            // Opaque path: percent-decode
+            let decoded = WHATWG_URL.PercentEncoding.decode(input)
+            self = .opaque(decoded)
+        } else {
+            // List path: split on /, normalize . and ..
+            var segments: [String] = []
+
+            for segment in input.split(separator: "/", omittingEmptySubsequences: false) {
+                let decoded = WHATWG_URL.PercentEncoding.decode(String(segment))
+
+                if decoded == "." {
+                    // Skip . segments
+                    continue
+                } else if decoded == ".." {
+                    // Pop last segment
+                    if !segments.isEmpty {
+                        segments.removeLast()
+                    }
+                } else if !decoded.isEmpty || segments.isEmpty {
+                    segments.append(decoded)
+                }
+            }
+
+            self = .list(segments)
+        }
+    }
+}
+
+// MARK: - CustomStringConvertible
+
+extension WHATWG_URL.URL.Path: CustomStringConvertible {}
 
 
 extension WHATWG_URL.URL.Path {
@@ -129,39 +199,39 @@ extension WHATWG_URL.URL.Path {
     }
 }
 
-// MARK: - Path Serialization
-
-extension WHATWG_URL.URL.Path {
-    /// Serializes a path to its string representation
-    ///
-    /// This is the authoritative implementation per WHATWG URL Standard Section 4.3.
-    ///
-    /// ## Serialization Rules
-    ///
-    /// - **Opaque path**: Serialized as-is (percent-encoded string)
-    /// - **List path**: Serialized as "/" + segments joined by "/"
-    /// - **Empty list**: Serialized as "" (no leading slash)
-    ///
-    /// ## Mathematical Properties
-    ///
-    /// - **Totality**: This function is total - always produces a String
-    /// - **Injectivity**: Different paths produce different strings (up to normalization)
-    /// - **Determinism**: Same path always produces same string
-    ///
-    /// - Parameter path: The path to serialize
-    /// - Returns: String representation of the path
-    public static func serialize(_ path: Self) -> String {
-        switch path {
-        case .opaque(let segment):
-            // Opaque path: single percent-encoded string
-            return segment
-
-        case .list(let segments):
-            // List path: segments joined by "/"
-            if segments.isEmpty {
-                return ""
-            }
-            return "/" + segments.joined(separator: "/")
-        }
-    }
-}
+//// MARK: - Path Serialization
+//
+//extension WHATWG_URL.URL.Path {
+//    /// Serializes a path to its string representation
+//    ///
+//    /// This is the authoritative implementation per WHATWG URL Standard Section 4.3.
+//    ///
+//    /// ## Serialization Rules
+//    ///
+//    /// - **Opaque path**: Serialized as-is (percent-encoded string)
+//    /// - **List path**: Serialized as "/" + segments joined by "/"
+//    /// - **Empty list**: Serialized as "" (no leading slash)
+//    ///
+//    /// ## Mathematical Properties
+//    ///
+//    /// - **Totality**: This function is total - always produces a String
+//    /// - **Injectivity**: Different paths produce different strings (up to normalization)
+//    /// - **Determinism**: Same path always produces same string
+//    ///
+//    /// - Parameter path: The path to serialize
+//    /// - Returns: String representation of the path
+//    public static func serialize(_ path: Self) -> String {
+//        switch path {
+//        case .opaque(let segment):
+//            // Opaque path: single percent-encoded string
+//            return segment
+//
+//        case .list(let segments):
+//            // List path: segments joined by "/"
+//            if segments.isEmpty {
+//                return ""
+//            }
+//            return "/" + segments.joined(separator: "/")
+//        }
+//    }
+//}
