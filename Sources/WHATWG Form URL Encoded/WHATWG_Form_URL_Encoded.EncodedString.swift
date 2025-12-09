@@ -72,11 +72,11 @@ extension WHATWG_Form_URL_Encoded {
     }
 }
 
-// MARK: - UInt8.ASCII.Serializable Conformance
+// MARK: - Binary.ASCII.Serializable Conformance
 
 public import INCITS_4_1986
 
-extension WHATWG_Form_URL_Encoded.EncodedString: UInt8.ASCII.Serializable {
+extension WHATWG_Form_URL_Encoded.EncodedString: Binary.ASCII.Serializable {
     /// Serialize the encoded string into an ASCII byte buffer
     ///
     /// Simply writes the UTF-8 bytes of the encoded string.

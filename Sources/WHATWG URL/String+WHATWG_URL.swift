@@ -27,7 +27,7 @@ extension StringProtocol {
 extension String {
     /// Creates a string by serializing a WHATWG URL
     ///
-    /// Uses `UInt8.ASCII.Serializable` pattern.
+    /// Uses `Binary.ASCII.Serializable` pattern.
     ///
     /// Per WHATWG URL Standard Section 4.5, URL serialization produces an ASCII string
     /// where parsing the result yields an equivalent URL.
@@ -54,7 +54,7 @@ extension String {
 extension WHATWG_URL.StringProtocol {
     /// Serializes a URL to its string representation
     ///
-    /// Uses `UInt8.ASCII.Serializable` pattern.
+    /// Uses `Binary.ASCII.Serializable` pattern.
     ///
     /// - Parameter url: The URL to serialize
     /// - Returns: Serialized URL string
@@ -76,7 +76,7 @@ extension WHATWG_URL.StringProtocol {
 extension String {
     /// Creates a string representation of a WHATWG URL Host
     ///
-    /// Uses `UInt8.ASCII.Serializable` pattern.
+    /// Uses `Binary.ASCII.Serializable` pattern.
     ///
     /// - Parameter host: The WHATWG URL host to serialize
     @inlinable
@@ -86,7 +86,7 @@ extension String {
 
     /// Creates a string representation of a WHATWG URL Path
     ///
-    /// Uses `UInt8.ASCII.Serializable` pattern.
+    /// Uses `Binary.ASCII.Serializable` pattern.
     ///
     /// - Parameter path: The WHATWG URL path to serialize
     @inlinable

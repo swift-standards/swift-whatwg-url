@@ -105,9 +105,9 @@ extension WHATWG_URL.URL {
     }
 }
 
-// MARK: - UInt8.ASCII.Serializable Conformance
+// MARK: - Binary.ASCII.Serializable Conformance
 
-extension WHATWG_URL.URL: UInt8.ASCII.Serializable {
+extension WHATWG_URL.URL: Binary.ASCII.Serializable {
     public typealias Context = WHATWG_URL.URL.ParsingContext
 
     /// Serialize the URL into an ASCII byte buffer

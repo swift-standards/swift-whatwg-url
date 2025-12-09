@@ -26,7 +26,7 @@ extension WHATWG_URL.URL {
     }
 }
 
-extension WHATWG_URL.URL.Path: UInt8.ASCII.Serializable {
+extension WHATWG_URL.URL.Path: Binary.ASCII.Serializable {
     
 
     /// Serialize the path into an ASCII byte buffer

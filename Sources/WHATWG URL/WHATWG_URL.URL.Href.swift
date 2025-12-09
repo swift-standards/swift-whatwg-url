@@ -36,16 +36,16 @@ extension WHATWG_URL.URL {
         /// Creates an Href from a validated URL
         ///
         /// This is the core initializer - always succeeds because the URL is already valid.
-        /// Uses `UInt8.ASCII.Serializable` to serialize the URL to its canonical form.
+        /// Uses `Binary.ASCII.Serializable` to serialize the URL to its canonical form.
         public init(_ url: WHATWG_URL.URL) {
             self.init(__unchecked: (), value: String(ascii: url))
         }
     }
 }
 
-// MARK: - UInt8.ASCII.Serializable
+// MARK: - Binary.ASCII.Serializable
 
-extension WHATWG_URL.URL.Href: UInt8.ASCII.Serializable {
+extension WHATWG_URL.URL.Href: Binary.ASCII.Serializable {
     /// Serialize the href into an ASCII byte buffer
     public static func serialize<Buffer: RangeReplaceableCollection>(
         ascii href: Self,

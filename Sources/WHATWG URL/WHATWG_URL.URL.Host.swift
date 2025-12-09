@@ -65,9 +65,9 @@ extension WHATWG_URL.URL.Host {
     }
 }
 
-// MARK: - UInt8.ASCII.Serializable
+// MARK: - Binary.ASCII.Serializable
 
-extension WHATWG_URL.URL.Host: UInt8.ASCII.Serializable {
+extension WHATWG_URL.URL.Host: Binary.ASCII.Serializable {
     /// Serialize the host into an ASCII byte buffer
     ///
     /// Per WHATWG URL Standard Section 4.4: Host Serializing.

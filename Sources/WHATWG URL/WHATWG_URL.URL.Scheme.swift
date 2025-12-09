@@ -107,9 +107,9 @@ extension WHATWG_URL.URL.Scheme {
     public static let wss = Self(__unchecked: (), value: "wss")
 }
 
-// MARK: - UInt8.ASCII.Serializable
+// MARK: - Binary.ASCII.Serializable
 
-extension WHATWG_URL.URL.Scheme: UInt8.ASCII.Serializable {
+extension WHATWG_URL.URL.Scheme: Binary.ASCII.Serializable {
     /// Serialize the scheme into an ASCII byte buffer
     public static func serialize<Buffer: RangeReplaceableCollection>(
         ascii scheme: Self,
