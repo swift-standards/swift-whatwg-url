@@ -10,7 +10,6 @@
 //
 // ===----------------------------------------------------------------------===//
 
-import Foundation
 import INCITS_4_1986
 
 extension WHATWG_URL {
@@ -20,6 +19,18 @@ extension WHATWG_URL {
     /// characters in URLs using the format %XX where XX is the hexadecimal
     /// representation of the byte.
     enum PercentEncoding {}
+}
+
+// MARK: - Hex Digit Helper
+
+extension WHATWG_URL.PercentEncoding {
+    /// Convert a nibble (0-15) to its uppercase hex character
+    @inline(__always)
+    private static func hexDigit(_ nibble: UInt8) -> String {
+        let chars: [Character] = ["0", "1", "2", "3", "4", "5", "6", "7",
+                                  "8", "9", "A", "B", "C", "D", "E", "F"]
+        return String(chars[Int(nibble & 0x0F)])
+    }
 }
 
 // MARK: - Percent Decode
@@ -58,12 +69,16 @@ extension WHATWG_URL.PercentEncoding {
                     }
 
                     // Decode as UTF-8
-                    if let decoded = String(bytes: bytes, encoding: .utf8) {
+                    let decoded = String(decoding: bytes, as: UTF8.self)
+                    // Check if decoding was lossless (no replacement characters introduced)
+                    if decoded.utf8.elementsEqual(bytes) {
                         result += decoded
                     } else {
                         // Invalid UTF-8, keep as-is with percent encoding
                         for byte in bytes {
-                            result += String(format: "%%%02X", byte)
+                            result += "%"
+                            result += hexDigit(byte >> 4)
+                            result += hexDigit(byte & 0x0F)
                         }
                     }
                     continue
@@ -94,7 +109,9 @@ extension WHATWG_URL.PercentEncoding {
             if set.shouldEncode(char) {
                 // Encode as UTF-8 bytes
                 for byte in String(char).utf8 {
-                    result += String(format: "%%%02X", byte)
+                    result += "%"
+                    result += hexDigit(byte >> 4)
+                    result += hexDigit(byte & 0x0F)
                 }
             } else {
                 result.append(char)
