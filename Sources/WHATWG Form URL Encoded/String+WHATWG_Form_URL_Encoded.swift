@@ -25,12 +25,12 @@ extension WHATWG_Form_URL_Encoded {
 
 extension StringProtocol {
     /// Access to form URL encoded operations
-    public static var formURLEncoded: WHATWG_Form_URL_Encoded.FormURLEncoded<Self>.Type {
+    public static var formURL: WHATWG_Form_URL_Encoded.FormURLEncoded<Self>.Type {
         WHATWG_Form_URL_Encoded.FormURLEncoded<Self>.self
     }
 
     /// Access to form URL encoded operations for this string
-    public var formURLEncoded: WHATWG_Form_URL_Encoded.FormURLEncoded<Self> {
+    public var formURL: WHATWG_Form_URL_Encoded.FormURLEncoded<Self> {
         WHATWG_Form_URL_Encoded.FormURLEncoded(self)
     }
 }
@@ -60,7 +60,7 @@ extension StringProtocol {
     /// ```
     @inlinable
     public init(formURLEncoding string: some StringProtocol, spaceAsPlus: Bool = true) {
-        self = Self.formURLEncoded.encode(string, spaceAsPlus: spaceAsPlus)
+        self = Self.formURL.encode(string, spaceAsPlus: spaceAsPlus)
     }
 }
 
@@ -120,7 +120,7 @@ extension StringProtocol {
     /// ```
     @inlinable
     public init?(formURLDecoding string: some StringProtocol, plusAsSpace: Bool = true) {
-        guard let decoded = Self.formURLEncoded.decode(string, plusAsSpace: plusAsSpace) else {
+        guard let decoded = Self.formURL.decode(string, plusAsSpace: plusAsSpace) else {
             return nil
         }
         self = decoded
