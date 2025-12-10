@@ -11,9 +11,9 @@
 // ===----------------------------------------------------------------------===//
 
 public import Domain_Standard
-public import RFC_791
-public import RFC_5952
 public import INCITS_4_1986
+public import RFC_5952
+public import RFC_791
 
 extension WHATWG_URL.URL {
     /// A host as defined by the WHATWG URL Standard
@@ -141,8 +141,8 @@ extension WHATWG_URL.URL.Host: Binary.ASCII.Serializable {
             // Try WHATWG IPv4 parsing first if it looks like it could be an IP address
             // (contains only digits, dots, hex chars, and 'x' for hex prefix)
             let couldBeIPv4 = hostString.allSatisfy { c in
-                c.isNumber || c == "." || c == "x" || c == "X" ||
-                (c >= "a" && c <= "f") || (c >= "A" && c <= "F")
+                c.isNumber || c == "." || c == "x" || c == "X" || (c >= "a" && c <= "f")
+                    || (c >= "A" && c <= "F")
             }
 
             if couldBeIPv4, let address = RFC_791.IPv4.Address(whatwgString: hostString) {

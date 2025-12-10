@@ -27,8 +27,10 @@ extension WHATWG_URL.PercentEncoding {
     /// Convert a nibble (0-15) to its uppercase hex character
     @inline(__always)
     private static func hexDigit(_ nibble: UInt8) -> String {
-        let chars: [Character] = ["0", "1", "2", "3", "4", "5", "6", "7",
-                                  "8", "9", "A", "B", "C", "D", "E", "F"]
+        let chars: [Character] = [
+            "0", "1", "2", "3", "4", "5", "6", "7",
+            "8", "9", "A", "B", "C", "D", "E", "F",
+        ]
         return String(chars[Int(nibble & 0x0F)])
     }
 }
@@ -52,14 +54,14 @@ extension WHATWG_URL.PercentEncoding {
         while i < chars.count {
             if chars[i] == "%", i + 2 < chars.count {
                 // Try to decode %XX
-                let hex = String(chars[i+1...i+2])
+                let hex = String(chars[i + 1...i + 2])
                 if let byte = UInt8(hex, radix: 16) {
                     // Collect consecutive percent-encoded bytes
                     var bytes: [UInt8] = [byte]
                     i += 3
 
                     while i < chars.count && chars[i] == "%", i + 2 < chars.count {
-                        let nextHex = String(chars[i+1...i+2])
+                        let nextHex = String(chars[i + 1...i + 2])
                         if let nextByte = UInt8(nextHex, radix: 16) {
                             bytes.append(nextByte)
                             i += 3
@@ -161,7 +163,8 @@ extension WHATWG_URL.PercentEncoding {
             let isNonASCII = value > UInt32(UInt8.ascii.tilde)
 
             // Characters always encoded
-            let alwaysEncode = char == " " || char == "\"" || char == "<" || char == ">" || char == "`"
+            let alwaysEncode =
+                char == " " || char == "\"" || char == "<" || char == ">" || char == "`"
 
             // Check specific encode set rules
             switch self {
@@ -175,19 +178,18 @@ extension WHATWG_URL.PercentEncoding {
                 return isC0Control || isNonASCII || alwaysEncode || char == "#"
 
             case .path:
-                return isC0Control || isNonASCII || alwaysEncode || char == "?" || char == "{" || char == "}"
+                return isC0Control || isNonASCII || alwaysEncode || char == "?" || char == "{"
+                    || char == "}"
 
             case .userinfo:
-                return isC0Control || isNonASCII || alwaysEncode ||
-                       char == "/" || char == ":" || char == ";" || char == "=" ||
-                       char == "@" || char == "[" || char == "\\" || char == "]" ||
-                       char == "^" || char == "|"
+                return isC0Control || isNonASCII || alwaysEncode || char == "/" || char == ":"
+                    || char == ";" || char == "=" || char == "@" || char == "[" || char == "\\"
+                    || char == "]" || char == "^" || char == "|"
 
             case .component:
-                return isC0Control || isNonASCII || alwaysEncode ||
-                       char == "/" || char == ":" || char == ";" || char == "=" ||
-                       char == "@" || char == "[" || char == "\\" || char == "]" ||
-                       char == "^" || char == "|" || char == "?" || char == "#"
+                return isC0Control || isNonASCII || alwaysEncode || char == "/" || char == ":"
+                    || char == ";" || char == "=" || char == "@" || char == "[" || char == "\\"
+                    || char == "]" || char == "^" || char == "|" || char == "?" || char == "#"
             }
         }
     }

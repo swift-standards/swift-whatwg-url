@@ -37,7 +37,7 @@ extension WHATWG_URL.URL.Search {
     /// This type is also accessible as `WHATWG_URL.URL.SearchParams` for convenience.
     public struct Params {
         private var pairs: [(String, String)]
-        
+
         /// Creates an empty Params
         public init() {
             self.pairs = []

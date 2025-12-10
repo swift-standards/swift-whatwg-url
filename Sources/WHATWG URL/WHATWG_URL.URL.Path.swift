@@ -27,7 +27,6 @@ extension WHATWG_URL.URL {
 }
 
 extension WHATWG_URL.URL.Path: Binary.ASCII.Serializable {
-    
 
     /// Serialize the path into an ASCII byte buffer
     ///
@@ -94,7 +93,6 @@ extension WHATWG_URL.URL.Path: Binary.ASCII.Serializable {
 // MARK: - CustomStringConvertible
 
 extension WHATWG_URL.URL.Path: CustomStringConvertible {}
-
 
 extension WHATWG_URL.URL.Path {
     /// Returns an empty list path
@@ -199,9 +197,9 @@ extension WHATWG_URL.URL.Path {
     }
 }
 
-//// MARK: - Path Serialization
+// // MARK: - Path Serialization
 //
-//extension WHATWG_URL.URL.Path {
+// extension WHATWG_URL.URL.Path {
 //    /// Serializes a path to its string representation
 //    ///
 //    /// This is the authoritative implementation per WHATWG URL Standard Section 4.3.
@@ -234,4 +232,4 @@ extension WHATWG_URL.URL.Path {
 //            return "/" + segments.joined(separator: "/")
 //        }
 //    }
-//}
+// }

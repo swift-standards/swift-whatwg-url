@@ -10,6 +10,8 @@
 //
 // ===----------------------------------------------------------------------===//
 
+public import INCITS_4_1986
+
 extension WHATWG_Form_URL_Encoded {
     /// A percent-encoded string per WHATWG URL Standard Section 5
     ///
@@ -73,8 +75,6 @@ extension WHATWG_Form_URL_Encoded {
 }
 
 // MARK: - Binary.ASCII.Serializable Conformance
-
-public import INCITS_4_1986
 
 extension WHATWG_Form_URL_Encoded.EncodedString: Binary.ASCII.Serializable {
     /// Serialize the encoded string into an ASCII byte buffer

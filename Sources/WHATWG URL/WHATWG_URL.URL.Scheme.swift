@@ -57,10 +57,9 @@ extension WHATWG_URL.URL {
 
             // Remaining characters must be ASCII alphanumeric, +, -, or .
             for byte in chars.dropFirst() {
-                let isValid = byte.ascii.isAlphanumeric ||
-                              byte == UInt8.ascii.plus ||
-                              byte == UInt8.ascii.hyphen ||
-                              byte == UInt8.ascii.period
+                let isValid =
+                    byte.ascii.isAlphanumeric || byte == UInt8.ascii.plus
+                    || byte == UInt8.ascii.hyphen || byte == UInt8.ascii.period
 
                 guard isValid else {
                     throw .invalidCharacter(Character(UnicodeScalar(byte)))
@@ -82,7 +81,7 @@ extension WHATWG_URL.URL.Scheme {
         "http": 80,
         "https": 443,
         "ws": 80,
-        "wss": 443
+        "wss": 443,
     ]
 
     /// Checks if a scheme is a special scheme

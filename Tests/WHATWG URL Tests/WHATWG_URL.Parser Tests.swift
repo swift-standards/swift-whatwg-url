@@ -3,10 +3,10 @@
 //
 // Tests for WHATWG URL Basic URL Parser
 
-import StandardsTestSupport
-import Testing
 import Domain_Standard
 import RFC_791
+import StandardsTestSupport
+import Testing
 
 @testable import WHATWG_URL
 
@@ -21,7 +21,7 @@ struct `WHATWG_URL.URL Tests` {
         func `parse simple HTTP URL`() throws {
             let url = try WHATWG_URL.URL("http://example.com")
             #expect(url.scheme.value == "http")
-            #expect(url.host == .domain(try! Domain_Standard.Domain("example.com")))
+            #expect(url.host == .domain(try Domain_Standard.Domain("example.com")))
             #expect(url.port == nil)  // Default port omitted
             #expect(url.path == .list([]))
         }
@@ -30,7 +30,7 @@ struct `WHATWG_URL.URL Tests` {
         func `parse HTTPS URL with path`() throws {
             let url = try WHATWG_URL.URL("https://example.com/path/to/resource")
             #expect(url.scheme.value == "https")
-            #expect(url.host == .domain(try! Domain_Standard.Domain("example.com")))
+            #expect(url.host == .domain(try Domain_Standard.Domain("example.com")))
             #expect(url.path == .list(["path", "to", "resource"]))
         }
 
@@ -77,7 +77,7 @@ struct `WHATWG_URL.URL Tests` {
         func `parse URL with username only`() throws {
             let url = try WHATWG_URL.URL("http://user@example.com/path")
             #expect(url.username == "user")
-            #expect(url.password == "")
+            #expect(url.password.isEmpty)
         }
     }
 
@@ -435,20 +435,20 @@ struct `WHATWG_URL.URL Tests` {
         @Test
         func `empty query`() throws {
             let url = try WHATWG_URL.URL("http://example.com/?")
-            #expect(url.query == "")
+            #expect(url.query.isEmpty)
         }
 
         @Test
         func `empty fragment`() throws {
             let url = try WHATWG_URL.URL("http://example.com/#")
-            #expect(url.fragment == "")
+            #expect(url.fragment.isEmpty)
         }
     }
 }
 
-//// MARK: - Performance Tests
+// // MARK: - Performance Tests
 //
-//extension `Performance Tests` {
+// extension `Performance Tests` {
 //    @Suite
 //    struct `URL - Performance` {
 //
@@ -473,4 +473,4 @@ struct `WHATWG_URL.URL Tests` {
 //            }
 //        }
 //    }
-//}
+// }

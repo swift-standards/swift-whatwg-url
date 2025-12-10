@@ -60,7 +60,7 @@ extension RFC_4291.IPv6.Address {
     private static func parseRFC4291(_ string: String) -> Self? {
         // Handle IPv4-embedded format (::ffff:192.0.2.1)
         if let colonIndex = string.lastIndex(of: ":"),
-           string[string.index(after: colonIndex)...].contains(".") {
+            string[string.index(after: colonIndex)...].contains(".") {
             return parseIPv4Embedded(string)
         }
 
@@ -119,8 +119,14 @@ extension RFC_4291.IPv6.Address {
         guard pieces.count == 8 else { return nil }
 
         return Self(
-            pieces[0], pieces[1], pieces[2], pieces[3],
-            pieces[4], pieces[5], pieces[6], pieces[7]
+            pieces[0],
+            pieces[1],
+            pieces[2],
+            pieces[3],
+            pieces[4],
+            pieces[5],
+            pieces[6],
+            pieces[7]
         )
     }
 
@@ -150,7 +156,8 @@ extension RFC_4291.IPv6.Address {
                     // Compression - calculate how many zeros to fill
                     // We need 6 pieces total for the IPv6 part (IPv4 takes last 2)
                     compressionSeen = true
-                    let remainingParts = parts.dropFirst(pieces.count + 1).filter { !$0.isEmpty }.count
+                    let remainingParts = parts.dropFirst(pieces.count + 1).filter { !$0.isEmpty }
+                        .count
                     let zerosCount = 6 - pieces.count - remainingParts
                     if zerosCount > 0 {
                         pieces.append(contentsOf: Array(repeating: 0, count: zerosCount))
@@ -177,8 +184,14 @@ extension RFC_4291.IPv6.Address {
         pieces.append(piece7)
 
         return Self(
-            pieces[0], pieces[1], pieces[2], pieces[3],
-            pieces[4], pieces[5], pieces[6], pieces[7]
+            pieces[0],
+            pieces[1],
+            pieces[2],
+            pieces[3],
+            pieces[4],
+            pieces[5],
+            pieces[6],
+            pieces[7]
         )
     }
 }

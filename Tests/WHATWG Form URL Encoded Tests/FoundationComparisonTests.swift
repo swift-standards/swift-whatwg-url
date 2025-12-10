@@ -1,5 +1,5 @@
-import Testing
 import Foundation
+import Testing
 
 @testable import WHATWG_Form_URL_Encoded
 
@@ -29,7 +29,10 @@ struct `Foundation Comparison Tests` {
         #expect(foundationEncoded == "Hello%20World", "Foundation should encode space as %20")
 
         // They differ in space encoding
-        #expect(whatwgEncoded != foundationEncoded, "WHATWG and Foundation should differ on space encoding")
+        #expect(
+            whatwgEncoded != foundationEncoded,
+            "WHATWG and Foundation should differ on space encoding"
+        )
     }
 
     @Test
@@ -117,7 +120,7 @@ struct `Foundation Comparison Tests` {
         let pairs = [
             ("name", "John Doe"),
             ("email", "john@example.com"),
-            ("message", "Hello World!")
+            ("message", "Hello World!"),
         ]
 
         // WHATWG encoding
@@ -130,7 +133,9 @@ struct `Foundation Comparison Tests` {
         let foundationEncoded = components.percentEncodedQuery
 
         // Foundation would encode differently (spaces as %20, ! unencoded)
-        #expect(foundationEncoded == "name=John%20Doe&email=john@example.com&message=Hello%20World!")
+        #expect(
+            foundationEncoded == "name=John%20Doe&email=john@example.com&message=Hello%20World!"
+        )
 
         // They differ
         #expect(whatwgEncoded != foundationEncoded)
@@ -158,12 +163,12 @@ struct `Foundation Comparison Tests` {
         let input = ""
 
         let whatwgEncoded = WHATWG_Form_URL_Encoded.PercentEncoding.encode(input, spaceAsPlus: true)
-        #expect(whatwgEncoded == "")
+        #expect(whatwgEncoded.isEmpty)
 
         var components = URLComponents()
         components.query = input
         let foundationEncoded = components.percentEncodedQuery ?? ""
-        #expect(foundationEncoded == "")
+        #expect(foundationEncoded.isEmpty)
     }
 
     @Test
@@ -224,14 +229,20 @@ struct `Foundation Comparison Tests` {
         let specialChars = "!@#$^&()+={}[]|\\:;\"'<>?,/~"
 
         // WHATWG should encode ALL of these
-        let whatwgEncoded = WHATWG_Form_URL_Encoded.PercentEncoding.encode(specialChars, spaceAsPlus: true)
+        let whatwgEncoded = WHATWG_Form_URL_Encoded.PercentEncoding.encode(
+            specialChars,
+            spaceAsPlus: true
+        )
 
         // Should only contain percent-encoded sequences (no literal special chars except %)
         // Check that none of the original special characters appear unencoded
         let unallowedInEncoded = Set(specialChars)
         for char in whatwgEncoded {
             if char != "%" && !char.isHexDigit {
-                #expect(!unallowedInEncoded.contains(char), "Unexpected unencoded character '\(char)' in WHATWG output")
+                #expect(
+                    !unallowedInEncoded.contains(char),
+                    "Unexpected unencoded character '\(char)' in WHATWG output"
+                )
             }
         }
 

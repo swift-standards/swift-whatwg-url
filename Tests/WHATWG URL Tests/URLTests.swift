@@ -1,8 +1,9 @@
-import Testing
-@testable import WHATWG_URL
 import Domain_Standard
-import RFC_791
 import INCITS_4_1986
+import RFC_791
+import Testing
+
+@testable import WHATWG_URL
 
 @Suite("WHATWG URL Tests")
 struct URLTests {
@@ -44,7 +45,9 @@ struct URLTests {
         )
 
         let href = url.href
-        #expect(href.value == "https://user:pass@example.com:8080/path/to/resource?key=value#section")
+        #expect(
+            href.value == "https://user:pass@example.com:8080/path/to/resource?key=value#section"
+        )
     }
 
     @Test("URL serialization without credentials")
@@ -144,7 +147,7 @@ struct URLTests {
     @Test("URLPath empty list serialization")
     func pathEmptyList() throws {
         let path = WHATWG_URL.URL.Path.emptyList
-        #expect(String(ascii: path) == "")
+        #expect(String(ascii: path).isEmpty)
     }
 
     @Test("URLPath opaque serialization")
@@ -186,7 +189,6 @@ struct URLTests {
 
         #expect(url.origin == "https://example.com")
     }
-
 
     @Test("URL searchParams getter and setter")
     func urlSearchParams() throws {

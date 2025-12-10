@@ -11,6 +11,6 @@ extension WHATWG_URL.URL {
     /// Provides semantic grouping for URL search functionality and allows
     /// for future extensibility with additional search-related types.
     public enum Search {
-       
+
     }
 }

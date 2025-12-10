@@ -57,9 +57,9 @@ extension WHATWG_Form_URL_Encoded.PercentEncoding {
 
             // WHATWG application/x-www-form-urlencoded allowed characters: * - . _
             case UInt8.ascii.asterisk,
-                 UInt8.ascii.hyphen,
-                 UInt8.ascii.period,
-                 UInt8.ascii.underline:
+                UInt8.ascii.hyphen,
+                UInt8.ascii.period,
+                UInt8.ascii.underline:
                 result.append(Character(UnicodeScalar(byte)))
 
             // Space: + or %20

@@ -1,5 +1,5 @@
-import WHATWG_Form_URL_Encoded
 import RFC_3987
+import WHATWG_Form_URL_Encoded
 
 /// A URL as defined by the WHATWG URL Living Standard
 ///
@@ -38,28 +38,28 @@ extension WHATWG_URL {
     public struct URL: Hashable, Sendable {
         /// The URL's scheme (e.g., "https", "http", "file")
         public var scheme: Scheme
-        
+
         /// The URL's username (for authentication)
         public var username: String
-        
+
         /// The URL's password (for authentication)
         public var password: String
-        
+
         /// The URL's host (domain, IPv4, IPv6, opaque, or empty)
         public var host: Host?
-        
+
         /// The URL's port (null or 16-bit unsigned integer)
         public var port: UInt16?
-        
+
         /// The URL's path (opaque string or list of segments)
         public var path: Path
-        
+
         /// The URL's query string (without leading "?")
         public var query: String?
-        
+
         /// The URL's fragment (without leading "#")
         public var fragment: String?
-        
+
         /// Creates a URL with the specified components
         ///
         /// This is the **direct constructor** for creating URLs from validated components.
