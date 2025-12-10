@@ -435,13 +435,13 @@ struct `WHATWG_URL.URL Tests` {
         @Test
         func `empty query`() throws {
             let url = try WHATWG_URL.URL("http://example.com/?")
-            #expect(url.query.isEmpty)
+            #expect(url.query?.isEmpty == true)
         }
 
         @Test
         func `empty fragment`() throws {
             let url = try WHATWG_URL.URL("http://example.com/#")
-            #expect(url.fragment.isEmpty)
+            #expect(url.fragment?.isEmpty == true)
         }
     }
 }
