@@ -39,13 +39,13 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/swift-standards/swift-rfc-3987", from: "0.1.0"),
-        .package(url: "https://github.com/swift-standards/swift-rfc-791", from: "0.1.0"),
-        .package(url: "https://github.com/swift-standards/swift-rfc-5952", from: "0.1.0"),
-        .package(url: "https://github.com/swift-standards/swift-domain-standard", from: "0.1.0"),
-        .package(url: "https://github.com/swift-standards/swift-rfc-4648", from: "0.1.0"),
-        .package(url: "https://github.com/swift-standards/swift-incits-4-1986", from: "0.1.0"),
-        .package(url: "https://github.com/swift-standards/swift-standards", from: "0.1.0"),
+        .package(url: "https://github.com/swift-standards/swift-rfc-3987", from: "0.3.3"),
+        .package(url: "https://github.com/swift-standards/swift-rfc-791", from: "0.2.3"),
+        .package(url: "https://github.com/swift-standards/swift-rfc-5952", from: "0.1.3"),
+        .package(url: "https://github.com/swift-standards/swift-domain-standard", from: "0.4.2"),
+        .package(url: "https://github.com/swift-standards/swift-rfc-4648", from: "0.5.3"),
+        .package(url: "https://github.com/swift-standards/swift-incits-4-1986", from: "0.6.3"),
+        .package(url: "https://github.com/swift-standards/swift-standards", from: "0.10.0"),
     ],
     targets: [
         // Core URL implementation
