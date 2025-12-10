@@ -122,32 +122,32 @@ extension WHATWG_URL.URL.Host: Binary.ASCII.Serializable {
                 throw .ipv6BracketMismatch
             }
 
-            let ipv6Bytes = array.dropFirst().dropLast()
+            let ipv6String = String(decoding: array, as: UTF8.self)
 
-            do {
-                let address = try RFC_4291.IPv6.Address(ascii: Array(ipv6Bytes))
+            // Use WHATWG IPv6 parser which handles brackets, zone IDs, embedded IPv4, etc.
+            if let address = RFC_4291.IPv6.Address(whatwgString: ipv6String) {
                 self = .ipv6(address)
-            } catch {
-                throw .invalidIPv6Address(String(decoding: array, as: UTF8.self))
+            } else {
+                throw .invalidIPv6Address(ipv6String)
             }
             return
         }
 
         let hostString = String(decoding: array, as: UTF8.self)
 
-        // For special schemes: try IPv4, then domain
+        // For special schemes: try IPv4 (WHATWG format), then domain
         if context.isSpecial {
-            // Simple IPv4 detection: contains only digits and dots
-            let isIPv4Candidate = hostString.allSatisfy { $0.isNumber || $0 == "." }
+            // WHATWG IPv4 detection: could be any format (decimal, hex, octal, compressed, single number)
+            // Try WHATWG IPv4 parsing first if it looks like it could be an IP address
+            // (contains only digits, dots, hex chars, and 'x' for hex prefix)
+            let couldBeIPv4 = hostString.allSatisfy { c in
+                c.isNumber || c == "." || c == "x" || c == "X" ||
+                (c >= "a" && c <= "f") || (c >= "A" && c <= "F")
+            }
 
-            if isIPv4Candidate {
-                do {
-                    let address = try RFC_791.IPv4.Address(hostString)
-                    self = .ipv4(address)
-                    return
-                } catch {
-                    // Not a valid IPv4, continue to domain
-                }
+            if couldBeIPv4, let address = RFC_791.IPv4.Address(whatwgString: hostString) {
+                self = .ipv4(address)
+                return
             }
 
             // Try parsing as domain

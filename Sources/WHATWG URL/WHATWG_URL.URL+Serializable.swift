@@ -322,9 +322,17 @@ extension WHATWG_URL.URL: Binary.ASCII.Serializable {
                 }
 
             case .host:
+                // Handle IPv6 addresses in brackets specially - don't stop at colons inside brackets
+                var insideBrackets = false
                 while pointer < trimmed.count {
                     let ch = trimmed[pointer]
-                    if ch == UInt8.ascii.colon || ch == UInt8.ascii.slash || ch == UInt8.ascii.questionMark || ch == UInt8.ascii.numberSign {
+                    if ch == UInt8.ascii.leftSquareBracket {
+                        insideBrackets = true
+                    } else if ch == UInt8.ascii.rightSquareBracket {
+                        insideBrackets = false
+                    }
+                    // Only break on : if not inside brackets
+                    if !insideBrackets && (ch == UInt8.ascii.colon || ch == UInt8.ascii.slash || ch == UInt8.ascii.questionMark || ch == UInt8.ascii.numberSign) {
                         break
                     }
                     buffer.append(Character(UnicodeScalar(ch)))
