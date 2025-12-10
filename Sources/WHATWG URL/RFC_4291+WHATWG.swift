@@ -60,7 +60,8 @@ extension RFC_4291.IPv6.Address {
     private static func parseRFC4291(_ string: String) -> Self? {
         // Handle IPv4-embedded format (::ffff:192.0.2.1)
         if let colonIndex = string.lastIndex(of: ":"),
-            string[string.index(after: colonIndex)...].contains(".") {
+            string[string.index(after: colonIndex)...].contains(".")
+        {
             return parseIPv4Embedded(string)
         }
 
