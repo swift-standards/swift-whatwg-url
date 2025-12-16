@@ -11,7 +11,7 @@
 // ===----------------------------------------------------------------------===//
 
 public import RFC_4291
-public import RFC_791
+import RFC_791
 
 extension RFC_4291.IPv6.Address {
     /// Parse an IPv6 address per WHATWG URL Standard Section 4.7

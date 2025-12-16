@@ -10,10 +10,10 @@
 //
 // ===----------------------------------------------------------------------===//
 
-public import Domain_Standard
+import Domain_Standard
 public import INCITS_4_1986
-public import RFC_5952
-public import RFC_791
+import RFC_5952
+import RFC_791
 
 // MARK: - Context for URL Parsing
 
