@@ -16,6 +16,7 @@ extension Target.Dependency {
     static var domainStandard: Self { .product(name: "Domain Standard", package: "swift-domain-standard") }
     static var rfc4648: Self { .product(name: "RFC 4648", package: "swift-rfc-4648") }
     static var incits41986: Self { .product(name: "INCITS 4 1986", package: "swift-incits-4-1986") }
+    static var binary: Self { .product(name: "Binary Primitives", package: "swift-binary-primitives") }
 }
 
 let package = Package(
@@ -39,13 +40,14 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/swift-standards/swift-rfc-3987", from: "0.3.3"),
-        .package(url: "https://github.com/swift-standards/swift-rfc-791", from: "0.2.3"),
-        .package(url: "https://github.com/swift-standards/swift-rfc-5952", from: "0.1.3"),
-        .package(url: "https://github.com/swift-standards/swift-domain-standard", from: "0.4.2"),
-        .package(url: "https://github.com/swift-standards/swift-rfc-4648", from: "0.5.3"),
-        .package(url: "https://github.com/swift-standards/swift-incits-4-1986", from: "0.6.3"),
-        .package(url: "https://github.com/swift-standards/swift-standards", from: "0.10.0"),
+        .package(path: "../swift-rfc-3987"),
+        .package(path: "../swift-rfc-791"),
+        .package(path: "../swift-rfc-5952"),
+        .package(path: "../swift-domain-standard"),
+        .package(path: "../swift-rfc-4648"),
+        .package(path: "../swift-incits-4-1986"),
+        .package(path: "../../swift-primitives/swift-binary-primitives"),
+        .package(path: "../../swift-primitives/swift-test-primitives"),
     ],
     targets: [
         // Core URL implementation
@@ -58,6 +60,7 @@ let package = Package(
                 .rfc5952,
                 .domainStandard,
                 .incits41986,
+                .binary,
             ]
         ),
 
@@ -67,6 +70,7 @@ let package = Package(
             dependencies: [
                 .rfc4648,
                 .incits41986,
+                .binary,
             ]
         ),
 
@@ -75,7 +79,7 @@ let package = Package(
             name: .whatwgURL.tests,
             dependencies: [
                 .whatwgURL,
-                .product(name: "StandardsTestSupport", package: "swift-standards")
+                .product(name: "Test Primitives", package: "swift-test-primitives")
             ]
         ),
         .testTarget(
