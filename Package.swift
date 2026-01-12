@@ -40,14 +40,14 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(path: "../swift-rfc-3987"),
-        .package(path: "../swift-rfc-791"),
-        .package(path: "../swift-rfc-5952"),
-        .package(path: "../swift-domain-standard"),
-        .package(path: "../swift-rfc-4648"),
-        .package(path: "../../swift-foundations/swift-ascii"),
-        .package(path: "../../swift-primitives/swift-binary-primitives"),
-        .package(path: "../../swift-primitives/swift-test-primitives"),
+        .package(url: "https://github.com/swift-standards/swift-rfc-3987.git", from: "0.0.1"),
+        .package(url: "https://github.com/swift-standards/swift-rfc-791.git", from: "0.0.1"),
+        .package(url: "https://github.com/swift-standards/swift-rfc-5952.git", from: "0.0.1"),
+        .package(url: "https://github.com/swift-standards/swift-domain-standard.git", from: "0.0.1"),
+        .package(url: "https://github.com/swift-standards/swift-rfc-4648.git", from: "0.0.1"),
+        .package(url: "https://github.com/swift-foundations/swift-ascii.git", from: "0.0.1"),
+        .package(url: "https://github.com/swift-primitives/swift-binary-primitives.git", from: "0.0.1"),
+        .package(url: "https://github.com/swift-primitives/swift-test-primitives.git", from: "0.0.1"),
     ],
     targets: [
         // Core URL implementation
