@@ -11,7 +11,7 @@
 // ===----------------------------------------------------------------------===//
 
 import Domain_Standard
-public import INCITS_4_1986
+public import ASCII
 import RFC_5952
 import RFC_791
 

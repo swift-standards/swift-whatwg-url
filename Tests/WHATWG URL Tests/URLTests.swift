@@ -1,5 +1,5 @@
 import Domain_Standard
-import INCITS_4_1986
+import ASCII
 import RFC_791
 import Testing
 

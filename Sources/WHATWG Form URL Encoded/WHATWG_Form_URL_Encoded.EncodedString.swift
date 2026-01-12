@@ -10,7 +10,7 @@
 //
 // ===----------------------------------------------------------------------===//
 
-public import INCITS_4_1986
+public import ASCII
 
 extension WHATWG_Form_URL_Encoded {
     /// A percent-encoded string per WHATWG URL Standard Section 5

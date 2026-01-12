@@ -10,7 +10,7 @@
 //
 // ===----------------------------------------------------------------------===//
 
-import INCITS_4_1986
+import ASCII
 
 extension WHATWG_URL {
     /// Percent-encoding utilities per WHATWG URL Standard Section 1.3

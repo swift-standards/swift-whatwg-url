@@ -10,7 +10,7 @@
 //
 // ===----------------------------------------------------------------------===//
 
-public import INCITS_4_1986
+public import ASCII
 
 extension WHATWG_URL.URL {
     /// A URL scheme per WHATWG URL Standard
