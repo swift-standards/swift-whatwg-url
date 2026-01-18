@@ -30,14 +30,14 @@ let package = Package(
     products: [
         // Main URL standard
         .library(
-            name: .whatwgURL,
-            targets: [.whatwgURL]
+            name: "WHATWG URL",
+            targets: ["WHATWG URL"]
         ),
         // Form URL encoding (application/x-www-form-urlencoded)
         .library(
-            name: .whatwgFormURLEncoded,
-            targets: [.whatwgFormURLEncoded]
-        ),
+            name: "WHATWG Form URL Encoded",
+            targets: ["WHATWG Form URL Encoded"]
+        )
     ],
     dependencies: [
         .package(path: "../swift-rfc-3987"),
@@ -46,13 +46,12 @@ let package = Package(
         .package(path: "../swift-domain-standard"),
         .package(path: "../swift-rfc-4648"),
         .package(path: "../../swift-foundations/swift-ascii"),
-        .package(path: "../../swift-primitives/swift-binary-primitives"),
-        .package(path: "../../swift-primitives/swift-test-primitives"),
+        .package(path: "../../swift-primitives/swift-binary-primitives")
     ],
     targets: [
         // Core URL implementation
         .target(
-            name: .whatwgURL,
+            name: "WHATWG URL",
             dependencies: [
                 .whatwgFormURLEncoded,
                 .rfc3987,
@@ -60,32 +59,21 @@ let package = Package(
                 .rfc5952,
                 .domainStandard,
                 .incits41986,
-                .binary,
+                .binary
             ]
         ),
 
         // application/x-www-form-urlencoded (Section 5)
         .target(
-            name: .whatwgFormURLEncoded,
+            name: "WHATWG Form URL Encoded",
             dependencies: [
                 .rfc4648,
                 .incits41986,
-                .binary,
+                .binary
             ]
         ),
 
         // Tests
-        .testTarget(
-            name: .whatwgURL.tests,
-            dependencies: [
-                .whatwgURL,
-                .product(name: "Test Primitives", package: "swift-test-primitives")
-            ]
-        ),
-        .testTarget(
-            name: .whatwgFormURLEncoded.tests,
-            dependencies: [.whatwgFormURLEncoded]
-        ),
     ],
     swiftLanguageModes: [.v6]
 )
