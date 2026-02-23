@@ -132,7 +132,7 @@ extension WHATWG_URL.URL.Search.Params {
 
 // MARK: - Protocol Conformances
 
-extension WHATWG_URL.URL.Search.Params: Sequence {
+extension WHATWG_URL.URL.Search.Params: Swift.Sequence {
     public func makeIterator() -> IndexingIterator<[(String, String)]> {
         return pairs.makeIterator()
     }
