@@ -5,7 +5,6 @@
 
 import Domain_Standard
 import RFC_791
-import Test_Primitives
 import Testing
 
 @testable import WHATWG_URL
