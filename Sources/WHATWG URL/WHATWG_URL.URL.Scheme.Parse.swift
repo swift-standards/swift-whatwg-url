@@ -33,7 +33,6 @@ extension WHATWG_URL.URL.Scheme.Parse {
 }
 
 extension WHATWG_URL.URL.Scheme.Parse: Parser.`Protocol` {
-    public typealias ParseOutput = Output
     public typealias Failure = WHATWG_URL.URL.Scheme.Parse<Input>.Error
 
     @inlinable
