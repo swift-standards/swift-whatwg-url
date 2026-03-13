@@ -40,11 +40,11 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(path: "../swift-rfc-3987"),
-        .package(path: "../swift-rfc-791"),
-        .package(path: "../swift-rfc-5952"),
-        .package(path: "../swift-domain-standard"),
-        .package(path: "../swift-rfc-4648"),
+        .package(path: "../../../swift-ietf/swift-rfc-3987"),
+        .package(path: "../../../swift-ietf/swift-rfc-791"),
+        .package(path: "../../../swift-ietf/swift-rfc-5952"),
+        .package(path: "../../swift-standards/swift-domain-standard"),
+        .package(path: "../../../swift-ietf/swift-rfc-4648"),
         .package(path: "../../swift-foundations/swift-ascii"),
         .package(path: "../../swift-primitives/swift-binary-primitives"),
         .package(path: "../../swift-primitives/swift-parser-primitives")
