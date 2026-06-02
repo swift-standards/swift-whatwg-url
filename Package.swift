@@ -40,14 +40,14 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(path: "../../swift-ietf/swift-rfc-3987"),
-        .package(path: "../../swift-ietf/swift-rfc-791"),
-        .package(path: "../../swift-ietf/swift-rfc-5952"),
-        .package(path: "../../swift-standards/swift-domain-standard"),
-        .package(path: "../../swift-ietf/swift-rfc-4648"),
-        .package(path: "../../swift-primitives/swift-ascii-serializer-primitives"),
-        .package(path: "../../swift-primitives/swift-binary-primitives"),
-        .package(path: "../../swift-primitives/swift-parser-primitives")
+        .package(url: "https://github.com/swift-ietf/swift-rfc-3987.git", branch: "main"),
+        .package(url: "https://github.com/swift-ietf/swift-rfc-791.git", branch: "main"),
+        .package(url: "https://github.com/swift-ietf/swift-rfc-5952.git", branch: "main"),
+        .package(url: "https://github.com/swift-standards/swift-domain-standard.git", branch: "main"),
+        .package(url: "https://github.com/swift-ietf/swift-rfc-4648.git", branch: "main"),
+        .package(url: "https://github.com/swift-primitives/swift-ascii-serializer-primitives.git", branch: "main"),
+        .package(url: "https://github.com/swift-primitives/swift-binary-primitives.git", branch: "main"),
+        .package(url: "https://github.com/swift-primitives/swift-parser-primitives.git", branch: "main")
     ],
     targets: [
         // Core URL implementation
