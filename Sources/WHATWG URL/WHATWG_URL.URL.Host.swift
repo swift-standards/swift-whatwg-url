@@ -108,7 +108,7 @@ extension WHATWG_URL.URL.Host: Binary.ASCII.Serializable {
         ascii bytes: Bytes,
         in context: Context
     ) throws(Error) where Bytes.Element == Byte {
-        let array = Array<UInt8>(bytes)
+        let array = Array<Byte>(bytes)
 
         // Empty host
         guard !array.isEmpty else {
@@ -117,8 +117,8 @@ extension WHATWG_URL.URL.Host: Binary.ASCII.Serializable {
         }
 
         // Check for IPv6 (starts with '[')
-        if array.first == UInt8.ascii.leftSquareBracket {
-            guard array.last == UInt8.ascii.rightSquareBracket else {
+        if array.first == Byte.ascii.leftSquareBracket {
+            guard array.last == Byte.ascii.rightSquareBracket else {
                 throw .ipv6BracketMismatch
             }
 

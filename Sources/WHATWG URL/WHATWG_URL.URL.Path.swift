@@ -59,7 +59,7 @@ extension WHATWG_URL.URL.Path: Binary.ASCII.Serializable {
         ascii bytes: Bytes,
         in context: WHATWG_URL.URL.Path.Context
     ) throws(Error) where Bytes.Element == Byte {
-        let input = String(decoding: Array<UInt8>(bytes), as: UTF8.self)
+        let input = String(decoding: bytes, as: UTF8.self)
 
         if context.isOpaque {
             // Opaque path: percent-decode

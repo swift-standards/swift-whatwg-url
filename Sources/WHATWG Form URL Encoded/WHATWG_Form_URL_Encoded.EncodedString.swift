@@ -95,7 +95,7 @@ extension WHATWG_Form_URL_Encoded.EncodedString: Binary.ASCII.Serializable {
         ascii bytes: Bytes,
         in context: Void
     ) throws(WHATWG_Form_URL_Encoded.PercentEncoding.Error) where Bytes.Element == Byte {
-        let string = String(decoding: Array<UInt8>(bytes), as: UTF8.self)
+        let string = String(decoding: bytes, as: UTF8.self)
         self.init(__unchecked: string)
     }
 

@@ -124,7 +124,7 @@ extension WHATWG_URL.URL.Scheme: Binary.ASCII.Serializable {
         ascii bytes: Bytes,
         in context: Void
     ) throws(Error) where Bytes.Element == Byte {
-        try self.init(String(decoding: Array<UInt8>(bytes), as: UTF8.self))
+        try self.init(String(decoding: bytes, as: UTF8.self))
     }
 }
 

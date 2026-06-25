@@ -102,11 +102,9 @@ extension RFC_791.IPv4.Address {
             return nil
         }
 
-        let byte1 = UInt8((address >> 24) & 0xFF)
-        let byte2 = UInt8((address >> 16) & 0xFF)
-        let byte3 = UInt8((address >> 8) & 0xFF)
-        let byte4 = UInt8(address & 0xFF)
-
-        return Self(Byte(byte1), Byte(byte2), Byte(byte3), Byte(byte4))
+        // rawValue is host byte order (MSB = first octet), exactly how `address`
+        // was assembled above — construct directly instead of splitting into
+        // octets and re-converting through Byte(...).
+        return Self(rawValue: address)
     }
 }
