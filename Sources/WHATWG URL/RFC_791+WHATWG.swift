@@ -107,6 +107,6 @@ extension RFC_791.IPv4.Address {
         let byte3 = UInt8((address >> 8) & 0xFF)
         let byte4 = UInt8(address & 0xFF)
 
-        return Self(byte1, byte2, byte3, byte4)
+        return Self(Byte(byte1), Byte(byte2), Byte(byte3), Byte(byte4))
     }
 }

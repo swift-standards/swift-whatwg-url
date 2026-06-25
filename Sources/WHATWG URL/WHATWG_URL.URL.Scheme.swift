@@ -113,7 +113,7 @@ extension WHATWG_URL.URL.Scheme: Binary.ASCII.Serializable {
     public static func serialize<Buffer: RangeReplaceableCollection>(
         ascii scheme: Self,
         into buffer: inout Buffer
-    ) where Buffer.Element == UInt8 {
+    ) where Buffer.Element == Byte {
         buffer.append(contentsOf: scheme.value.utf8)
     }
 
@@ -123,8 +123,8 @@ extension WHATWG_URL.URL.Scheme: Binary.ASCII.Serializable {
     public init<Bytes: Collection>(
         ascii bytes: Bytes,
         in context: Void
-    ) throws(Error) where Bytes.Element == UInt8 {
-        try self.init(String(decoding: bytes, as: UTF8.self))
+    ) throws(Error) where Bytes.Element == Byte {
+        try self.init(String(decoding: Array<UInt8>(bytes), as: UTF8.self))
     }
 }
 

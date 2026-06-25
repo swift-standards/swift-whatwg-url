@@ -50,7 +50,7 @@ extension WHATWG_URL.URL.Href: Binary.ASCII.Serializable {
     public static func serialize<Buffer: RangeReplaceableCollection>(
         ascii href: Self,
         into buffer: inout Buffer
-    ) where Buffer.Element == UInt8 {
+    ) where Buffer.Element == Byte {
         buffer.append(contentsOf: href.value.utf8)
     }
 
@@ -60,7 +60,7 @@ extension WHATWG_URL.URL.Href: Binary.ASCII.Serializable {
     public init<Bytes: Collection>(
         ascii bytes: Bytes,
         in context: Void
-    ) throws(WHATWG_URL.URL.Error) where Bytes.Element == UInt8 {
+    ) throws(WHATWG_URL.URL.Error) where Bytes.Element == Byte {
         let url = try WHATWG_URL.URL(ascii: bytes, in: .none)
         self.init(url)
     }

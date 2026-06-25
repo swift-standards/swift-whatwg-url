@@ -74,7 +74,7 @@ extension WHATWG_URL.URL.Host: Binary.ASCII.Serializable {
     public static func serialize<Buffer: RangeReplaceableCollection>(
         ascii host: Self,
         into buffer: inout Buffer
-    ) where Buffer.Element == UInt8 {
+    ) where Buffer.Element == Byte {
         switch host {
         case .domain(let domain):
             buffer.append(contentsOf: domain.name.utf8)
@@ -83,9 +83,9 @@ extension WHATWG_URL.URL.Host: Binary.ASCII.Serializable {
             RFC_791.IPv4.Address.serialize(ascii: address, into: &buffer)
 
         case .ipv6(let address):
-            buffer.append(UInt8.ascii.leftSquareBracket)
+            buffer.append(Byte.ascii.leftSquareBracket)
             RFC_4291.IPv6.Address.serialize(ascii: address, into: &buffer)
-            buffer.append(UInt8.ascii.rightSquareBracket)
+            buffer.append(Byte.ascii.rightSquareBracket)
 
         case .opaque(let host):
             buffer.append(contentsOf: host.utf8)
@@ -107,8 +107,8 @@ extension WHATWG_URL.URL.Host: Binary.ASCII.Serializable {
     public init<Bytes: Collection>(
         ascii bytes: Bytes,
         in context: Context
-    ) throws(Error) where Bytes.Element == UInt8 {
-        let array = Array(bytes)
+    ) throws(Error) where Bytes.Element == Byte {
+        let array = Array<UInt8>(bytes)
 
         // Empty host
         guard !array.isEmpty else {

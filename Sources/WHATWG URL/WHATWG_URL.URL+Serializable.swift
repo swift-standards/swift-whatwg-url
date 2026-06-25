@@ -116,24 +116,24 @@ extension WHATWG_URL.URL: Binary.ASCII.Serializable {
     public static func serialize<Buffer: RangeReplaceableCollection>(
         ascii url: Self,
         into buffer: inout Buffer
-    ) where Buffer.Element == UInt8 {
+    ) where Buffer.Element == Byte {
         // Scheme
         Scheme.serialize(ascii: url.scheme, into: &buffer)
-        buffer.append(UInt8.ascii.colon)
+        buffer.append(Byte.ascii.colon)
 
         // Authority (if host present)
         if let host = url.host {
-            buffer.append(UInt8.ascii.slash)
-            buffer.append(UInt8.ascii.slash)
+            buffer.append(Byte.ascii.slash)
+            buffer.append(Byte.ascii.slash)
 
             // Username/Password
             if !url.username.isEmpty || !url.password.isEmpty {
                 buffer.append(contentsOf: url.username.utf8)
                 if !url.password.isEmpty {
-                    buffer.append(UInt8.ascii.colon)
+                    buffer.append(Byte.ascii.colon)
                     buffer.append(contentsOf: url.password.utf8)
                 }
-                buffer.append(UInt8.ascii.commercialAt)
+                buffer.append(Byte.ascii.commercialAt)
             }
 
             // Host
@@ -141,7 +141,7 @@ extension WHATWG_URL.URL: Binary.ASCII.Serializable {
 
             // Port (omit if it's the default for this scheme)
             if let port = url.port, Scheme.defaultPort(for: url.scheme) != port {
-                buffer.append(UInt8.ascii.colon)
+                buffer.append(Byte.ascii.colon)
                 buffer.append(contentsOf: String(port).utf8)
             }
         }
@@ -151,13 +151,13 @@ extension WHATWG_URL.URL: Binary.ASCII.Serializable {
 
         // Query
         if let query = url.query {
-            buffer.append(UInt8.ascii.questionMark)
+            buffer.append(Byte.ascii.questionMark)
             buffer.append(contentsOf: query.utf8)
         }
 
         // Fragment
         if let fragment = url.fragment {
-            buffer.append(UInt8.ascii.numberSign)
+            buffer.append(Byte.ascii.numberSign)
             buffer.append(contentsOf: fragment.utf8)
         }
     }
@@ -168,13 +168,13 @@ extension WHATWG_URL.URL: Binary.ASCII.Serializable {
     public init<Bytes: Collection>(
         ascii bytes: Bytes,
         in context: Context
-    ) throws(Error) where Bytes.Element == UInt8 {
+    ) throws(Error) where Bytes.Element == Byte {
         var url = Builder()
         var state = State.schemeStart
         var buffer = ""
         var atSignSeen = false
 
-        let array = Array(bytes)
+        let array = Array<UInt8>(bytes)
 
         // Trim leading/trailing whitespace (space and horizontal tab)
         let horizontalTab: UInt8 = 0x09
@@ -351,7 +351,7 @@ extension WHATWG_URL.URL: Binary.ASCII.Serializable {
                 let isSpecial = Scheme.isSpecial(url.scheme!)
                 let hostContext = Host.Context(isSpecial: isSpecial)
                 do {
-                    url.host = try Host(ascii: Array(buffer.utf8), in: hostContext)
+                    url.host = try Host(ascii: Array<Byte>(buffer.utf8), in: hostContext)
                 } catch let hostError as Host.Error {
                     throw .invalidHost(hostError)
                 } catch {

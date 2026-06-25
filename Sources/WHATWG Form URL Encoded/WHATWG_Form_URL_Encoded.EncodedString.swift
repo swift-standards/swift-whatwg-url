@@ -83,7 +83,7 @@ extension WHATWG_Form_URL_Encoded.EncodedString: Binary.ASCII.Serializable {
     public static func serialize<Buffer: RangeReplaceableCollection>(
         ascii instance: Self,
         into buffer: inout Buffer
-    ) where Buffer.Element == UInt8 {
+    ) where Buffer.Element == Byte {
         buffer.append(contentsOf: instance.rawValue.utf8)
     }
 
@@ -94,8 +94,8 @@ extension WHATWG_Form_URL_Encoded.EncodedString: Binary.ASCII.Serializable {
     public init<Bytes: Collection>(
         ascii bytes: Bytes,
         in context: Void
-    ) throws(WHATWG_Form_URL_Encoded.PercentEncoding.Error) where Bytes.Element == UInt8 {
-        let string = String(decoding: bytes, as: UTF8.self)
+    ) throws(WHATWG_Form_URL_Encoded.PercentEncoding.Error) where Bytes.Element == Byte {
+        let string = String(decoding: Array<UInt8>(bytes), as: UTF8.self)
         self.init(__unchecked: string)
     }
 

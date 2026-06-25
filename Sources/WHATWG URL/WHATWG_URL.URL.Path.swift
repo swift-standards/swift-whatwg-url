@@ -36,7 +36,7 @@ extension WHATWG_URL.URL.Path: Binary.ASCII.Serializable {
     public static func serialize<Buffer: RangeReplaceableCollection>(
         ascii path: Self,
         into buffer: inout Buffer
-    ) where Buffer.Element == UInt8 {
+    ) where Buffer.Element == Byte {
         switch path {
         case .opaque(let segment):
             buffer.append(contentsOf: segment.utf8)
@@ -44,7 +44,7 @@ extension WHATWG_URL.URL.Path: Binary.ASCII.Serializable {
         case .list(let segments):
             guard !segments.isEmpty else { return }
             for segment in segments {
-                buffer.append(UInt8.ascii.slash)
+                buffer.append(Byte.ascii.slash)
                 buffer.append(contentsOf: segment.utf8)
             }
         }
@@ -58,8 +58,8 @@ extension WHATWG_URL.URL.Path: Binary.ASCII.Serializable {
     public init<Bytes: Collection>(
         ascii bytes: Bytes,
         in context: WHATWG_URL.URL.Path.Context
-    ) throws(Error) where Bytes.Element == UInt8 {
-        let input = String(decoding: Array(bytes), as: UTF8.self)
+    ) throws(Error) where Bytes.Element == Byte {
+        let input = String(decoding: Array<UInt8>(bytes), as: UTF8.self)
 
         if context.isOpaque {
             // Opaque path: percent-decode
