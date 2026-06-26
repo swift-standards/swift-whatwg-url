@@ -16,6 +16,7 @@ extension Target.Dependency {
     static var domainStandard: Self { .product(name: "Domain Standard", package: "swift-domain-standard") }
     static var rfc4648: Self { .product(name: "RFC 4648", package: "swift-rfc-4648") }
     static var incits41986: Self { .product(name: "ASCII Serializer Primitives", package: "swift-ascii-serializer-primitives") }
+    static var asciiPrimitives: Self { .product(name: "ASCII Primitives", package: "swift-ascii-primitives") }
     static var binary: Self { .product(name: "Binary Primitives", package: "swift-binary-primitives") }
 }
 
@@ -46,6 +47,7 @@ let package = Package(
         .package(url: "https://github.com/swift-standards/swift-domain-standard.git", branch: "main"),
         .package(url: "https://github.com/swift-ietf/swift-rfc-4648.git", branch: "main"),
         .package(url: "https://github.com/swift-primitives/swift-ascii-serializer-primitives.git", branch: "main"),
+        .package(url: "https://github.com/swift-primitives/swift-ascii-primitives.git", branch: "main"),
         .package(url: "https://github.com/swift-primitives/swift-binary-primitives.git", branch: "main"),
         .package(url: "https://github.com/swift-primitives/swift-parser-primitives.git", branch: "main")
     ],
@@ -60,6 +62,7 @@ let package = Package(
                 .rfc5952,
                 .domainStandard,
                 .incits41986,
+                .asciiPrimitives,
                 .binary,
                 .product(name: "Parser Primitives", package: "swift-parser-primitives")
             ]
@@ -71,6 +74,7 @@ let package = Package(
             dependencies: [
                 .rfc4648,
                 .incits41986,
+                .asciiPrimitives,
                 .binary
             ]
         ),

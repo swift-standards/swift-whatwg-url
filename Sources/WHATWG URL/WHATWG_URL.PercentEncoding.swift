@@ -10,6 +10,7 @@
 //
 // ===----------------------------------------------------------------------===//
 
+import ASCII_Primitives
 import ASCII_Serializer_Primitives
 
 extension WHATWG_URL {
@@ -27,11 +28,10 @@ extension WHATWG_URL.PercentEncoding {
     /// Convert a nibble (0-15) to its uppercase hex character
     @inline(always)
     private static func hexDigit(_ nibble: UInt8) -> String {
-        let chars: [Character] = [
-            "0", "1", "2", "3", "4", "5", "6", "7",
-            "8", "9", "A", "B", "C", "D", "E", "F",
-        ]
-        return String(chars[Int(nibble & 0x0F)])
+        // `nibble & 0x0F` is structurally 0-15, so `hexDigitUppercase` is always non-nil.
+        // Emits '0'-'9'/'A'-'F' (0x30-0x39, 0x41-0x46) — exact parity with the prior table.
+        let code = ASCII.Serialization.hexDigitUppercase(nibble & 0x0F)!
+        return String(Character(UnicodeScalar(code)))
     }
 }
 

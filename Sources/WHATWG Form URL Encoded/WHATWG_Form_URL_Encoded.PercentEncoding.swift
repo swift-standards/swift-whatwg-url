@@ -5,8 +5,8 @@
 //  Authoritative implementation of percent encoding per WHATWG URL Standard Section 5
 //  application/x-www-form-urlencoded
 
+import ASCII_Primitives
 import ASCII_Serializer_Primitives
-import RFC_4648
 
 extension WHATWG_Form_URL_Encoded {
     /// Percent Encoding Operations
@@ -68,10 +68,12 @@ extension WHATWG_Form_URL_Encoded.PercentEncoding {
 
             // Everything else: percent-encode
             default:
-                let hexTable = RFC_4648.Base16.encodingTableUppercase.encode
+                // High/low nibbles (`byte >> 4`, `byte & 0x0F`) are structurally 0-15,
+                // so `hexDigitUppercase` is always non-nil. Emits uppercase '0'-'9'/'A'-'F'
+                // (0x30-0x39, 0x41-0x46) — exact parity with the prior Base16 uppercase table.
                 result.append("%")
-                result.append(Character(UnicodeScalar(hexTable[Int(byte >> 4)])))
-                result.append(Character(UnicodeScalar(hexTable[Int(byte & 0x0F)])))
+                result.append(Character(UnicodeScalar(ASCII.Serialization.hexDigitUppercase(byte >> 4)!)))
+                result.append(Character(UnicodeScalar(ASCII.Serialization.hexDigitUppercase(byte & 0x0F)!)))
             }
         }
 
