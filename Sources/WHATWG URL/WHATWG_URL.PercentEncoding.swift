@@ -30,7 +30,7 @@ extension WHATWG_URL.PercentEncoding {
     private static func hexDigit(_ nibble: UInt8) -> String {
         // `nibble & 0x0F` is structurally 0-15, so `hexDigitUppercase` is always non-nil.
         // Emits '0'-'9'/'A'-'F' (0x30-0x39, 0x41-0x46) — exact parity with the prior table.
-        let code = ASCII.Serialization.hexDigitUppercase(nibble & 0x0F)!
+        let code = ASCII.Hexadecimal.code(nibble & 0x0F, case: .upper)!
         return String(Character(UnicodeScalar(code)))
     }
 }

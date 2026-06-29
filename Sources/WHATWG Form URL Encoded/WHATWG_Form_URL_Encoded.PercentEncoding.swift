@@ -72,8 +72,8 @@ extension WHATWG_Form_URL_Encoded.PercentEncoding {
                 // so `hexDigitUppercase` is always non-nil. Emits uppercase '0'-'9'/'A'-'F'
                 // (0x30-0x39, 0x41-0x46) — exact parity with the prior Base16 uppercase table.
                 result.append("%")
-                result.append(Character(UnicodeScalar(ASCII.Serialization.hexDigitUppercase(byte >> 4)!)))
-                result.append(Character(UnicodeScalar(ASCII.Serialization.hexDigitUppercase(byte & 0x0F)!)))
+                result.append(Character(UnicodeScalar(ASCII.Hexadecimal.code(byte >> 4, case: .upper)!)))
+                result.append(Character(UnicodeScalar(ASCII.Hexadecimal.code(byte & 0x0F, case: .upper)!)))
             }
         }
 
