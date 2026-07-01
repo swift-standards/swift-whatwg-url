@@ -65,36 +65,52 @@ extension WHATWG_URL.URL.Host {
     }
 }
 
-// MARK: - Binary.ASCII.Serializable
+// MARK: - ASCII.Serializable ([FAM-012] text sibling)
 
-extension WHATWG_URL.URL.Host: Binary.ASCII.Serializable {
-    /// Serialize the host into an ASCII byte buffer
+extension WHATWG_URL.URL.Host: ASCII.Serializable {
+    /// Serializes the host as ASCII text ([FAM-012] text sibling — `ASCII.Code`).
     ///
-    /// Per WHATWG URL Standard Section 4.4: Host Serializing.
-    public static func serialize<Buffer: RangeReplaceableCollection>(
-        ascii host: Self,
+    /// Per WHATWG URL Standard Section 4.4: Host Serializing. A URL host is
+    /// **ASCII-only**: it renders embedded IPv4/IPv6 addresses as *text*
+    /// (`192.168.1.1`, `[::1]`), never as raw address bytes. It therefore has **no**
+    /// `Binary.Serializable` peer — a wire verb would have to render the IPs as text
+    /// bytes, which under clause-9 same-format composition would either compose the
+    /// IP *wire* verbs (raw 4/16 octets — wrong for a URL) or reintroduce the deleted
+    /// ASCII→binary projection bridge (clause-7). Host is text by construction.
+    ///
+    /// **Clause-9 composition (Option B):** the IPv4 text verb resolves to
+    /// `RFC_791.IPv4.Address`'s `ASCII.Serializable`; the IPv6 text verb resolves —
+    /// by `Buffer.Element == ASCII.Code` — to the canonical **RFC 5952** `@retroactive`
+    /// `ASCII.Serializable` conformance (rfc-4291's `IPv6.Address` has no ASCII peer;
+    /// its wire verb stays in rfc-4291). No `[Byte]`-detour, no projection-accessor reach.
+    public static func serialize<Buffer>(
+        _ host: WHATWG_URL.URL.Host,
         into buffer: inout Buffer
-    ) where Buffer.Element == Byte {
+    ) where Buffer: RangeReplaceableCollection, Buffer.Element == ASCII.Code {
         switch host {
         case .domain(let domain):
-            buffer.append(contentsOf: domain.name.utf8)
+            for byte in domain.name.utf8 { buffer.append(ASCII.Code(byte)) }
 
         case .ipv4(let address):
-            RFC_791.IPv4.Address.serialize(ascii: address, into: &buffer)
+            RFC_791.IPv4.Address.serialize(address, into: &buffer)
 
         case .ipv6(let address):
-            buffer.append(Byte.ascii.leftSquareBracket)
-            RFC_4291.IPv6.Address.serialize(ascii: address, into: &buffer)
-            buffer.append(Byte.ascii.rightSquareBracket)
+            buffer.append(ASCII.Code.leftSquareBracket)
+            RFC_4291.IPv6.Address.serialize(address, into: &buffer)
+            buffer.append(ASCII.Code.rightSquareBracket)
 
         case .opaque(let host):
-            buffer.append(contentsOf: host.utf8)
+            for byte in host.utf8 { buffer.append(ASCII.Code(byte)) }
 
         case .empty:
             break
         }
     }
+}
 
+// MARK: - Parse (concrete reader — wrapped by WHATWG_URL.URL.Host.Parser)
+
+extension WHATWG_URL.URL.Host {
     /// Parse a host from ASCII bytes
     ///
     /// Per WHATWG URL Standard Section 4.4: Host Parsing.
@@ -166,4 +182,9 @@ extension WHATWG_URL.URL.Host: Binary.ASCII.Serializable {
 
 // MARK: - CustomStringConvertible
 
-extension WHATWG_URL.URL.Host: CustomStringConvertible {}
+extension WHATWG_URL.URL.Host: CustomStringConvertible {
+    /// The host in its serialized text form — the same the `ASCII.Serializable`
+    /// verb emits. Re-provided directly now that the retired
+    /// deprecated ASCII-into-Byte protocol no longer supplies the default.
+    public var description: String { String(decoding: serialized, as: UTF8.self) }
+}

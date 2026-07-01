@@ -27,7 +27,7 @@ extension StringProtocol {
 extension String {
     /// Creates a string by serializing a WHATWG URL
     ///
-    /// Uses `Binary.ASCII.Serializable` pattern.
+    /// Uses the type's `ASCII.Serializable` verb (via `description`).
     ///
     /// Per WHATWG URL Standard Section 4.5, URL serialization produces an ASCII string
     /// where parsing the result yields an equivalent URL.
@@ -36,7 +36,7 @@ extension String {
     /// - Returns: Serialized URL string (href)
     @inlinable
     public init(whatwgURL url: WHATWG_URL.URL) {
-        self = String(ascii: url)
+        self = url.description
     }
 
     /// Creates a string from the URL's origin
@@ -54,13 +54,13 @@ extension String {
 extension WHATWG_URL.StringProtocol {
     /// Serializes a URL to its string representation
     ///
-    /// Uses `Binary.ASCII.Serializable` pattern.
+    /// Uses the type's `ASCII.Serializable` verb (via `description`).
     ///
     /// - Parameter url: The URL to serialize
     /// - Returns: Serialized URL string
     @inlinable
     public static func serialize(_ url: WHATWG_URL.URL) -> S {
-        S(String(ascii: url))!
+        S(url.description)!
     }
 
     /// Serializes just the origin portion of a URL
@@ -76,22 +76,22 @@ extension WHATWG_URL.StringProtocol {
 extension String {
     /// Creates a string representation of a WHATWG URL Host
     ///
-    /// Uses `Binary.ASCII.Serializable` pattern.
+    /// Uses the type's `ASCII.Serializable` verb (via `description`).
     ///
     /// - Parameter host: The WHATWG URL host to serialize
     @inlinable
     public init(_ host: WHATWG_URL.URL.Host) {
-        self = String(ascii: host)
+        self = host.description
     }
 
     /// Creates a string representation of a WHATWG URL Path
     ///
-    /// Uses `Binary.ASCII.Serializable` pattern.
+    /// Uses the type's `ASCII.Serializable` verb (via `description`).
     ///
     /// - Parameter path: The WHATWG URL path to serialize
     @inlinable
     public init(_ path: WHATWG_URL.URL.Path) {
-        self = String(ascii: path)
+        self = path.description
     }
 
     /// Creates a string representation of WHATWG URL Search Parameters

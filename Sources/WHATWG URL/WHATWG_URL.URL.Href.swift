@@ -11,6 +11,7 @@
 // ===----------------------------------------------------------------------===//
 
 public import ASCII_Serializer_Primitives
+public import Parseable_ASCII_Primitives
 
 extension WHATWG_URL.URL {
     /// A hypertext reference (href) - a normalized, valid URL string
@@ -36,31 +37,36 @@ extension WHATWG_URL.URL {
         /// Creates an Href from a validated URL
         ///
         /// This is the core initializer - always succeeds because the URL is already valid.
-        /// Uses `Binary.ASCII.Serializable` to serialize the URL to its canonical form.
+        /// Uses the URL's `ASCII.Serializable` verb (via `description`) to serialize
+        /// the URL to its canonical form.
         public init(_ url: WHATWG_URL.URL) {
-            self.init(__unchecked: (), value: String(ascii: url))
+            self.init(__unchecked: (), value: url.description)
         }
     }
 }
 
-// MARK: - Binary.ASCII.Serializable
+// MARK: - ASCII.Serializable ([FAM-012] text sibling)
 
-extension WHATWG_URL.URL.Href: Binary.ASCII.Serializable {
-    /// Serialize the href into an ASCII byte buffer
-    public static func serialize<Buffer: RangeReplaceableCollection>(
-        ascii href: Self,
-        into buffer: inout Buffer
-    ) where Buffer.Element == Byte {
-        buffer.append(contentsOf: href.value.utf8)
-    }
-
-    /// Parse an href from ASCII bytes
+extension WHATWG_URL.URL.Href: ASCII.Serializable {
+    /// Serializes the href as its canonical URL text.
     ///
-    /// Parses the bytes as a URL, then creates an Href from it.
-    public init<Bytes: Collection>(
-        ascii bytes: Bytes,
-        in context: Void
-    ) throws(WHATWG_URL.URL.Error) where Bytes.Element == Byte {
+    /// [FAM-012] text sibling — emits the typed text substrate `ASCII.Code`.
+    /// An href is **ASCII-only**: it is a normalized URL string (WHATWG §4.5),
+    /// not an octet wire form, so there is no `Binary.Serializable` peer.
+    public static func serialize<Buffer>(
+        _ href: WHATWG_URL.URL.Href,
+        into buffer: inout Buffer
+    ) where Buffer: RangeReplaceableCollection, Buffer.Element == ASCII.Code {
+        for byte in href.value.utf8 { buffer.append(ASCII.Code(byte)) }
+    }
+}
+
+// MARK: - ASCII.Parseable ([FAM-012] parse — free-standing init)
+
+extension WHATWG_URL.URL.Href: ASCII.Parseable {
+    /// Parses an href from ASCII bytes: parses the bytes as a URL, then wraps it.
+    public init<Bytes: Collection>(ascii bytes: Bytes) throws(WHATWG_URL.URL.Error)
+    where Bytes.Element == Byte {
         let url = try WHATWG_URL.URL(ascii: bytes, in: .none)
         self.init(url)
     }
@@ -68,4 +74,7 @@ extension WHATWG_URL.URL.Href: Binary.ASCII.Serializable {
 
 // MARK: - CustomStringConvertible
 
-extension WHATWG_URL.URL.Href: CustomStringConvertible {}
+extension WHATWG_URL.URL.Href: CustomStringConvertible {
+    /// The canonical URL text — the same the `ASCII.Serializable` verb emits.
+    public var description: String { String(decoding: serialized, as: UTF8.self) }
+}

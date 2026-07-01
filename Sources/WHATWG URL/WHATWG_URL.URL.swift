@@ -251,7 +251,7 @@ extension WHATWG_URL.URL {
         var output = scheme.value + "://"
 
         if let host = host {
-            output += String(ascii: host)
+            output += host.description
         }
 
         if let port = port, Scheme.defaultPort(for: scheme) != port {

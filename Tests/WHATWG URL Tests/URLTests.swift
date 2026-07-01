@@ -129,31 +129,31 @@ struct URLTests {
     func hostIPv4() throws {
         let address = RFC_791.IPv4.Address(192, 168, 1, 1)
         let host = WHATWG_URL.URL.Host.ipv4(address)
-        #expect(String(ascii: host) == "192.168.1.1")
+        #expect(host.description == "192.168.1.1")
     }
 
     @Test("URLHost domain serialization")
     func hostDomain() throws {
         let host = WHATWG_URL.URL.Host.domain(try Domain("example.com"))
-        #expect(String(ascii: host) == "example.com")
+        #expect(host.description == "example.com")
     }
 
     @Test("URLPath list serialization")
     func pathList() throws {
         let path = WHATWG_URL.URL.Path.list(["path", "to", "resource"])
-        #expect(String(ascii: path) == "/path/to/resource")
+        #expect(path.description == "/path/to/resource")
     }
 
     @Test("URLPath empty list serialization")
     func pathEmptyList() throws {
         let path = WHATWG_URL.URL.Path.emptyList
-        #expect(String(ascii: path).isEmpty)
+        #expect(path.description.isEmpty)
     }
 
     @Test("URLPath opaque serialization")
     func pathOpaque() throws {
         let path = WHATWG_URL.URL.Path.opaque("opaque-data")
-        #expect(String(ascii: path) == "opaque-data")
+        #expect(path.description == "opaque-data")
     }
 
     @Test("URLScheme special schemes")

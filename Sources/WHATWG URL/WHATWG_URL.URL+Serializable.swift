@@ -105,69 +105,76 @@ extension WHATWG_URL.URL {
     }
 }
 
-// MARK: - Binary.ASCII.Serializable Conformance
+// MARK: - ASCII.Serializable ([FAM-012] text sibling)
 
-extension WHATWG_URL.URL: Binary.ASCII.Serializable {
-    public typealias Context = WHATWG_URL.URL.ParsingContext
-
-    /// Serialize the URL into an ASCII byte buffer
+extension WHATWG_URL.URL: ASCII.Serializable {
+    /// Serializes the URL as its canonical ASCII text (WHATWG §4.5 URL Serializing).
     ///
-    /// Per WHATWG URL Standard Section 4.5: URL Serializing
-    public static func serialize<Buffer: RangeReplaceableCollection>(
-        ascii url: Self,
+    /// [FAM-012] text sibling — emits the typed text substrate `ASCII.Code`. A URL is
+    /// **ASCII-only**: the WHATWG URL Standard defines serialization to a *string*,
+    /// not an octet wire form, so there is no `Binary.Serializable` peer (clause-7).
+    /// Clause-9: composes its sub-parts' same-format `ASCII.Serializable` verbs
+    /// directly — `Scheme`, `Host`, `Path` — with no `[Byte]`-detour and no reach
+    /// into a sub-part's `rawValue`/property.
+    public static func serialize<Buffer>(
+        _ url: WHATWG_URL.URL,
         into buffer: inout Buffer
-    ) where Buffer.Element == Byte {
+    ) where Buffer: RangeReplaceableCollection, Buffer.Element == ASCII.Code {
         // Scheme
-        Scheme.serialize(ascii: url.scheme, into: &buffer)
-        buffer.append(Byte.ascii.colon)
+        Scheme.serialize(url.scheme, into: &buffer)
+        buffer.append(ASCII.Code.colon)
 
         // Authority (if host present)
         if let host = url.host {
-            buffer.append(Byte.ascii.slash)
-            buffer.append(Byte.ascii.slash)
+            buffer.append(ASCII.Code.solidus)
+            buffer.append(ASCII.Code.solidus)
 
             // Username/Password
             if !url.username.isEmpty || !url.password.isEmpty {
-                buffer.append(contentsOf: url.username.utf8)
+                for byte in url.username.utf8 { buffer.append(ASCII.Code(byte)) }
                 if !url.password.isEmpty {
-                    buffer.append(Byte.ascii.colon)
-                    buffer.append(contentsOf: url.password.utf8)
+                    buffer.append(ASCII.Code.colon)
+                    for byte in url.password.utf8 { buffer.append(ASCII.Code(byte)) }
                 }
-                buffer.append(Byte.ascii.commercialAt)
+                buffer.append(ASCII.Code.commercialAt)
             }
 
             // Host
-            Host.serialize(ascii: host, into: &buffer)
+            Host.serialize(host, into: &buffer)
 
             // Port (omit if it's the default for this scheme)
             if let port = url.port, Scheme.defaultPort(for: url.scheme) != port {
-                buffer.append(Byte.ascii.colon)
-                buffer.append(contentsOf: String(port).utf8)
+                buffer.append(ASCII.Code.colon)
+                for byte in String(port).utf8 { buffer.append(ASCII.Code(byte)) }
             }
         }
 
         // Path
-        Path.serialize(ascii: url.path, into: &buffer)
+        Path.serialize(url.path, into: &buffer)
 
         // Query
         if let query = url.query {
-            buffer.append(Byte.ascii.questionMark)
-            buffer.append(contentsOf: query.utf8)
+            buffer.append(ASCII.Code.questionMark)
+            for byte in query.utf8 { buffer.append(ASCII.Code(byte)) }
         }
 
         // Fragment
         if let fragment = url.fragment {
-            buffer.append(Byte.ascii.numberSign)
-            buffer.append(contentsOf: fragment.utf8)
+            buffer.append(ASCII.Code.numberSign)
+            for byte in fragment.utf8 { buffer.append(ASCII.Code(byte)) }
         }
     }
+}
 
+// MARK: - Parse (concrete reader — wrapped by WHATWG_URL.URL.Parser)
+
+extension WHATWG_URL.URL {
     /// Parse a URL from ASCII bytes
     ///
     /// Per WHATWG URL Standard Section 4.3: Basic URL Parser
     public init<Bytes: Collection>(
         ascii bytes: Bytes,
-        in context: Context
+        in context: ParsingContext
     ) throws(Error) where Bytes.Element == Byte {
         var url = Builder()
         var state = State.schemeStart
@@ -526,7 +533,10 @@ extension WHATWG_URL.URL {
 // MARK: - CustomStringConvertible
 
 extension WHATWG_URL.URL: CustomStringConvertible {
+    /// The canonical serialized URL text — the same the `ASCII.Serializable` verb
+    /// emits. Re-provided directly now that the retired deprecated ASCII-into-Byte
+    /// protocol no longer supplies the default.
     public var description: String {
-        String(ascii: self)
+        String(decoding: serialized, as: UTF8.self)
     }
 }

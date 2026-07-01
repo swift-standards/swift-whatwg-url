@@ -11,6 +11,7 @@
 // ===----------------------------------------------------------------------===//
 
 public import ASCII_Serializer_Primitives
+public import Parseable_ASCII_Primitives
 
 extension WHATWG_Form_URL_Encoded {
     /// A percent-encoded string per WHATWG URL Standard Section 5
@@ -74,32 +75,33 @@ extension WHATWG_Form_URL_Encoded {
     }
 }
 
-// MARK: - Binary.ASCII.Serializable Conformance
+// MARK: - ASCII.Serializable ([FAM-012] text sibling)
 
-extension WHATWG_Form_URL_Encoded.EncodedString: Binary.ASCII.Serializable {
-    /// Serialize the encoded string into an ASCII byte buffer
+extension WHATWG_Form_URL_Encoded.EncodedString: ASCII.Serializable {
+    /// Serializes the encoded string as its percent-encoded ASCII text.
     ///
-    /// Simply writes the UTF-8 bytes of the encoded string.
-    public static func serialize<Buffer: RangeReplaceableCollection>(
-        ascii instance: Self,
+    /// [FAM-012] text sibling — emits the typed text substrate `ASCII.Code`.
+    /// A percent-encoded string is **ASCII-only** (WHATWG §5 form encoding is an
+    /// ASCII text form); its byte view is a text projection, not a wire codec, so
+    /// there is no `Binary.Serializable` peer (clause-7).
+    public static func serialize<Buffer>(
+        _ instance: WHATWG_Form_URL_Encoded.EncodedString,
         into buffer: inout Buffer
-    ) where Buffer.Element == Byte {
-        buffer.append(contentsOf: instance.rawValue.utf8)
+    ) where Buffer: RangeReplaceableCollection, Buffer.Element == ASCII.Code {
+        for byte in instance.rawValue.utf8 { buffer.append(ASCII.Code(byte)) }
     }
+}
 
-    /// Parse from ASCII bytes
+// MARK: - ASCII.Parseable ([FAM-012] parse — free-standing init)
+
+extension WHATWG_Form_URL_Encoded.EncodedString: ASCII.Parseable {
+    /// Interprets ASCII bytes as an already percent-encoded string (unchecked).
     ///
-    /// The bytes are interpreted as a percent-encoded string.
-    /// No validation is performed - use `decoded()` to validate.
-    public init<Bytes: Collection>(
-        ascii bytes: Bytes,
-        in context: Void
-    ) throws(WHATWG_Form_URL_Encoded.PercentEncoding.Error) where Bytes.Element == Byte {
-        let string = String(decoding: bytes, as: UTF8.self)
-        self.init(__unchecked: string)
+    /// No validation is performed — use `decoded()` to validate. Total by
+    /// construction (an already-encoded string is accepted verbatim).
+    public init<Bytes: Collection>(ascii bytes: Bytes) where Bytes.Element == Byte {
+        self.init(__unchecked: String(decoding: bytes, as: UTF8.self))
     }
-
-    public typealias Error = WHATWG_Form_URL_Encoded.PercentEncoding.Error
 }
 
 // MARK: - ExpressibleByStringLiteral

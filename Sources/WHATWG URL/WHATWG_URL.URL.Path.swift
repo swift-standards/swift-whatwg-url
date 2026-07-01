@@ -26,29 +26,37 @@ extension WHATWG_URL.URL {
     }
 }
 
-extension WHATWG_URL.URL.Path: Binary.ASCII.Serializable {
+extension WHATWG_URL.URL.Path: ASCII.Serializable {
 
-    /// Serialize the path into an ASCII byte buffer
+    /// Serializes the path as ASCII text ([FAM-012] text sibling — `ASCII.Code`).
     ///
     /// Per WHATWG URL Standard Section 4.5:
     /// - Opaque: serialized as-is
     /// - List: "/" + segments joined by "/"
-    public static func serialize<Buffer: RangeReplaceableCollection>(
-        ascii path: Self,
+    ///
+    /// A path is **ASCII-only**: WHATWG serializes it to an ASCII string, not an
+    /// octet wire form, so there is no `Binary.Serializable` peer (clause-7).
+    public static func serialize<Buffer>(
+        _ path: WHATWG_URL.URL.Path,
         into buffer: inout Buffer
-    ) where Buffer.Element == Byte {
+    ) where Buffer: RangeReplaceableCollection, Buffer.Element == ASCII.Code {
         switch path {
         case .opaque(let segment):
-            buffer.append(contentsOf: segment.utf8)
+            for byte in segment.utf8 { buffer.append(ASCII.Code(byte)) }
 
         case .list(let segments):
             guard !segments.isEmpty else { return }
             for segment in segments {
-                buffer.append(Byte.ascii.slash)
-                buffer.append(contentsOf: segment.utf8)
+                buffer.append(ASCII.Code.solidus)
+                for byte in segment.utf8 { buffer.append(ASCII.Code(byte)) }
             }
         }
     }
+}
+
+// MARK: - Parse (concrete reader — wrapped by WHATWG_URL.URL.Path.Parser)
+
+extension WHATWG_URL.URL.Path {
 
     /// Parse a path from ASCII bytes
     ///
@@ -92,7 +100,12 @@ extension WHATWG_URL.URL.Path: Binary.ASCII.Serializable {
 
 // MARK: - CustomStringConvertible
 
-extension WHATWG_URL.URL.Path: CustomStringConvertible {}
+extension WHATWG_URL.URL.Path: CustomStringConvertible {
+    /// The path in its serialized text form — the same the `ASCII.Serializable`
+    /// verb emits. Re-provided directly now that the retired
+    /// deprecated ASCII-into-Byte protocol no longer supplies the default.
+    public var description: String { String(decoding: serialized, as: UTF8.self) }
+}
 
 extension WHATWG_URL.URL.Path {
     /// Returns an empty list path

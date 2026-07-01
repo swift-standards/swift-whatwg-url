@@ -18,6 +18,8 @@ extension Target.Dependency {
     static var incits41986: Self { .product(name: "ASCII Serializer Primitives", package: "swift-ascii-serializer-primitives") }
     static var asciiPrimitives: Self { .product(name: "ASCII Primitives", package: "swift-ascii-primitives") }
     static var binary: Self { .product(name: "Binary Primitives", package: "swift-binary-primitives") }
+    static var asciiParser: Self { .product(name: "Parseable ASCII Primitives", package: "swift-ascii-parser-primitives") }
+    static var byteParser: Self { .product(name: "Byte Parser Primitives", package: "swift-byte-parser-primitives") }
 }
 
 let package = Package(
@@ -49,7 +51,9 @@ let package = Package(
         .package(url: "https://github.com/swift-primitives/swift-ascii-serializer-primitives.git", branch: "main"),
         .package(url: "https://github.com/swift-primitives/swift-ascii-primitives.git", branch: "main"),
         .package(url: "https://github.com/swift-primitives/swift-binary-primitives.git", branch: "main"),
-        .package(url: "https://github.com/swift-primitives/swift-parser-primitives.git", branch: "main")
+        .package(url: "https://github.com/swift-primitives/swift-parser-primitives.git", branch: "main"),
+        .package(url: "https://github.com/swift-primitives/swift-ascii-parser-primitives.git", branch: "main"),
+        .package(url: "https://github.com/swift-primitives/swift-byte-parser-primitives.git", branch: "main")
     ],
     targets: [
         // Core URL implementation
@@ -64,7 +68,9 @@ let package = Package(
                 .incits41986,
                 .asciiPrimitives,
                 .binary,
-                .product(name: "Parser Primitives", package: "swift-parser-primitives")
+                .product(name: "Parser Primitives", package: "swift-parser-primitives"),
+                .asciiParser,
+                .byteParser
             ]
         ),
 
@@ -75,7 +81,8 @@ let package = Package(
                 .rfc4648,
                 .incits41986,
                 .asciiPrimitives,
-                .binary
+                .binary,
+                .asciiParser
             ]
         ),
 

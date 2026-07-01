@@ -11,6 +11,7 @@
 // ===----------------------------------------------------------------------===//
 
 public import ASCII_Serializer_Primitives
+public import Parseable_ASCII_Primitives
 
 extension WHATWG_URL.URL {
     /// A URL scheme per WHATWG URL Standard
@@ -106,28 +107,41 @@ extension WHATWG_URL.URL.Scheme {
     public static let wss = Self(__unchecked: (), value: "wss")
 }
 
-// MARK: - Binary.ASCII.Serializable
+// MARK: - ASCII.Serializable ([FAM-012] text sibling)
 
-extension WHATWG_URL.URL.Scheme: Binary.ASCII.Serializable {
-    /// Serialize the scheme into an ASCII byte buffer
-    public static func serialize<Buffer: RangeReplaceableCollection>(
-        ascii scheme: Self,
-        into buffer: inout Buffer
-    ) where Buffer.Element == Byte {
-        buffer.append(contentsOf: scheme.value.utf8)
-    }
-
-    /// Parse a scheme from ASCII bytes
+extension WHATWG_URL.URL.Scheme: ASCII.Serializable {
+    /// Serializes the scheme as its lowercase ASCII name (e.g. `http`).
     ///
-    /// Delegates to public throwing init per SAFE-1c pattern.
-    public init<Bytes: Collection>(
-        ascii bytes: Bytes,
-        in context: Void
-    ) throws(Error) where Bytes.Element == Byte {
+    /// [FAM-012] text sibling — emits the typed text substrate `ASCII.Code`.
+    /// A scheme is **ASCII-only**: the WHATWG URL Standard defines it as an ASCII
+    /// string, not an octet wire form, so there is no `Binary.Serializable` peer
+    /// (clause-7 — its byte view is a text projection, not a wire codec).
+    public static func serialize<Buffer>(
+        _ scheme: WHATWG_URL.URL.Scheme,
+        into buffer: inout Buffer
+    ) where Buffer: RangeReplaceableCollection, Buffer.Element == ASCII.Code {
+        for byte in scheme.value.utf8 { buffer.append(ASCII.Code(byte)) }
+    }
+}
+
+// MARK: - ASCII.Parseable ([FAM-012] parse — free-standing init)
+
+extension WHATWG_URL.URL.Scheme: ASCII.Parseable {
+    /// Parses a scheme from ASCII bytes, validating and normalizing to lowercase.
+    ///
+    /// Delegates to the validating `init(_:)`.
+    public init<Bytes: Collection>(ascii bytes: Bytes) throws(Error)
+    where Bytes.Element == Byte {
         try self.init(String(decoding: bytes, as: UTF8.self))
     }
 }
 
 // MARK: - CustomStringConvertible
 
-extension WHATWG_URL.URL.Scheme: CustomStringConvertible {}
+extension WHATWG_URL.URL.Scheme: CustomStringConvertible {
+    /// The lowercase scheme name — the same text the `ASCII.Serializable` verb emits.
+    ///
+    /// Re-provided directly now that the retired deprecated ASCII-into-Byte protocol no
+    /// longer supplies the default.
+    public var description: String { String(decoding: serialized, as: UTF8.self) }
+}
