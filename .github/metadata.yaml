@@ -1,6 +1,6 @@
 # .github/metadata.yaml
 # Triaged by AI-assisted bulk pass (2026-04-29).
-description: "Swift implementation of WHATWG URL Standard."
+description: "Swift implementation of WHATWG URL Living Standard."
 topics:
   - standards
   - whatwg
