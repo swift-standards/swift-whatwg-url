@@ -19,8 +19,8 @@
 // (context-bearing: URL/Host/Path). ASCII-only ⇒ parse∘serialize round-trips (no
 // ascii==wire equivalence — there is no `Binary.Serializable` peer to compare).
 
-import Domain_Standard
 import ASCII_Serializer_Primitives
+import Domain_Standard
 import RFC_791
 import Testing
 
@@ -90,7 +90,10 @@ struct WHATWGURLFAM012Tests {
         #expect(ascii(codes) == "[::1]")
 
         // A non-trivial address round-trips through the rfc-5952 canonical verb.
-        let host2 = try WHATWG_URL.URL.Host.parse(from: bytes("[2001:db8::1]"), parser: .init(.special))
+        let host2 = try WHATWG_URL.URL.Host.parse(
+            from: bytes("[2001:db8::1]"),
+            parser: .init(.special)
+        )
         var codes2: [ASCII.Code] = []
         WHATWG_URL.URL.Host.serialize(host2, into: &codes2)
         #expect(ascii(codes2) == "[2001:db8::1]")
@@ -98,9 +101,15 @@ struct WHATWGURLFAM012Tests {
 
     @Test func `Host parse witness threads the special-scheme context`() throws {
         // Special scheme → domain; non-special → opaque. The context lives on the witness.
-        let special = try WHATWG_URL.URL.Host.parse(from: bytes("example.com"), parser: .init(.special))
+        let special = try WHATWG_URL.URL.Host.parse(
+            from: bytes("example.com"),
+            parser: .init(.special)
+        )
         #expect(special == .domain(try Domain("example.com")))
-        let opaque = try WHATWG_URL.URL.Host.parse(from: bytes("example.com"), parser: .init(.nonSpecial))
+        let opaque = try WHATWG_URL.URL.Host.parse(
+            from: bytes("example.com"),
+            parser: .init(.nonSpecial)
+        )
         #expect(opaque == .opaque("example.com"))
     }
 
@@ -125,7 +134,10 @@ struct WHATWGURLFAM012Tests {
     }
 
     @Test func `Path opaque parse witness threads the isOpaque context`() throws {
-        let opaque = try WHATWG_URL.URL.Path.parse(from: bytes("opaque-data"), parser: .init(.opaque))
+        let opaque = try WHATWG_URL.URL.Path.parse(
+            from: bytes("opaque-data"),
+            parser: .init(.opaque)
+        )
         #expect(opaque == .opaque("opaque-data"))
     }
 

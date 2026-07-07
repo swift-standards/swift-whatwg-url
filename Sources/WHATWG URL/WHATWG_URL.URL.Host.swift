@@ -10,8 +10,8 @@
 //
 // ===----------------------------------------------------------------------===//
 
-public import Domain_Standard
 public import ASCII_Serializer_Primitives
+public import Domain_Standard
 public import RFC_5952
 public import RFC_791
 
@@ -124,7 +124,7 @@ extension WHATWG_URL.URL.Host {
         ascii bytes: Bytes,
         in context: Context
     ) throws(Error) where Bytes.Element == Byte {
-        let array = Array<Byte>(bytes)
+        let array = [Byte](bytes)
 
         // Empty host
         guard !array.isEmpty else {

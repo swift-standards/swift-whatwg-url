@@ -10,8 +10,8 @@
 //
 // ===----------------------------------------------------------------------===//
 
-import Domain_Standard
 public import ASCII_Serializer_Primitives
+import Domain_Standard
 import RFC_5952
 import RFC_791
 
@@ -181,18 +181,20 @@ extension WHATWG_URL.URL {
         var buffer = ""
         var atSignSeen = false
 
-        let array = Array<UInt8>(bytes)
+        let array = [UInt8](bytes)
 
         // Trim leading/trailing whitespace (space and horizontal tab)
         let horizontalTab: UInt8 = 0x09
         var startIndex = 0
         var endIndex = array.count
         while startIndex < endIndex
-            && (array[startIndex] == UInt8.ascii.sp || array[startIndex] == horizontalTab) {
+            && (array[startIndex] == UInt8.ascii.sp || array[startIndex] == horizontalTab)
+        {
             startIndex += 1
         }
         while endIndex > startIndex
-            && (array[endIndex - 1] == UInt8.ascii.sp || array[endIndex - 1] == horizontalTab) {
+            && (array[endIndex - 1] == UInt8.ascii.sp || array[endIndex - 1] == horizontalTab)
+        {
             endIndex -= 1
         }
 
@@ -227,7 +229,8 @@ extension WHATWG_URL.URL {
             case .scheme:
                 if let ch = c,
                     ch.ascii.isAlphanumeric || ch == UInt8.ascii.plus || ch == UInt8.ascii.hyphen
-                        || ch == UInt8.ascii.period {
+                        || ch == UInt8.ascii.period
+                {
                     buffer.append(Character(UnicodeScalar(ch)).lowercased())
                 } else if c == UInt8.ascii.colon {
                     do {
@@ -240,7 +243,8 @@ extension WHATWG_URL.URL {
                     if Scheme.isSpecial(url.scheme!) {
                         state = .specialAuthoritySlashes
                     } else if pointer + 1 < trimmed.count
-                        && trimmed[pointer + 1] == UInt8.ascii.slash {
+                        && trimmed[pointer + 1] == UInt8.ascii.slash
+                    {
                         state = .pathOrAuthority
                         pointer += 1
                     } else {
@@ -291,7 +295,8 @@ extension WHATWG_URL.URL {
 
             case .specialAuthoritySlashes:
                 if c == UInt8.ascii.slash && pointer + 1 < trimmed.count
-                    && trimmed[pointer + 1] == UInt8.ascii.slash {
+                    && trimmed[pointer + 1] == UInt8.ascii.slash
+                {
                     state = .authority
                     pointer += 1
                 } else {
@@ -327,7 +332,8 @@ extension WHATWG_URL.URL {
                     }
                     buffer = ""
                 } else if c == nil || c == UInt8.ascii.slash || c == UInt8.ascii.questionMark
-                    || c == UInt8.ascii.numberSign {
+                    || c == UInt8.ascii.numberSign
+                {
                     pointer -= buffer.count + 1
                     buffer = ""
                     state = .host
@@ -348,7 +354,8 @@ extension WHATWG_URL.URL {
                     // Only break on : if not inside brackets
                     if !insideBrackets
                         && (ch == UInt8.ascii.colon || ch == UInt8.ascii.slash
-                            || ch == UInt8.ascii.questionMark || ch == UInt8.ascii.numberSign) {
+                            || ch == UInt8.ascii.questionMark || ch == UInt8.ascii.numberSign)
+                    {
                         break
                     }
                     buffer.append(Character(UnicodeScalar(ch)))
@@ -358,7 +365,7 @@ extension WHATWG_URL.URL {
                 let isSpecial = Scheme.isSpecial(url.scheme!)
                 let hostContext = Host.Context(isSpecial: isSpecial)
                 do {
-                    url.host = try Host(ascii: Array<Byte>(buffer.utf8), in: hostContext)
+                    url.host = try Host(ascii: [Byte](buffer.utf8), in: hostContext)
                 } catch let hostError as Host.Error {
                     throw .invalidHost(hostError)
                 } catch {
@@ -400,7 +407,8 @@ extension WHATWG_URL.URL {
 
             case .path:
                 if c == nil || c == UInt8.ascii.slash || c == UInt8.ascii.questionMark
-                    || c == UInt8.ascii.numberSign {
+                    || c == UInt8.ascii.numberSign
+                {
                     if !buffer.isEmpty {
                         let decoded = WHATWG_URL.PercentEncoding.decode(buffer)
 

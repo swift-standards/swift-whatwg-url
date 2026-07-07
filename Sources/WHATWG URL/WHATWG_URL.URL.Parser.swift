@@ -13,8 +13,8 @@
 // WHATWG_URL.URL.Parser.swift
 // swift-whatwg-url
 
-public import Parser_Primitives
 public import Byte_Parser_Primitives
+public import Parser_Primitives
 
 extension WHATWG_URL.URL {
     /// Parser witness carrying the out-of-band parse CONTEXT a URL needs — the

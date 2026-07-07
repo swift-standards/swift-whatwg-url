@@ -42,8 +42,9 @@ extension WHATWG_URL.URL.Scheme.Parse: Parser.`Protocol` {
         // First byte must be ASCII alpha
         guard input.startIndex < input.endIndex else { throw .expectedAlpha }
         let first = input[input.startIndex]
-        guard (first >= 0x41 && first <= 0x5A)
-            || (first >= 0x61 && first <= 0x7A)
+        guard
+            (first >= 0x41 && first <= 0x5A)
+                || (first >= 0x61 && first <= 0x7A)
         else {
             throw .expectedAlpha
         }
@@ -52,7 +53,8 @@ extension WHATWG_URL.URL.Scheme.Parse: Parser.`Protocol` {
         // Subsequent: alpha / digit / "+" (0x2B) / "-" (0x2D) / "." (0x2E)
         while input.startIndex < input.endIndex {
             let byte = input[input.startIndex]
-            let valid = (byte >= 0x41 && byte <= 0x5A)
+            let valid =
+                (byte >= 0x41 && byte <= 0x5A)
                 || (byte >= 0x61 && byte <= 0x7A)
                 || (byte >= 0x30 && byte <= 0x39)
                 || byte == 0x2B || byte == 0x2D || byte == 0x2E
