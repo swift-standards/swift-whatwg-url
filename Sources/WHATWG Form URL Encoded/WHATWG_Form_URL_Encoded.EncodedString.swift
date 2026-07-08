@@ -58,20 +58,22 @@ extension WHATWG_Form_URL_Encoded {
         public init(encoding string: String, spaceAsPlus: Bool = true) {
             self.rawValue = PercentEncoding.encode(string, spaceAsPlus: spaceAsPlus)
         }
+    }
+}
 
-        /// Decodes to a plain string
-        ///
-        /// - Parameter plusAsSpace: If true, '+' decoded as space (0x20)
-        /// - Returns: The decoded string
-        /// - Throws: `PercentEncoding.Error` if the encoding is invalid
-        public func decoded(plusAsSpace: Bool = true) throws(PercentEncoding.Error) -> String {
-            try PercentEncoding.decode(rawValue, plusAsSpace: plusAsSpace)
-        }
+extension WHATWG_Form_URL_Encoded.EncodedString {
+    /// Decodes to a plain string
+    ///
+    /// - Parameter plusAsSpace: If true, '+' decoded as space (0x20)
+    /// - Returns: The decoded string
+    /// - Throws: `PercentEncoding.Error` if the encoding is invalid
+    public func decoded(plusAsSpace: Bool = true) throws(WHATWG_Form_URL_Encoded.PercentEncoding.Error) -> String {
+        try WHATWG_Form_URL_Encoded.PercentEncoding.decode(rawValue, plusAsSpace: plusAsSpace)
+    }
 
-        /// The percent-encoded string value
-        public var description: String {
-            rawValue
-        }
+    /// The percent-encoded string value
+    public var description: String {
+        rawValue
     }
 }
 

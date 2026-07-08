@@ -56,13 +56,15 @@ extension WHATWG_URL.URL.Host {
         public init(isSpecial: Bool) {
             self.isSpecial = isSpecial
         }
-
-        /// Context for special scheme URLs (http, https, etc.)
-        public static let special = Context(isSpecial: true)
-
-        /// Context for non-special scheme URLs
-        public static let nonSpecial = Context(isSpecial: false)
     }
+}
+
+extension WHATWG_URL.URL.Host.Context {
+    /// Context for special scheme URLs (http, https, etc.)
+    public static let special = WHATWG_URL.URL.Host.Context(isSpecial: true)
+
+    /// Context for non-special scheme URLs
+    public static let nonSpecial = WHATWG_URL.URL.Host.Context(isSpecial: false)
 }
 
 // MARK: - ASCII.Serializable ([FAM-012] text sibling)

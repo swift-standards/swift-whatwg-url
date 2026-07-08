@@ -41,11 +41,6 @@ extension WHATWG_URL.URL.Host {
     /// concrete reader body is preserved in `WHATWG_URL.URL.Host.init(ascii:in:)`,
     /// which this witness's `parse` drains the cursor into and delegates to.
     public struct Parser: Parser_Primitives.Parser.`Protocol`, Sendable {
-        public typealias Input = Byte.Input
-        public typealias Output = WHATWG_URL.URL.Host
-        public typealias Failure = WHATWG_URL.URL.Host.Error
-        public typealias Body = Never
-
         /// The parse context (special vs. non-special scheme).
         public let context: WHATWG_URL.URL.Host.Context
 
@@ -53,22 +48,29 @@ extension WHATWG_URL.URL.Host {
         public init(_ context: WHATWG_URL.URL.Host.Context) {
             self.context = context
         }
+    }
+}
 
-        /// Parses a host from the byte cursor `input`, consuming it.
-        ///
-        /// [FAM-012] `Parser.`Protocol`` cursor-form leaf: drains the whole byte
-        /// cursor (host is a whole-buffer grammar) and runs the concrete reader with
-        /// this witness's stored `context`.
-        public borrowing func parse(
-            _ input: inout Byte.Input
-        ) throws(WHATWG_URL.URL.Host.Error) -> WHATWG_URL.URL.Host {
-            var bytes: [Byte] = []
-            while !input.isEmpty {
-                guard let byte = try? input.advance() else { break }
-                bytes.append(byte)
-            }
-            return try WHATWG_URL.URL.Host(ascii: bytes, in: context)
+extension WHATWG_URL.URL.Host.Parser {
+    public typealias Input = Byte.Input
+    public typealias Output = WHATWG_URL.URL.Host
+    public typealias Failure = WHATWG_URL.URL.Host.Error
+    public typealias Body = Never
+
+    /// Parses a host from the byte cursor `input`, consuming it.
+    ///
+    /// [FAM-012] `Parser.`Protocol`` cursor-form leaf: drains the whole byte
+    /// cursor (host is a whole-buffer grammar) and runs the concrete reader with
+    /// this witness's stored `context`.
+    public borrowing func parse(
+        _ input: inout Byte.Input
+    ) throws(WHATWG_URL.URL.Host.Error) -> WHATWG_URL.URL.Host {
+        var bytes: [Byte] = []
+        while !input.isEmpty {
+            guard let byte = try? input.advance() else { break }
+            bytes.append(byte)
         }
+        return try WHATWG_URL.URL.Host(ascii: bytes, in: context)
     }
 }
 

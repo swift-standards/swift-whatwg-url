@@ -26,10 +26,12 @@ extension WHATWG_URL.URL {
         public init(base: WHATWG_URL.URL? = nil) {
             self.base = base
         }
-
-        /// Context without a base URL
-        public static let none = ParsingContext(base: nil)
     }
+}
+
+extension WHATWG_URL.URL.ParsingContext {
+    /// Context without a base URL
+    public static let none = WHATWG_URL.URL.ParsingContext(base: nil)
 }
 
 // MARK: - Parser State Machine
@@ -63,45 +65,47 @@ extension WHATWG_URL.URL {
         var path: Path = .list([])
         var query: String?
         var fragment: String?
+    }
+}
 
-        mutating func pushPathSegment(_ segment: String) {
-            switch path {
-            case .list(var segments):
-                segments.append(segment)
-                path = .list(segments)
-            case .opaque:
-                break
+extension WHATWG_URL.URL.Builder {
+    mutating func pushPathSegment(_ segment: String) {
+        switch path {
+        case .list(var segments):
+            segments.append(segment)
+            path = .list(segments)
+        case .opaque:
+            break
+        }
+    }
+
+    mutating func popPathSegment() {
+        switch path {
+        case .list(var segments):
+            if !segments.isEmpty {
+                segments.removeLast()
             }
+            path = .list(segments)
+        case .opaque:
+            break
+        }
+    }
+
+    func build() throws(WHATWG_URL.URL.Error) -> WHATWG_URL.URL {
+        guard let scheme = scheme else {
+            throw .invalidScheme("")
         }
 
-        mutating func popPathSegment() {
-            switch path {
-            case .list(var segments):
-                if !segments.isEmpty {
-                    segments.removeLast()
-                }
-                path = .list(segments)
-            case .opaque:
-                break
-            }
-        }
-
-        func build() throws(Error) -> WHATWG_URL.URL {
-            guard let scheme = scheme else {
-                throw .invalidScheme("")
-            }
-
-            return WHATWG_URL.URL(
-                scheme: scheme,
-                username: username,
-                password: password,
-                host: host,
-                port: port,
-                path: path,
-                query: query,
-                fragment: fragment
-            )
-        }
+        return WHATWG_URL.URL(
+            scheme: scheme,
+            username: username,
+            password: password,
+            host: host,
+            port: port,
+            path: path,
+            query: query,
+            fragment: fragment
+        )
     }
 }
 
