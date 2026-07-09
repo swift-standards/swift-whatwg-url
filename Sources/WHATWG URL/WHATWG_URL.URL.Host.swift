@@ -169,7 +169,7 @@ extension WHATWG_URL.URL.Host {
             }
 
             // Try parsing as domain
-            do {
+            do throws(Domain_Standard.Domain.Error) {
                 let domain = try Domain_Standard.Domain(hostString)
                 self = .domain(domain)
             } catch {

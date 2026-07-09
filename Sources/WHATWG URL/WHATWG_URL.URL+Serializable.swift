@@ -237,7 +237,7 @@ extension WHATWG_URL.URL {
                 {
                     buffer.append(Character(UnicodeScalar(ch)).lowercased())
                 } else if c == UInt8.ascii.colon {
-                    do {
+                    do throws(Scheme.Error) {
                         url.scheme = try Scheme(buffer)
                     } catch {
                         throw .invalidScheme(buffer)
@@ -534,7 +534,7 @@ extension WHATWG_URL.URL {
     /// - Parameter base: Optional base URL for relative URL resolution
     /// - Returns: Parsed URL, or nil if invalid
     public init?(parsing string: some StringProtocol, base: WHATWG_URL.URL? = nil) {
-        do {
+        do throws(Error) {
             try self.init(string, base: base)
         } catch {
             return nil
