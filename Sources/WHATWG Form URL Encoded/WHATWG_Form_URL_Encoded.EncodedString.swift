@@ -67,7 +67,9 @@ extension WHATWG_Form_URL_Encoded.EncodedString {
     /// - Parameter plusAsSpace: If true, '+' decoded as space (0x20)
     /// - Returns: The decoded string
     /// - Throws: `PercentEncoding.Error` if the encoding is invalid
-    public func decoded(plusAsSpace: Bool = true) throws(WHATWG_Form_URL_Encoded.PercentEncoding.Error) -> String {
+    public func decoded(
+        plusAsSpace: Bool = true
+    ) throws(WHATWG_Form_URL_Encoded.PercentEncoding.Error) -> String {
         try WHATWG_Form_URL_Encoded.PercentEncoding.decode(rawValue, plusAsSpace: plusAsSpace)
     }
 
