@@ -47,7 +47,8 @@ extension WHATWG_URL.URL {
 
             let href = url.href
             #expect(
-                href.value == "https://user:pass@example.com:8080/path/to/resource?key=value#section"
+                href.value
+                    == "https://user:pass@example.com:8080/path/to/resource?key=value#section"
             )
         }
 
@@ -92,7 +93,9 @@ extension WHATWG_URL.URL {
 
         @Test
         func `WHATWG_URL.URL.SearchParams parsing`() throws {
-            let params = WHATWG_URL.URL.SearchParams("name=John+Doe&email=john%40example.com&age=30")
+            let params = WHATWG_URL.URL.SearchParams(
+                "name=John+Doe&email=john%40example.com&age=30"
+            )
 
             #expect(params.get("name") == "John Doe")
             #expect(params.get("email") == "john@example.com")
