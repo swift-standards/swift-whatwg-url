@@ -1,5 +1,7 @@
 # swift-whatwg-url
 
+![Development Status](https://img.shields.io/badge/status-active--development-blue.svg)
+
 WHATWG URL Living Standard implementation in Swift.
 
 ## Overview
