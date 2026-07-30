@@ -525,7 +525,7 @@ extension WHATWG_URL.URL {
     /// - Parameter base: Optional base URL for relative URL resolution
     /// - Throws: `Error` if the string is not a valid URL
     public init(_ string: some StringProtocol, base: WHATWG_URL.URL? = nil) throws(Error) {
-        try self.init(ascii: Array(string.utf8), in: ParsingContext(base: base))
+        try self.init(ascii: [Byte](string.utf8), in: ParsingContext(base: base))
     }
 
     /// Parse a URL from a string, returning nil on failure

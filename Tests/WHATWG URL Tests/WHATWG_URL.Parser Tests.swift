@@ -17,6 +17,25 @@ struct `WHATWG_URL.URL Tests` {
     @Suite
     struct `URL - Absolute URLs` {
         @Test
+        func `string initializer converts UTF-8 bytes to Byte and parses`() throws {
+            // Regression for the string convenience initializer's byte
+            // conversion: its UTF-8 bytes must reach the ASCII initializer as
+            // the package's `Byte` element type, matching the sibling
+            // `Host(ascii:)` path.
+            let url = try WHATWG_URL.URL("https://user:pass@example.com:8443/a/b?q=1#frag")
+            #expect(url.scheme.value == "https")
+            #expect(url.host == .domain(try Domain_Standard.Domain("example.com")))
+            #expect(url.port == 8443)
+            #expect(url.path == .list(["a", "b"]))
+            #expect(url.query == "q=1")
+            #expect(url.fragment == "frag")
+
+            let substring: Substring = "http://example.org/x"[...]
+            let fromSubstring = try WHATWG_URL.URL(substring)
+            #expect(fromSubstring.host == .domain(try Domain_Standard.Domain("example.org")))
+        }
+
+        @Test
         func `parse simple HTTP URL`() throws {
             let url = try WHATWG_URL.URL("http://example.com")
             #expect(url.scheme.value == "http")
