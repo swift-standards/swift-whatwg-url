@@ -8,7 +8,7 @@ WHATWG URL Living Standard implementation in Swift.
 
 This package implements the [WHATWG URL Living Standard](https://url.spec.whatwg.org/), providing:
 
-- **WHATWG URL**: Full URL parsing, serialization, and manipulation (planned)
+- **WHATWG URL**: URL parsing, serialization, and component access through the standard's state-machine parser — `WHATWG_URL.parse(_:)` returns a `WHATWG_URL.URL` with `scheme`, `username`, `password`, `host` (domain, IPv4, IPv6, opaque, or empty, including IDNA), `port`, `path`, `query`, `fragment`, and an `href` serialization.
 - **WHATWG Form URL Encoded**: Section 5 - `application/x-www-form-urlencoded` encoding and decoding
 
 The WHATWG URL Standard defines the precise character set and encoding rules for URL form encoding, which differs from Foundation's URL encoding in key ways:
@@ -35,7 +35,7 @@ Then add the dependency to your target:
 .target(
     name: "YourTarget",
     dependencies: [
-        // For full URL support (planned)
+        // For URL parsing, serialization, and component access
         .product(name: "WHATWG URL", package: "swift-whatwg-url"),
 
         // Or just for form URL encoding
@@ -45,6 +45,23 @@ Then add the dependency to your target:
 ```
 
 ## Usage
+
+### WHATWG URL
+
+```swift
+import WHATWG_URL
+
+let url = try WHATWG_URL.parse("https://example.com:8080/path?query=value#fragment")
+
+url.scheme      // "https"
+url.host        // Optional(.domain("example.com"))
+url.port        // Optional(8080)
+url.path        // .list(["path"])
+url.query       // Optional("query=value")
+url.fragment    // Optional("fragment")
+
+let urlString = url.href  // "https://example.com:8080/path?query=value#fragment"
+```
 
 ### WHATWG Form URL Encoded
 
