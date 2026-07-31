@@ -45,7 +45,7 @@ extension WHATWG_Form_URL_Encoded.PercentEncoding {
     /// ```
     public static func encode(
         _ string: String,
-        space: SpaceEncoding = .plus
+        space: WHATWG_Form_URL_Encoded.SpaceEncoding = .plus
     ) -> String {
         var result = ""
 
@@ -106,7 +106,7 @@ extension WHATWG_Form_URL_Encoded.PercentEncoding {
     /// ```
     public static func decode(
         _ string: String,
-        space: SpaceEncoding = .plus
+        space: WHATWG_Form_URL_Encoded.SpaceEncoding = .plus
     ) throws(Error) -> String {
         var bytes: [UInt8] = []
         var index = string.startIndex
@@ -156,7 +156,10 @@ extension WHATWG_Form_URL_Encoded.PercentEncoding {
     ///   - string: Percent-encoded string to decode
     ///   - space: How `+` decodes — `.plus` for space (0x20), `.percentEscaped` to leave it as '+'
     /// - Returns: Decoded string, or nil if invalid percent encoding
-    public static func decodeOrNil(_ string: String, space: SpaceEncoding = .plus) -> String? {
+    public static func decodeOrNil(
+        _ string: String,
+        space: WHATWG_Form_URL_Encoded.SpaceEncoding = .plus
+    ) -> String? {
         do throws(Error) {
             return try decode(string, space: space)
         } catch {
