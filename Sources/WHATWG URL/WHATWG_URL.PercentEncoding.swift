@@ -123,4 +123,3 @@ extension WHATWG_URL.PercentEncoding {
         return result
     }
 }
-

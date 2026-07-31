@@ -30,6 +30,7 @@ extension WHATWG_URL.URL.Builder {
         case .list(var segments):
             segments.append(segment)
             path = .list(segments)
+
         case .opaque:
             break
         }
@@ -42,13 +43,14 @@ extension WHATWG_URL.URL.Builder {
                 segments.removeLast()
             }
             path = .list(segments)
+
         case .opaque:
             break
         }
     }
 
     func build() throws(WHATWG_URL.URL.Error) -> WHATWG_URL.URL {
-        guard let scheme = scheme else {
+        guard let scheme else {
             throw .invalidScheme("")
         }
 

@@ -46,4 +46,3 @@ extension WHATWG_URL.URL {
         case missingSchemeSeparator
     }
 }
-

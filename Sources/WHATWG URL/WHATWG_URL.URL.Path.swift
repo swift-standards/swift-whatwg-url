@@ -123,6 +123,7 @@ extension WHATWG_URL.URL.Path {
         switch self {
         case .opaque(let segment):
             return segment.isEmpty
+
         case .list(let segments):
             return segments.isEmpty
         }

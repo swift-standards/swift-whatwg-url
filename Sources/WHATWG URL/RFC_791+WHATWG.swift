@@ -89,15 +89,19 @@ extension RFC_791.IPv4.Address {
         switch numbers.count {
         case 1:
             address = numbers[0]
+
         case 2:
             guard numbers[1] < (1 << 24) else { return nil }
             address = (numbers[0] << 24) | numbers[1]
+
         case 3:
             guard numbers[2] < (1 << 16) else { return nil }
             address = (numbers[0] << 24) | (numbers[1] << 16) | numbers[2]
+
         case 4:
             guard numbers[3] < 256 else { return nil }
             address = (numbers[0] << 24) | (numbers[1] << 16) | (numbers[2] << 8) | numbers[3]
+
         default:
             return nil
         }

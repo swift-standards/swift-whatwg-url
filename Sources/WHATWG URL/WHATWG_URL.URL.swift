@@ -162,7 +162,7 @@ extension WHATWG_URL.URL {
     /// underlying percent-encoded query string, not a stored representation.
     public var searchParams: Search.Params {
         get {
-            if let query = query {
+            if let query {
                 return Search.Params(query)
             }
             return Search.Params()
@@ -250,11 +250,11 @@ extension WHATWG_URL.URL {
 
         var output = scheme.value + "://"
 
-        if let host = host {
+        if let host {
             output += host.description
         }
 
-        if let port = port, Scheme.defaultPort(for: scheme) != port {
+        if let port, Scheme.defaultPort(for: scheme) != port {
             output += ":" + String(port)
         }
 

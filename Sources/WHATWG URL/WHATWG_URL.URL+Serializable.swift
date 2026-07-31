@@ -291,7 +291,8 @@ extension WHATWG_URL.URL {
                     pointer += 1
                 }
 
-                let hostContext: Host.Context = Scheme.isSpecial(url.scheme!) ? .special : .nonSpecial
+                let hostContext: Host.Context =
+                    Scheme.isSpecial(url.scheme!) ? .special : .nonSpecial
                 do throws(Host.Error) {
                     url.host = try Host(ascii: [Byte](buffer.utf8), in: hostContext)
                 } catch {

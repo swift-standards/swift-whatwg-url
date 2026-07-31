@@ -95,7 +95,7 @@ extension WHATWG_URL.URL.Scheme {
 
     /// Returns the default port for a scheme, or nil if not special or has no default port
     public static func defaultPort(for scheme: Self) -> UInt16? {
-        specialSchemes[scheme.value] ?? nil
+        specialSchemes[scheme.value]
     }
 }
 
