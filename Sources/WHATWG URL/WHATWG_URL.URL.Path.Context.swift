@@ -8,13 +8,6 @@
 extension WHATWG_URL.URL.Path {
     /// Context for parsing a path
     public struct Context: Sendable {
-        /// Whether this is a segment list (special scheme) or an opaque path
-        /// (non-special scheme).
-        public enum Kind: Sendable, Hashable {
-            case list
-            case opaque
-        }
-
         public let kind: Kind
 
         public init(_ kind: Kind = .list) {

@@ -16,15 +16,6 @@ extension WHATWG_URL.URL.Host {
     /// Per WHATWG URL Standard, host parsing behavior differs based on whether
     /// the URL has a "special" scheme (http, https, ftp, file, ws, wss).
     public struct Context: Sendable {
-        /// Whether this host is for a special scheme URL
-        ///
-        /// Special schemes parse hosts as domains (with IDNA).
-        /// Non-special schemes parse hosts as opaque strings.
-        public enum Kind: Sendable, Hashable {
-            case special
-            case nonSpecial
-        }
-
         public let kind: Kind
 
         public init(_ kind: Kind) {
