@@ -76,8 +76,8 @@ extension RFC_4291.IPv6.Address {
 
         if let compIdx = compressionIndex {
             // Parse before compression
-            for i in 0..<compIdx {
-                guard let piece = UInt16(parts[i], radix: 16), parts[i].count <= 4 else {
+            for part in parts[0..<compIdx] {
+                guard let piece = UInt16(part, radix: 16), part.count <= 4 else {
                     return nil
                 }
                 beforeCompression.append(piece)
@@ -85,14 +85,14 @@ extension RFC_4291.IPv6.Address {
 
             // Parse after compression (skip consecutive empty parts)
             var skipEmpty = true
-            for i in (compIdx + 1)..<parts.count {
-                if parts[i].isEmpty && skipEmpty {
+            for part in parts[(compIdx + 1)...] {
+                if part.isEmpty && skipEmpty {
                     continue
                 }
                 skipEmpty = false
 
-                guard !parts[i].isEmpty else { return nil }
-                guard let piece = UInt16(parts[i], radix: 16), parts[i].count <= 4 else {
+                guard !part.isEmpty else { return nil }
+                guard let piece = UInt16(part, radix: 16), part.count <= 4 else {
                     return nil
                 }
                 afterCompression.append(piece)

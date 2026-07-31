@@ -63,13 +63,13 @@ extension WHATWG_URL.URL.Path {
     /// Per WHATWG URL Standard:
     /// - Opaque paths: no normalization
     /// - List paths: split on "/", normalize "." and ".."
-    public init<Bytes: Collection>(
+    public init<Bytes: Swift.Collection>(
         ascii bytes: Bytes,
         in context: WHATWG_URL.URL.Path.Context
     ) throws(Error) where Bytes.Element == Byte {
         let input = String(decoding: bytes, as: UTF8.self)
 
-        if context.isOpaque {
+        if context.kind == .opaque {
             // Opaque path: percent-decode
             let decoded = WHATWG_URL.PercentEncoding.decode(input)
             self = .opaque(decoded)

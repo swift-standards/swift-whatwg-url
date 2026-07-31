@@ -40,20 +40,20 @@ extension WHATWG_Form_URL_Encoded.FormURLEncodedBytes {
     ///
     /// Defers to authoritative implementation in `WHATWG_Form_URL_Encoded.PercentEncoding`.
     ///
-    /// - Parameter spaceAsPlus: If true, space encoded as '+', otherwise '%20'
+    /// - Parameter space: How space encodes — `.plus` for '+', `.percentEscaped` for '%20'
     /// - Returns: Percent-encoded string
     @inlinable
-    public func encoded(spaceAsPlus: Bool = true) -> String {
+    public func encoded(space: WHATWG_Form_URL_Encoded.SpaceEncoding = .plus) -> String {
         WHATWG_Form_URL_Encoded.PercentEncoding.encode(
             String(decoding: self.bytes, as: UTF8.self),
-            spaceAsPlus: spaceAsPlus
+            space: space
         )
     }
 
     /// Percent-encodes bytes to a string (call syntax)
     @inlinable
-    public func callAsFunction(spaceAsPlus: Bool = true) -> String {
-        encoded(spaceAsPlus: spaceAsPlus)
+    public func callAsFunction(space: WHATWG_Form_URL_Encoded.SpaceEncoding = .plus) -> String {
+        encoded(space: space)
     }
 }
 
@@ -64,7 +64,7 @@ extension [UInt8] {
     ///
     /// - Parameters:
     ///   - formURLEncoded: Percent-encoded string to decode
-    ///   - plusAsSpace: If true, '+' decoded as space (0x20)
+    ///   - space: How `+` decodes — `.plus` for space (0x20), `.percentEscaped` to leave it as '+'
     /// - Returns: Decoded bytes, or nil if invalid percent encoding
     ///
     /// ## Example
@@ -74,8 +74,11 @@ extension [UInt8] {
     /// // Result: Optional([72, 101, 108, 108, 111, 32, 33])
     /// ```
     @inlinable
-    public init?(formURLDecoding string: some StringProtocol, plusAsSpace: Bool = true) {
-        guard let decoded = Self.formURLEncoded.decode(string, plusAsSpace: plusAsSpace) else {
+    public init?(
+        formURLDecoding string: some StringProtocol,
+        space: WHATWG_Form_URL_Encoded.SpaceEncoding = .plus
+    ) {
+        guard let decoded = Self.formURLEncoded.decode(string, space: space) else {
             return nil
         }
         self = decoded
@@ -89,14 +92,17 @@ extension WHATWG_Form_URL_Encoded.FormURLEncodedBytes {
     ///
     /// - Parameters:
     ///   - string: Percent-encoded string to decode
-    ///   - plusAsSpace: If true, '+' decoded as space
+    ///   - space: How `+` decodes — `.plus` for space, `.percentEscaped` to leave it as '+'
     /// - Returns: Decoded bytes, or nil if invalid
     @inlinable
-    public static func decode(_ string: some StringProtocol, plusAsSpace: Bool = true) -> [UInt8]? {
+    public static func decode(
+        _ string: some StringProtocol,
+        space: WHATWG_Form_URL_Encoded.SpaceEncoding = .plus
+    ) -> [UInt8]? {
         guard
             let decoded = WHATWG_Form_URL_Encoded.PercentEncoding.decodeOrNil(
                 String(string),
-                plusAsSpace: plusAsSpace
+                space: space
             )
         else {
             return nil

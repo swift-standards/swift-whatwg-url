@@ -168,7 +168,7 @@ extension WHATWG_URL.URL {
             return Search.Params()
         }
         set {
-            let serialized = newValue.toString()
+            let serialized = String(newValue)
             query = serialized.isEmpty ? nil : serialized
         }
     }

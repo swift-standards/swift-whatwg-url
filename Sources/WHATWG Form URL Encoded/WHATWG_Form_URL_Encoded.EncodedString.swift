@@ -54,9 +54,9 @@ extension WHATWG_Form_URL_Encoded {
         ///
         /// - Parameters:
         ///   - string: The plain string to encode
-        ///   - spaceAsPlus: If true, space encoded as '+', otherwise '%20'
-        public init(encoding string: String, spaceAsPlus: Bool = true) {
-            self.rawValue = PercentEncoding.encode(string, spaceAsPlus: spaceAsPlus)
+        ///   - space: How space encodes — `.plus` for '+', `.percentEscaped` for '%20'
+        public init(encoding string: String, space: SpaceEncoding = .plus) {
+            self.rawValue = PercentEncoding.encode(string, space: space)
         }
     }
 }
@@ -64,13 +64,13 @@ extension WHATWG_Form_URL_Encoded {
 extension WHATWG_Form_URL_Encoded.EncodedString {
     /// Decodes to a plain string
     ///
-    /// - Parameter plusAsSpace: If true, '+' decoded as space (0x20)
+    /// - Parameter space: How `+` decodes — `.plus` for space (0x20), `.percentEscaped` to leave it as '+'
     /// - Returns: The decoded string
     /// - Throws: `PercentEncoding.Error` if the encoding is invalid
     public func decoded(
-        plusAsSpace: Bool = true
+        space: WHATWG_Form_URL_Encoded.SpaceEncoding = .plus
     ) throws(WHATWG_Form_URL_Encoded.PercentEncoding.Error) -> String {
-        try WHATWG_Form_URL_Encoded.PercentEncoding.decode(rawValue, plusAsSpace: plusAsSpace)
+        try WHATWG_Form_URL_Encoded.PercentEncoding.decode(rawValue, space: space)
     }
 
     /// The percent-encoded string value
@@ -92,6 +92,11 @@ extension WHATWG_Form_URL_Encoded.EncodedString: ASCII.Serializable {
         _ instance: WHATWG_Form_URL_Encoded.EncodedString,
         into buffer: inout Buffer
     ) where Buffer: RangeReplaceableCollection, Buffer.Element == ASCII.Code {
+        // swift-linter:disable:next raw value access
+        // REASON: EncodedString's own ASCII.Serializable conformance — same-package
+        // implementation reading its own wrapped value at the type's boundary.
+        // swift-linter:disable:next chained rawvalue access
+        // REASON: typed-system bottom-out — the wrapper's own text-serialization boundary.
         for byte in instance.rawValue.utf8 { buffer.append(ASCII.Code(byte)) }
     }
 }
@@ -103,7 +108,10 @@ extension WHATWG_Form_URL_Encoded.EncodedString: ASCII.Parseable {
     ///
     /// No validation is performed — use `decoded()` to validate. Total by
     /// construction (an already-encoded string is accepted verbatim).
-    public init<Bytes: Collection>(ascii bytes: Bytes) where Bytes.Element == Byte {
+    public init<Bytes: Swift.Collection>(ascii bytes: Bytes) where Bytes.Element == Byte {
+        // swift-linter:disable:next unchecked call site
+        // REASON: extension-init internals — same-package construction of the wrapper's
+        // own boundary, permitted use per [CONV-001].
         self.init(__unchecked: String(decoding: bytes, as: UTF8.self))
     }
 }
@@ -116,6 +124,9 @@ extension WHATWG_Form_URL_Encoded.EncodedString: ExpressibleByStringLiteral {
     /// The literal is treated as an already-encoded string (unchecked).
     /// Use `EncodedString(encoding:)` to encode a plain string.
     public init(stringLiteral value: String) {
+        // swift-linter:disable:next unchecked call site
+        // REASON: extension-init internals — same-package construction of the wrapper's
+        // own boundary, permitted use per [CONV-001].
         self.init(__unchecked: value)
     }
 }

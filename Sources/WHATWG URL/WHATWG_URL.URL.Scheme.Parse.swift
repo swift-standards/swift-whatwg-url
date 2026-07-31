@@ -26,14 +26,12 @@ extension WHATWG_URL.URL.Scheme.Parse {
     /// Raw scheme bytes (excluding the trailing colon).
     public typealias Output = Input
 
-    public enum Error: Swift.Error, Sendable, Equatable {
-        case expectedAlpha
-        case expectedColon
-    }
+    public typealias Error = __WHATWGURLSchemeParseError
 }
 
 extension WHATWG_URL.URL.Scheme.Parse: Parser.`Protocol` {
-    public typealias Failure = WHATWG_URL.URL.Scheme.Parse<Input>.Error
+    public typealias Failure = __WHATWGURLSchemeParseError
+    public typealias Body = Never
 
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Output {

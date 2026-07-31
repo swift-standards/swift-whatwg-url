@@ -46,8 +46,8 @@ extension WHATWG_Form_URL_Encoded {
     public static func serialize(_ pairs: [(String, String)]) -> String {
         pairs
             .map { name, value in
-                let encodedName = PercentEncoding.encode(name, spaceAsPlus: true)
-                let encodedValue = PercentEncoding.encode(value, spaceAsPlus: true)
+                let encodedName = PercentEncoding.encode(name, space: .plus)
+                let encodedValue = PercentEncoding.encode(value, space: .plus)
                 return "\(encodedName)=\(encodedValue)"
             }
             .joined(separator: "&")
@@ -87,8 +87,8 @@ extension WHATWG_Form_URL_Encoded {
                 let name = String(components[0])
                 let value = components.count > 1 ? String(components[1]) : ""
 
-                guard let decodedName = PercentEncoding.decodeOrNil(name, plusAsSpace: true),
-                    let decodedValue = PercentEncoding.decodeOrNil(value, plusAsSpace: true)
+                guard let decodedName = PercentEncoding.decodeOrNil(name, space: .plus),
+                    let decodedValue = PercentEncoding.decodeOrNil(value, space: .plus)
                 else {
                     return nil
                 }

@@ -52,9 +52,6 @@ extension WHATWG_URL.URL {
 }
 
 extension WHATWG_URL.URL.Parser {
-    public typealias Input = Byte.Input
-    public typealias Output = WHATWG_URL.URL
-    public typealias Failure = WHATWG_URL.URL.Error
     public typealias Body = Never
 
     /// Parses a URL from the byte cursor `input`, consuming it.
@@ -66,8 +63,7 @@ extension WHATWG_URL.URL.Parser {
         _ input: inout Byte.Input
     ) throws(WHATWG_URL.URL.Error) -> WHATWG_URL.URL {
         var bytes: [Byte] = []
-        while !input.isEmpty {
-            guard let byte = try? input.advance() else { break }
+        while let byte = input.next() {
             bytes.append(byte)
         }
         return try WHATWG_URL.URL(ascii: bytes, in: context)

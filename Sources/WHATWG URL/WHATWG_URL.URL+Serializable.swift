@@ -34,81 +34,6 @@ extension WHATWG_URL.URL.ParsingContext {
     public static let none = WHATWG_URL.URL.ParsingContext(base: nil)
 }
 
-// MARK: - Parser State Machine
-
-extension WHATWG_URL.URL {
-    /// Parser states for the URL parsing state machine
-    fileprivate enum State {
-        case schemeStart
-        case scheme
-        case noScheme
-        case specialAuthoritySlashes
-        case pathOrAuthority
-        case authority
-        case host
-        case port
-        case pathStart
-        case path
-        case relativePath
-        case opaquePath
-        case query
-        case fragment
-    }
-
-    /// Internal builder for constructing URLs during parsing
-    fileprivate struct Builder {
-        var scheme: Scheme?
-        var username: String = ""
-        var password: String = ""
-        var host: Host?
-        var port: UInt16?
-        var path: Path = .list([])
-        var query: String?
-        var fragment: String?
-    }
-}
-
-extension WHATWG_URL.URL.Builder {
-    mutating func pushPathSegment(_ segment: String) {
-        switch path {
-        case .list(var segments):
-            segments.append(segment)
-            path = .list(segments)
-        case .opaque:
-            break
-        }
-    }
-
-    mutating func popPathSegment() {
-        switch path {
-        case .list(var segments):
-            if !segments.isEmpty {
-                segments.removeLast()
-            }
-            path = .list(segments)
-        case .opaque:
-            break
-        }
-    }
-
-    func build() throws(WHATWG_URL.URL.Error) -> WHATWG_URL.URL {
-        guard let scheme = scheme else {
-            throw .invalidScheme("")
-        }
-
-        return WHATWG_URL.URL(
-            scheme: scheme,
-            username: username,
-            password: password,
-            host: host,
-            port: port,
-            path: path,
-            query: query,
-            fragment: fragment
-        )
-    }
-}
-
 // MARK: - ASCII.Serializable ([FAM-012] text sibling)
 
 extension WHATWG_URL.URL: ASCII.Serializable {
@@ -176,7 +101,7 @@ extension WHATWG_URL.URL {
     /// Parse a URL from ASCII bytes
     ///
     /// Per WHATWG URL Standard Section 4.3: Basic URL Parser
-    public init<Bytes: Collection>(
+    public init<Bytes: Swift.Collection>(
         ascii bytes: Bytes,
         in context: ParsingContext
     ) throws(Error) where Bytes.Element == Byte {
@@ -246,7 +171,7 @@ extension WHATWG_URL.URL {
 
                     if Scheme.isSpecial(url.scheme!) {
                         state = .specialAuthoritySlashes
-                    } else if pointer + 1 < trimmed.count
+                    } else if trimmed.indices.contains(pointer + 1)
                         && trimmed[pointer + 1] == UInt8.ascii.slash
                     {
                         state = .pathOrAuthority
@@ -298,7 +223,7 @@ extension WHATWG_URL.URL {
                 }
 
             case .specialAuthoritySlashes:
-                if c == UInt8.ascii.slash && pointer + 1 < trimmed.count
+                if c == UInt8.ascii.slash && trimmed.indices.contains(pointer + 1)
                     && trimmed[pointer + 1] == UInt8.ascii.slash
                 {
                     state = .authority
@@ -366,14 +291,11 @@ extension WHATWG_URL.URL {
                     pointer += 1
                 }
 
-                let isSpecial = Scheme.isSpecial(url.scheme!)
-                let hostContext = Host.Context(isSpecial: isSpecial)
-                do {
+                let hostContext: Host.Context = Scheme.isSpecial(url.scheme!) ? .special : .nonSpecial
+                do throws(Host.Error) {
                     url.host = try Host(ascii: [Byte](buffer.utf8), in: hostContext)
-                } catch let hostError as Host.Error {
-                    throw .invalidHost(hostError)
                 } catch {
-                    throw .invalidHost(.invalidDomain(buffer))
+                    throw .invalidHost(error)
                 }
                 buffer = ""
 
@@ -525,7 +447,8 @@ extension WHATWG_URL.URL {
     /// - Parameter base: Optional base URL for relative URL resolution
     /// - Throws: `Error` if the string is not a valid URL
     public init(_ string: some StringProtocol, base: WHATWG_URL.URL? = nil) throws(Error) {
-        try self.init(ascii: [Byte](string.utf8), in: ParsingContext(base: base))
+        let bytes = [Byte](string.utf8)
+        try self.init(ascii: bytes, in: ParsingContext(base: base))
     }
 
     /// Parse a URL from a string, returning nil on failure

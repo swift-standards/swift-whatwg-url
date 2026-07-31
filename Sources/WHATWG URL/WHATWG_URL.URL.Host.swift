@@ -39,34 +39,6 @@ extension WHATWG_URL.URL {
     }
 }
 
-// MARK: - Host.Context
-
-extension WHATWG_URL.URL.Host {
-    /// Context for parsing a host
-    ///
-    /// Per WHATWG URL Standard, host parsing behavior differs based on whether
-    /// the URL has a "special" scheme (http, https, ftp, file, ws, wss).
-    public struct Context: Sendable {
-        /// Whether this host is for a special scheme URL
-        ///
-        /// Special schemes parse hosts as domains (with IDNA).
-        /// Non-special schemes parse hosts as opaque strings.
-        public let isSpecial: Bool
-
-        public init(isSpecial: Bool) {
-            self.isSpecial = isSpecial
-        }
-    }
-}
-
-extension WHATWG_URL.URL.Host.Context {
-    /// Context for special scheme URLs (http, https, etc.)
-    public static let special = WHATWG_URL.URL.Host.Context(isSpecial: true)
-
-    /// Context for non-special scheme URLs
-    public static let nonSpecial = WHATWG_URL.URL.Host.Context(isSpecial: false)
-}
-
 // MARK: - ASCII.Serializable ([FAM-012] text sibling)
 
 extension WHATWG_URL.URL.Host: ASCII.Serializable {
@@ -122,7 +94,7 @@ extension WHATWG_URL.URL.Host {
     /// 1. If input starts with `[`, parse as IPv6
     /// 2. If `isSpecial` context, try IPv4, then domain
     /// 3. Otherwise, parse as opaque host
-    public init<Bytes: Collection>(
+    public init<Bytes: Swift.Collection>(
         ascii bytes: Bytes,
         in context: Context
     ) throws(Error) where Bytes.Element == Byte {
@@ -154,7 +126,7 @@ extension WHATWG_URL.URL.Host {
         let hostString = String(decoding: array, as: UTF8.self)
 
         // For special schemes: try IPv4 (WHATWG format), then domain
-        if context.isSpecial {
+        if context.kind == .special {
             // WHATWG IPv4 detection: could be any format (decimal, hex, octal, compressed, single number)
             // Try WHATWG IPv4 parsing first if it looks like it could be an IP address
             // (contains only digits, dots, hex chars, and 'x' for hex prefix)

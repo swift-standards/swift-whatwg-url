@@ -18,7 +18,7 @@ public import Parser_Primitives
 
 extension WHATWG_URL.URL.Host {
     /// Parser witness carrying the out-of-band parse CONTEXT a host needs — whether
-    /// the URL scheme is "special" (`Host.Context.isSpecial`) — as a stored VALUE.
+    /// the URL scheme is "special" (`Host.Context.kind`) — as a stored VALUE.
     ///
     /// ## [FAM-012] §11 — context as a parser-witness VALUE
     ///
@@ -52,9 +52,6 @@ extension WHATWG_URL.URL.Host {
 }
 
 extension WHATWG_URL.URL.Host.Parser {
-    public typealias Input = Byte.Input
-    public typealias Output = WHATWG_URL.URL.Host
-    public typealias Failure = WHATWG_URL.URL.Host.Error
     public typealias Body = Never
 
     /// Parses a host from the byte cursor `input`, consuming it.
@@ -66,8 +63,7 @@ extension WHATWG_URL.URL.Host.Parser {
         _ input: inout Byte.Input
     ) throws(WHATWG_URL.URL.Host.Error) -> WHATWG_URL.URL.Host {
         var bytes: [Byte] = []
-        while !input.isEmpty {
-            guard let byte = try? input.advance() else { break }
+        while let byte = input.next() {
             bytes.append(byte)
         }
         return try WHATWG_URL.URL.Host(ascii: bytes, in: context)

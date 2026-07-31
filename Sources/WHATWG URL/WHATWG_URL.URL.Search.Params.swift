@@ -29,12 +29,9 @@ extension WHATWG_URL.URL.Search {
     /// var params = WHATWG_URL.URL.Search.Params()
     /// params.append("name", "John Doe")
     /// params.append("email", "john@example.com")
-    /// print(params.toString())  // "name=John+Doe&email=john%40example.com"
+    /// print(String(params))  // "name=John+Doe&email=john%40example.com"
     /// ```
     ///
-    /// ## Alternative Access
-    ///
-    /// This type is also accessible as `WHATWG_URL.URL.SearchParams` for convenience.
     public struct Params {
         private var pairs: [(String, String)]
 
@@ -43,12 +40,6 @@ extension WHATWG_URL.URL.Search {
             self.pairs = []
         }
     }
-}
-
-extension WHATWG_URL.URL {
-
-    /// Type alias for Search.Params, providing convenient flat access
-    public typealias SearchParams = Search.Params
 }
 
 // MARK: - Initializers
@@ -109,11 +100,6 @@ extension WHATWG_URL.URL.Search.Params {
         pairs.sort { $0.0 < $1.0 }
     }
 
-    /// Returns the query string representation
-    public func toString() -> String {
-        return WHATWG_Form_URL_Encoded.serialize(pairs)
-    }
-
     /// Returns all name-value pairs
     public var entries: [(String, String)] {
         return pairs
@@ -146,6 +132,6 @@ extension WHATWG_URL.URL.Search.Params: ExpressibleByDictionaryLiteral {
 
 extension WHATWG_URL.URL.Search.Params: CustomStringConvertible {
     public var description: String {
-        return toString()
+        return String(self)
     }
 }

@@ -11,6 +11,12 @@ import Testing
 
 @Suite
 struct `WHATWG_URL.URL Tests` {
+    // Canonical [TEST-005] sub-suites (cross-package grep-ability). This suite's
+    // tests are organized into the richer domain-specific sub-suites below
+    // instead; these stay empty markers.
+    @Suite struct Unit {}
+    @Suite struct `Edge Case` {}
+    @Suite struct Integration {}
 
     // MARK: - Absolute URLs
 

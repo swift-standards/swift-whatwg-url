@@ -67,6 +67,9 @@ extension WHATWG_URL.URL {
                 }
             }
 
+            // swift-linter:disable:next unchecked call site
+            // REASON: extension-init internals — same-package construction of the wrapper's
+            // own boundary, permitted use per [CONV-001].
             self.init(__unchecked: (), value: value.lowercased())
         }
     }
@@ -99,11 +102,29 @@ extension WHATWG_URL.URL.Scheme {
 // MARK: - Common Schemes (compile-time constants)
 
 extension WHATWG_URL.URL.Scheme {
+    // swift-linter:disable:next unchecked call site
+    // REASON: extension-init internals — same-package construction of well-known
+    // constants at the wrapper's own boundary, permitted use per [CONV-001].
     public static let http = Self(__unchecked: (), value: "http")
+    // swift-linter:disable:next unchecked call site
+    // REASON: extension-init internals — same-package construction of well-known
+    // constants at the wrapper's own boundary, permitted use per [CONV-001].
     public static let https = Self(__unchecked: (), value: "https")
+    // swift-linter:disable:next unchecked call site
+    // REASON: extension-init internals — same-package construction of well-known
+    // constants at the wrapper's own boundary, permitted use per [CONV-001].
     public static let file = Self(__unchecked: (), value: "file")
+    // swift-linter:disable:next unchecked call site
+    // REASON: extension-init internals — same-package construction of well-known
+    // constants at the wrapper's own boundary, permitted use per [CONV-001].
     public static let ftp = Self(__unchecked: (), value: "ftp")
+    // swift-linter:disable:next unchecked call site
+    // REASON: extension-init internals — same-package construction of well-known
+    // constants at the wrapper's own boundary, permitted use per [CONV-001].
     public static let ws = Self(__unchecked: (), value: "ws")
+    // swift-linter:disable:next unchecked call site
+    // REASON: extension-init internals — same-package construction of well-known
+    // constants at the wrapper's own boundary, permitted use per [CONV-001].
     public static let wss = Self(__unchecked: (), value: "wss")
 }
 
@@ -130,9 +151,10 @@ extension WHATWG_URL.URL.Scheme: ASCII.Parseable {
     /// Parses a scheme from ASCII bytes, validating and normalizing to lowercase.
     ///
     /// Delegates to the validating `init(_:)`.
-    public init<Bytes: Collection>(ascii bytes: Bytes) throws(Error)
+    public init<Bytes: Swift.Collection>(ascii bytes: Bytes) throws(Error)
     where Bytes.Element == Byte {
-        try self.init(String(decoding: bytes, as: UTF8.self))
+        let string = String(decoding: bytes, as: UTF8.self)
+        try self.init(string)
     }
 }
 

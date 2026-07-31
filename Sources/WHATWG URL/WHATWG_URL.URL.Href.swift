@@ -40,6 +40,9 @@ extension WHATWG_URL.URL {
         /// Uses the URL's `ASCII.Serializable` verb (via `description`) to serialize
         /// the URL to its canonical form.
         public init(_ url: WHATWG_URL.URL) {
+            // swift-linter:disable:next unchecked call site
+            // REASON: extension-init internals — same-package construction of the wrapper's
+            // own boundary, permitted use per [CONV-001].
             self.init(__unchecked: (), value: url.description)
         }
     }
@@ -65,7 +68,7 @@ extension WHATWG_URL.URL.Href: ASCII.Serializable {
 
 extension WHATWG_URL.URL.Href: ASCII.Parseable {
     /// Parses an href from ASCII bytes: parses the bytes as a URL, then wraps it.
-    public init<Bytes: Collection>(ascii bytes: Bytes) throws(WHATWG_URL.URL.Error)
+    public init<Bytes: Swift.Collection>(ascii bytes: Bytes) throws(WHATWG_URL.URL.Error)
     where Bytes.Element == Byte {
         let url = try WHATWG_URL.URL(ascii: bytes, in: .none)
         self.init(url)

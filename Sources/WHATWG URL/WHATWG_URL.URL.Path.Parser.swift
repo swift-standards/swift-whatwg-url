@@ -23,7 +23,7 @@ extension WHATWG_URL.URL.Path {
     /// ## [FAM-012] §11 — context as a parser-witness VALUE
     ///
     /// Path parsing is context-dependent: the same raw bytes decode differently
-    /// depending on `Path.Context.isOpaque`. Per the serialize/parse codec-attachment
+    /// depending on `Path.Context.kind`. Per the serialize/parse codec-attachment
     /// model §11, that context is **NOT** an `associatedtype Context` on a flat parse
     /// marker ([FAM-001]); it is carried by a **witness VALUE the caller constructs
     /// with the context and passes in** (the serde `DeserializeSeed` shape):
@@ -51,9 +51,6 @@ extension WHATWG_URL.URL.Path {
 }
 
 extension WHATWG_URL.URL.Path.Parser {
-    public typealias Input = Byte.Input
-    public typealias Output = WHATWG_URL.URL.Path
-    public typealias Failure = WHATWG_URL.URL.Path.Error
     public typealias Body = Never
 
     /// Parses a path from the byte cursor `input`, consuming it.
@@ -65,8 +62,7 @@ extension WHATWG_URL.URL.Path.Parser {
         _ input: inout Byte.Input
     ) throws(WHATWG_URL.URL.Path.Error) -> WHATWG_URL.URL.Path {
         var bytes: [Byte] = []
-        while !input.isEmpty {
-            guard let byte = try? input.advance() else { break }
+        while let byte = input.next() {
             bytes.append(byte)
         }
         return try WHATWG_URL.URL.Path(ascii: bytes, in: context)

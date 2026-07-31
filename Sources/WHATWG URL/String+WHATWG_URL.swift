@@ -6,6 +6,7 @@
 //  Provides URL serialization per WHATWG URL Standard Section 4.5
 
 public import ASCII_Serializer_Primitives
+import WHATWG_Form_URL_Encoded
 
 // MARK: - Namespace Wrapper
 
@@ -96,11 +97,13 @@ extension String {
 
     /// Creates a string representation of WHATWG URL Search Parameters
     ///
-    /// Delegates to the search parameters' string representation.
+    /// The canonical `Search.Params` → `String` conversion site, per [PATTERN-012]:
+    /// the transformation lives here on the target type rather than as a
+    /// `toString()`-shaped instance method on the source.
     ///
     /// - Parameter searchParams: The search parameters to serialize
     @inlinable
     public init(_ searchParams: WHATWG_URL.URL.Search.Params) {
-        self = searchParams.toString()
+        self = WHATWG_Form_URL_Encoded.serialize(searchParams.entries)
     }
 }

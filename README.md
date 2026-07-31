@@ -87,14 +87,14 @@ let pairs = WHATWG_Form_URL_Encoded.parse("name=John+Doe&email=john%40example.co
 #### Percent Encoding
 
 ```swift
-let encoded = WHATWG_Form_URL_Encoded.PercentEncoding.encode("Hello World!", spaceAsPlus: true)
+let encoded = WHATWG_Form_URL_Encoded.PercentEncoding.encode("Hello World!", space: .plus)
 // Result: "Hello+World%21"
 ```
 
 #### Percent Decoding
 
 ```swift
-let decoded = WHATWG_Form_URL_Encoded.PercentEncoding.decode("Hello+World%21", plusAsSpace: true)
+let decoded = WHATWG_Form_URL_Encoded.PercentEncoding.decode("Hello+World%21", space: .plus)
 // Result: "Hello World!"
 ```
 
@@ -108,7 +108,7 @@ According to the WHATWG URL Standard, only the following characters are left une
 - Period (`.`)
 - Underscore (`_`)
 
-All other characters are percent-encoded. Space (0x20) is encoded as `+` when `spaceAsPlus` is `true`.
+All other characters are percent-encoded. Space (0x20) is encoded as `+` when `space` is `.plus`.
 
 ## Difference from Foundation
 

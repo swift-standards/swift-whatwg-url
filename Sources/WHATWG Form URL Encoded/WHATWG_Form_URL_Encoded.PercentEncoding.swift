@@ -34,7 +34,7 @@ extension WHATWG_Form_URL_Encoded.PercentEncoding {
     ///
     /// - Parameters:
     ///   - string: String to encode
-    ///   - spaceAsPlus: If true, space (0x20) encoded as '+', otherwise '%20'
+    ///   - space: How space (0x20) is encoded — `.plus` for '+', `.percentEscaped` for '%20'
     /// - Returns: Percent-encoded string
     ///
     /// ## Example
@@ -45,7 +45,7 @@ extension WHATWG_Form_URL_Encoded.PercentEncoding {
     /// ```
     public static func encode(
         _ string: String,
-        spaceAsPlus: Bool = true
+        space: SpaceEncoding = .plus
     ) -> String {
         var result = ""
 
@@ -64,7 +64,7 @@ extension WHATWG_Form_URL_Encoded.PercentEncoding {
 
             // Space: + or %20
             case UInt8.ascii.sp:
-                result.append(spaceAsPlus ? "+" : "%20")
+                result.append(space == .plus ? "+" : "%20")
 
             // Everything else: percent-encode
             default:
@@ -94,7 +94,7 @@ extension WHATWG_Form_URL_Encoded.PercentEncoding {
     ///
     /// - Parameters:
     ///   - string: Percent-encoded string to decode
-    ///   - plusAsSpace: If true, '+' decoded as space (0x20), otherwise left as '+'
+    ///   - space: How `+` decodes — `.plus` for space (0x20), `.percentEscaped` to leave it as '+'
     /// - Returns: Decoded string
     /// - Throws: `Error` if the input contains invalid percent encoding
     ///
@@ -106,7 +106,7 @@ extension WHATWG_Form_URL_Encoded.PercentEncoding {
     /// ```
     public static func decode(
         _ string: String,
-        plusAsSpace: Bool = true
+        space: SpaceEncoding = .plus
     ) throws(Error) -> String {
         var bytes: [UInt8] = []
         var index = string.startIndex
@@ -114,7 +114,7 @@ extension WHATWG_Form_URL_Encoded.PercentEncoding {
         while index < string.endIndex {
             let char = string[index]
 
-            if char == "+" && plusAsSpace {
+            if char == "+" && space == .plus {
                 bytes.append(UInt8.ascii.sp)
                 index = string.index(after: index)
             } else if char == "%" {
@@ -150,13 +150,17 @@ extension WHATWG_Form_URL_Encoded.PercentEncoding {
 
     /// Percent-decodes a string, returning nil on failure
     ///
-    /// Non-throwing convenience variant of `decode(_:plusAsSpace:)`.
+    /// Non-throwing convenience variant of `decode(_:space:)`.
     ///
     /// - Parameters:
     ///   - string: Percent-encoded string to decode
-    ///   - plusAsSpace: If true, '+' decoded as space (0x20), otherwise left as '+'
+    ///   - space: How `+` decodes — `.plus` for space (0x20), `.percentEscaped` to leave it as '+'
     /// - Returns: Decoded string, or nil if invalid percent encoding
-    public static func decodeOrNil(_ string: String, plusAsSpace: Bool = true) -> String? {
-        try? decode(string, plusAsSpace: plusAsSpace)
+    public static func decodeOrNil(_ string: String, space: SpaceEncoding = .plus) -> String? {
+        do throws(Error) {
+            return try decode(string, space: space)
+        } catch {
+            return nil
+        }
     }
 }

@@ -80,8 +80,8 @@ extension RFC_791.IPv4.Address {
     /// Construct IPv4 address from WHATWG number format
     private static func constructFromWHATWGNumbers(_ numbers: [UInt32]) -> Self? {
         // All but last must be < 256
-        for i in 0..<(numbers.count - 1) {
-            guard numbers[i] < 256 else { return nil }
+        for value in numbers.dropLast() {
+            guard value < 256 else { return nil }
         }
 
         var address: UInt32 = 0

@@ -28,7 +28,7 @@ extension WHATWG_Form_URL_Encoded.EncodedString {
 
         @Test func `EncodedString ASCII serialize + parse round-trip`() throws {
             let encoded = WHATWG_Form_URL_Encoded.EncodedString(encoding: "Hello World!")
-            #expect(encoded.rawValue == "Hello+World%21")
+            #expect(encoded.description == "Hello+World%21")
 
             var codes: [ASCII.Code] = []
             WHATWG_Form_URL_Encoded.EncodedString.serialize(encoded, into: &codes)

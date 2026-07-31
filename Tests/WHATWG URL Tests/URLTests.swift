@@ -93,7 +93,7 @@ extension WHATWG_URL.URL {
 
         @Test
         func `WHATWG_URL.URL.SearchParams parsing`() throws {
-            let params = WHATWG_URL.URL.SearchParams(
+            let params = WHATWG_URL.URL.Search.Params(
                 "name=John+Doe&email=john%40example.com&age=30"
             )
 
@@ -105,17 +105,17 @@ extension WHATWG_URL.URL {
 
         @Test
         func `WHATWG_URL.URL.SearchParams building`() throws {
-            var params = WHATWG_URL.URL.SearchParams()
+            var params = WHATWG_URL.URL.Search.Params()
             params.append("name", "John Doe")
             params.append("email", "john@example.com")
 
-            let query = params.toString()
+            let query = String(params)
             #expect(query == "name=John+Doe&email=john%40example.com")
         }
 
         @Test
         func `WHATWG_URL.URL.SearchParams set and delete`() throws {
-            var params = WHATWG_URL.URL.SearchParams()
+            var params = WHATWG_URL.URL.Search.Params()
             params.append("key", "value1")
             params.append("key", "value2")
 
@@ -207,7 +207,7 @@ extension WHATWG_URL.URL {
             #expect(params.get("name") == "John")
             #expect(params.get("age") == "30")
 
-            var newParams = WHATWG_URL.URL.SearchParams()
+            var newParams = WHATWG_URL.URL.Search.Params()
             newParams.append("email", "john@example.com")
             url.searchParams = newParams
 

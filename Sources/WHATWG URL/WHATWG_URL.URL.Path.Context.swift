@@ -8,11 +8,17 @@
 extension WHATWG_URL.URL.Path {
     /// Context for parsing a path
     public struct Context: Sendable {
-        /// Whether this is an opaque path (non-special scheme)
-        public let isOpaque: Bool
+        /// Whether this is a segment list (special scheme) or an opaque path
+        /// (non-special scheme).
+        public enum Kind: Sendable, Hashable {
+            case list
+            case opaque
+        }
 
-        public init(isOpaque: Bool = false) {
-            self.isOpaque = isOpaque
+        public let kind: Kind
+
+        public init(_ kind: Kind = .list) {
+            self.kind = kind
         }
     }
 }
@@ -20,8 +26,8 @@ extension WHATWG_URL.URL.Path {
 extension WHATWG_URL.URL.Path.Context {
 
     /// List path context (special schemes)
-    public static let list = Self(isOpaque: false)
+    public static let list = Self(.list)
 
     /// Opaque path context (non-special schemes)
-    public static let opaque = Self(isOpaque: true)
+    public static let opaque = Self(.opaque)
 }
