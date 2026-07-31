@@ -95,7 +95,10 @@ extension WHATWG_URL.URL.Scheme {
 
     /// Returns the default port for a scheme, or nil if not special or has no default port
     public static func defaultPort(for scheme: Self) -> UInt16? {
-        specialSchemes[scheme.value]
+        // `specialSchemes` values are themselves `UInt16?` (`"file"` has no default
+        // port), so subscripting yields `UInt16??` — flatten explicitly rather than
+        // via `?? nil`, which reads as a no-op unless the double optional is visible.
+        specialSchemes[scheme.value].flatMap { $0 }
     }
 }
 
