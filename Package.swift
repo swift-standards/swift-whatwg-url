@@ -1,4 +1,4 @@
-// swift-tools-version: 6.3.3
+// swift-tools-version: 6.4
 
 import PackageDescription
 
@@ -10,25 +10,15 @@ extension String {
 extension Target.Dependency {
     static var whatwgURL: Self { .target(name: .whatwgURL) }
     static var whatwgFormURLEncoded: Self { .target(name: .whatwgFormURLEncoded) }
-    static var rfc3987: Self { .product(name: "RFC 3987", package: "swift-rfc-3987") }
-    static var rfc791: Self { .product(name: "RFC 791", package: "swift-rfc-791") }
-    static var rfc5952: Self { .product(name: "RFC 5952", package: "swift-rfc-5952") }
-    static var domainStandard: Self { .product(name: "Domain Standard", package: "swift-domain-standard") }
-    static var rfc4648: Self { .product(name: "RFC 4648", package: "swift-rfc-4648") }
-    static var incits41986: Self { .product(name: "ASCII Serializer Primitives", package: "swift-ascii-serializer-primitives") }
-    static var asciiPrimitives: Self { .product(name: "ASCII Primitives", package: "swift-ascii-primitives") }
-    static var binary: Self { .product(name: "Binary Primitives", package: "swift-binary-primitives") }
-    static var asciiParser: Self { .product(name: "Parseable ASCII Primitives", package: "swift-ascii-parser-primitives") }
-    static var byteParser: Self { .product(name: "Byte Parser Primitives", package: "swift-byte-parser-primitives") }
 }
 
 let package = Package(
     name: "swift-whatwg-url",
     platforms: [
-        .macOS("27"),
-        .iOS("27"),
-        .tvOS("27"),
-        .watchOS("27")
+        .macOS(.v27),
+        .iOS(.v27),
+        .tvOS(.v27),
+        .watchOS(.v27),
     ],
     products: [
         // Main URL standard
@@ -40,20 +30,41 @@ let package = Package(
         .library(
             name: "WHATWG Form URL Encoded",
             targets: ["WHATWG Form URL Encoded"]
-        )
+        ),
     ],
     dependencies: [
         .package(url: "https://github.com/swift-ietf/swift-rfc-3987.git", branch: "main"),
         .package(url: "https://github.com/swift-ietf/swift-rfc-791.git", branch: "main"),
         .package(url: "https://github.com/swift-ietf/swift-rfc-5952.git", branch: "main"),
-        .package(url: "https://github.com/swift-standards/swift-domain-standard.git", branch: "main"),
+        .package(
+            url: "https://github.com/swift-standards/swift-domain-standard.git",
+            branch: "main"
+        ),
         .package(url: "https://github.com/swift-ietf/swift-rfc-4648.git", branch: "main"),
-        .package(url: "https://github.com/swift-primitives/swift-ascii-serializer-primitives.git", branch: "main"),
-        .package(url: "https://github.com/swift-primitives/swift-ascii-primitives.git", branch: "main"),
-        .package(url: "https://github.com/swift-primitives/swift-binary-primitives.git", branch: "main"),
-        .package(url: "https://github.com/swift-primitives/swift-parser-primitives.git", branch: "main"),
-        .package(url: "https://github.com/swift-primitives/swift-ascii-parser-primitives.git", branch: "main"),
-        .package(url: "https://github.com/swift-primitives/swift-byte-parser-primitives.git", branch: "main")
+        .package(
+            url: "https://github.com/swift-primitives/swift-ascii-serializer-primitives.git",
+            branch: "main"
+        ),
+        .package(
+            url: "https://github.com/swift-primitives/swift-ascii-primitives.git",
+            branch: "main"
+        ),
+        .package(
+            url: "https://github.com/swift-primitives/swift-binary-primitives.git",
+            branch: "main"
+        ),
+        .package(
+            url: "https://github.com/swift-primitives/swift-parser-primitives.git",
+            branch: "main"
+        ),
+        .package(
+            url: "https://github.com/swift-primitives/swift-ascii-parser-primitives.git",
+            branch: "main"
+        ),
+        .package(
+            url: "https://github.com/swift-primitives/swift-byte-parser-primitives.git",
+            branch: "main"
+        ),
     ],
     targets: [
         // Core URL implementation
@@ -61,16 +72,22 @@ let package = Package(
             name: "WHATWG URL",
             dependencies: [
                 .whatwgFormURLEncoded,
-                .rfc3987,
-                .rfc791,
-                .rfc5952,
-                .domainStandard,
-                .incits41986,
-                .asciiPrimitives,
-                .binary,
+                .product(name: "RFC 3987", package: "swift-rfc-3987"),
+                .product(name: "RFC 791", package: "swift-rfc-791"),
+                .product(name: "RFC 5952", package: "swift-rfc-5952"),
+                .product(name: "Domain Standard", package: "swift-domain-standard"),
+                .product(
+                    name: "ASCII Serializer Primitives",
+                    package: "swift-ascii-serializer-primitives"
+                ),
+                .product(name: "ASCII Primitives", package: "swift-ascii-primitives"),
+                .product(name: "Binary Primitives", package: "swift-binary-primitives"),
                 .product(name: "Parser Primitives", package: "swift-parser-primitives"),
-                .asciiParser,
-                .byteParser
+                .product(
+                    name: "Parseable ASCII Primitives",
+                    package: "swift-ascii-parser-primitives"
+                ),
+                .product(name: "Byte Parser Primitives", package: "swift-byte-parser-primitives"),
             ]
         ),
 
@@ -78,11 +95,17 @@ let package = Package(
         .target(
             name: "WHATWG Form URL Encoded",
             dependencies: [
-                .rfc4648,
-                .incits41986,
-                .asciiPrimitives,
-                .binary,
-                .asciiParser
+                .product(name: "RFC 4648", package: "swift-rfc-4648"),
+                .product(
+                    name: "ASCII Serializer Primitives",
+                    package: "swift-ascii-serializer-primitives"
+                ),
+                .product(name: "ASCII Primitives", package: "swift-ascii-primitives"),
+                .product(name: "Binary Primitives", package: "swift-binary-primitives"),
+                .product(
+                    name: "Parseable ASCII Primitives",
+                    package: "swift-ascii-parser-primitives"
+                ),
             ]
         ),
 
@@ -90,13 +113,13 @@ let package = Package(
         .testTarget(
             name: "WHATWG Form URL Encoded Tests",
             dependencies: [
-                "WHATWG URL",
+                "WHATWG URL"
             ]
         ),
         .testTarget(
             name: "WHATWG URL Tests",
             dependencies: [
-                "WHATWG URL",
+                "WHATWG URL"
             ]
         ),
     ],
