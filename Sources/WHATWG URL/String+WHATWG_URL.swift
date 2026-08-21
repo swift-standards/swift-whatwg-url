@@ -5,7 +5,7 @@
 //  WHATWG URL Standard extensions for String
 //  Provides URL serialization per WHATWG URL Standard Section 4.5
 
-public import ASCII_Serializer_Primitives
+import ASCII_Serializer_Primitives
 public import WHATWG_Form_URL_Encoded
 
 // MARK: - Namespace Wrapper
