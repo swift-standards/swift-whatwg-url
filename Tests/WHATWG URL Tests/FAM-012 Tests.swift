@@ -1,24 +1,3 @@
-// ===----------------------------------------------------------------------===//
-//
-// Copyright (c) 2025 Coen ten Thije Boonkkamp
-// Licensed under Apache License v2.0
-//
-// See LICENSE.txt for license information
-//
-// SPDX-License-Identifier: Apache-2.0
-//
-// ===----------------------------------------------------------------------===//
-
-// FAM-012 Tests.swift
-// swift-whatwg-url
-//
-// [FAM-012] format-sibling drain: every WHATWG URL conformer is ASCII-only (the
-// URL Standard serializes to a *string*, not an octet wire form). These tests
-// exercise the flat `ASCII.Serializable` verbs, the free-standing `ASCII.Parseable`
-// inits (void-context: Scheme/Href), and the `Parser.`Protocol`` context-witnesses
-// (context-bearing: URL/Host/Path). ASCII-only ⇒ parse∘serialize round-trips (no
-// ascii==wire equivalence — there is no `Binary.Serializable` peer to compare).
-
 import ASCII_Serializer_Primitives
 import Domain_Standard
 import RFC_791
@@ -26,8 +5,6 @@ import Testing
 
 @testable import WHATWG_URL
 
-/// Literal ASCII text → `[Byte]` (the parse-input substrate). Avoids the
-/// `[UInt8]` vs `[Byte]` element mismatch by lifting each byte explicitly.
 private func bytes(_ string: String) -> [Byte] { string.utf8.map { Byte($0) } }
 
 private func ascii(_ codes: [ASCII.Code]) -> String {
@@ -40,8 +17,6 @@ struct WHATWGURLFAM012Tests {
     @Suite struct `Edge Case` {}
     @Suite struct Integration {}
 }
-
-// MARK: - Unit Tests (Scheme, Href, Host — void-context / single-verb, ASCII-only)
 
 extension WHATWGURLFAM012Tests.Unit {
     @Test func `Scheme ASCII serialize + parse round-trip`() throws {
@@ -83,33 +58,27 @@ extension WHATWGURLFAM012Tests.Unit {
     }
 }
 
-// MARK: - Edge Case Tests
-
 extension WHATWGURLFAM012Tests.`Edge Case` {
     @Test func `Path list ASCII serialize verb`() throws {
         let path = WHATWG_URL.URL.Path.list(["path", "to", "resource"])
         var codes: [ASCII.Code] = []
         WHATWG_URL.URL.Path.serialize(path, into: &codes)
         #expect(ascii(codes) == "/path/to/resource")
-        // Empty list serializes to no bytes (WHATWG §4.5).
+
         var empty: [ASCII.Code] = []
         WHATWG_URL.URL.Path.serialize(.emptyList, into: &empty)
         #expect(empty.isEmpty)
     }
 }
 
-// MARK: - Integration Tests (context-bearing witnesses — Host, Path, URL composition)
-
 extension WHATWGURLFAM012Tests.Integration {
     @Test func `Host IPv6 ASCII verb composes rfc-5952 canonical + brackets`() throws {
-        // Parse `[::1]` via the context witness, then serialize: the bracketed text
-        // must be the RFC 5952 canonical form (the @retroactive verb from rfc-5952).
+
         let host = try WHATWG_URL.URL.Host.parse(from: bytes("[::1]"), parser: .init(.special))
         var codes: [ASCII.Code] = []
         WHATWG_URL.URL.Host.serialize(host, into: &codes)
         #expect(ascii(codes) == "[::1]")
 
-        // A non-trivial address round-trips through the rfc-5952 canonical verb.
         let host2 = try WHATWG_URL.URL.Host.parse(
             from: bytes("[2001:db8::1]"),
             parser: .init(.special)
@@ -120,7 +89,7 @@ extension WHATWGURLFAM012Tests.Integration {
     }
 
     @Test func `Host parse witness threads the special-scheme context`() throws {
-        // Special scheme → domain; non-special → opaque. The context lives on the witness.
+
         let special = try WHATWG_URL.URL.Host.parse(
             from: bytes("example.com"),
             parser: .init(.special)
@@ -134,8 +103,7 @@ extension WHATWGURLFAM012Tests.Integration {
     }
 
     @Test func `Path list parse witness threads the list context`() throws {
-        // Standalone list parse (no URL-level leading "/" handling): unrooted
-        // segments decode cleanly to a list.
+
         let parsed = try WHATWG_URL.URL.Path.parse(from: bytes("a/b/c"), parser: .init(.list))
         #expect(parsed == .list(["a", "b", "c"]))
     }

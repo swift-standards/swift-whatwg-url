@@ -21,12 +21,12 @@ let package = Package(
         .watchOS(.v27),
     ],
     products: [
-        // Main URL standard
+
         .library(
             name: "WHATWG URL",
             targets: ["WHATWG URL"]
         ),
-        // Form URL encoding (application/x-www-form-urlencoded)
+
         .library(
             name: "WHATWG Form URL Encoded",
             targets: ["WHATWG Form URL Encoded"]
@@ -67,7 +67,7 @@ let package = Package(
         ),
     ],
     targets: [
-        // Core URL implementation
+
         .target(
             name: "WHATWG URL",
             dependencies: [
@@ -91,7 +91,6 @@ let package = Package(
             ]
         ),
 
-        // application/x-www-form-urlencoded (Section 5)
         .target(
             name: "WHATWG Form URL Encoded",
             dependencies: [
@@ -109,7 +108,6 @@ let package = Package(
             ]
         ),
 
-        // Tests
         .testTarget(
             name: "WHATWG Form URL Encoded Tests",
             dependencies: [

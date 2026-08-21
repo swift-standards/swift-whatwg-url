@@ -1,20 +1,7 @@
-//
-//  WHATWG_URL.URL.Scheme.Parse.swift
-//  swift-whatwg-url
-//
-//  WHATWG URL scheme: alpha *( alpha / digit / "+" / "-" / "." ) ":"
-//
-
 public import Parser_Primitives
 
 extension WHATWG_URL.URL.Scheme {
-    /// Parses a URL scheme per the WHATWG URL Standard.
-    ///
-    /// `scheme = alpha *( alpha / digit / "+" / "-" / "." )`
-    ///
-    /// The scheme is terminated by `:` (0x3A) which is consumed.
-    /// The returned output is the raw scheme bytes (without the colon),
-    /// normalized to lowercase by the caller.
+
     public struct Parse<Input: Collection.Slice.`Protocol`>: Sendable
     where Input: Sendable, Input.Element == UInt8 {
         @inlinable
@@ -23,7 +10,7 @@ extension WHATWG_URL.URL.Scheme {
 }
 
 extension WHATWG_URL.URL.Scheme.Parse {
-    /// Raw scheme bytes (excluding the trailing colon).
+
     public typealias Output = Input
 
     public typealias Error = __WHATWGURLSchemeParseError
@@ -37,7 +24,6 @@ extension WHATWG_URL.URL.Scheme.Parse: Parser.`Protocol` {
     public func parse(_ input: inout Input) throws(Failure) -> Output {
         let start = input.startIndex
 
-        // First byte must be ASCII alpha
         guard input.startIndex < input.endIndex else { throw .expectedAlpha }
         let first = input[input.startIndex]
         guard
@@ -48,7 +34,6 @@ extension WHATWG_URL.URL.Scheme.Parse: Parser.`Protocol` {
         }
         input = input[input.index(after: input.startIndex)...]
 
-        // Subsequent: alpha / digit / "+" (0x2B) / "-" (0x2D) / "." (0x2E)
         while input.startIndex < input.endIndex {
             let byte = input[input.startIndex]
             let valid =
@@ -62,7 +47,6 @@ extension WHATWG_URL.URL.Scheme.Parse: Parser.`Protocol` {
 
         let scheme = input[start..<input.startIndex]
 
-        // Expect ':' (0x3A)
         guard input.startIndex < input.endIndex,
             input[input.startIndex] == 0x3A
         else {

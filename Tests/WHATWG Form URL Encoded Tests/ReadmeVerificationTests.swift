@@ -9,8 +9,6 @@ struct `README Verification` {
     @Suite struct Integration {}
 }
 
-// MARK: - Unit Tests
-
 extension `README Verification`.Unit {
     @Test
     func `Example from source: Serialize to application/x-www-form-urlencoded`() throws {
@@ -81,7 +79,7 @@ extension `README Verification`.Unit {
 
     @Test
     func `WHATWG Character Set: Special characters encoded`() throws {
-        // All these should be percent-encoded
+
         let testCases: [(String, String)] = [
             ("!", "%21"),
             ("@", "%40"),
@@ -151,8 +149,6 @@ extension `README Verification`.Unit {
     }
 }
 
-// MARK: - Edge Case Tests
-
 extension `README Verification`.`Edge Case` {
     @Test
     func `Parse: Empty values`() throws {
@@ -178,7 +174,6 @@ extension `README Verification`.`Edge Case` {
     func `Parse: Empty pairs filtered out`() throws {
         let pairs = WHATWG_Form_URL_Encoded.parse("name=value&&")
 
-        // Empty pairs (between &&) should be filtered by compactMap
         #expect(pairs.count == 1)
         #expect(pairs[0].0 == "name")
         #expect(pairs[0].1 == "value")
@@ -233,8 +228,6 @@ extension `README Verification`.`Edge Case` {
         }
     }
 }
-
-// MARK: - Integration Tests
 
 extension `README Verification`.Integration {
     @Test

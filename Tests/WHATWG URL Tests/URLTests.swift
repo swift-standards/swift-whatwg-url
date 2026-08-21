@@ -66,7 +66,7 @@ extension WHATWG_URL.URL {
 
         @Test
         func `URL serialization with default port omitted`() throws {
-            // HTTPS default port is 443
+
             let url = WHATWG_URL.URL(
                 scheme: .https,
                 host: .domain(try Domain("example.com")),

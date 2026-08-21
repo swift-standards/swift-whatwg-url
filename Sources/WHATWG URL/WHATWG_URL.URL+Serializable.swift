@@ -1,26 +1,12 @@
-// ===----------------------------------------------------------------------===//
-//
-// Copyright (c) 2025 Coen ten Thije Boonkkamp
-// Licensed under Apache License v2.0
-//
-// See LICENSE.txt for license information
-// See CONTRIBUTORS.txt for the list of project contributors
-//
-// SPDX-License-Identifier: Apache-2.0
-//
-// ===----------------------------------------------------------------------===//
-
 public import ASCII_Serializer_Primitives
 import Domain_Standard
 import RFC_5952
 import RFC_791
 
-// MARK: - Context for URL Parsing
-
 extension WHATWG_URL.URL {
-    /// Context for parsing a URL
+
     public struct ParsingContext: Sendable {
-        /// Optional base URL for relative URL resolution
+
         public let base: WHATWG_URL.URL?
 
         public init(base: WHATWG_URL.URL? = nil) {
@@ -30,35 +16,24 @@ extension WHATWG_URL.URL {
 }
 
 extension WHATWG_URL.URL.ParsingContext {
-    /// Context without a base URL
+
     public static let none = WHATWG_URL.URL.ParsingContext(base: nil)
 }
 
-// MARK: - ASCII.Serializable ([FAM-012] text sibling)
-
 extension WHATWG_URL.URL: ASCII.Serializable {
-    /// Serializes the URL as its canonical ASCII text (WHATWG §4.5 URL Serializing).
-    ///
-    /// [FAM-012] text sibling — emits the typed text substrate `ASCII.Code`. A URL is
-    /// **ASCII-only**: the WHATWG URL Standard defines serialization to a *string*,
-    /// not an octet wire form, so there is no `Binary.Serializable` peer (clause-7).
-    /// Clause-9: composes its sub-parts' same-format `ASCII.Serializable` verbs
-    /// directly — `Scheme`, `Host`, `Path` — with no `[Byte]`-detour and no reach
-    /// into a sub-part's `rawValue`/property.
+
     public static func serialize<Buffer>(
         _ url: WHATWG_URL.URL,
         into buffer: inout Buffer
     ) where Buffer: RangeReplaceableCollection, Buffer.Element == ASCII.Code {
-        // Scheme
+
         Scheme.serialize(url.scheme, into: &buffer)
         buffer.append(ASCII.Code.colon)
 
-        // Authority (if host present)
         if let host = url.host {
             buffer.append(ASCII.Code.solidus)
             buffer.append(ASCII.Code.solidus)
 
-            // Username/Password
             if !url.username.isEmpty || !url.password.isEmpty {
                 for byte in url.username.utf8 { buffer.append(ASCII.Code(byte)) }
                 if !url.password.isEmpty {
@@ -68,26 +43,21 @@ extension WHATWG_URL.URL: ASCII.Serializable {
                 buffer.append(ASCII.Code.commercialAt)
             }
 
-            // Host
             Host.serialize(host, into: &buffer)
 
-            // Port (omit if it's the default for this scheme)
             if let port = url.port, Scheme.defaultPort(for: url.scheme) != port {
                 buffer.append(ASCII.Code.colon)
                 for byte in String(port).utf8 { buffer.append(ASCII.Code(byte)) }
             }
         }
 
-        // Path
         Path.serialize(url.path, into: &buffer)
 
-        // Query
         if let query = url.query {
             buffer.append(ASCII.Code.questionMark)
             for byte in query.utf8 { buffer.append(ASCII.Code(byte)) }
         }
 
-        // Fragment
         if let fragment = url.fragment {
             buffer.append(ASCII.Code.numberSign)
             for byte in fragment.utf8 { buffer.append(ASCII.Code(byte)) }
@@ -95,12 +65,8 @@ extension WHATWG_URL.URL: ASCII.Serializable {
     }
 }
 
-// MARK: - Parse (concrete reader — wrapped by WHATWG_URL.URL.Parser)
-
 extension WHATWG_URL.URL {
-    /// Parse a URL from ASCII bytes
-    ///
-    /// Per WHATWG URL Standard Section 4.3: Basic URL Parser
+
     public init<Bytes: Swift.Collection>(
         ascii bytes: Bytes,
         in context: ParsingContext
@@ -112,7 +78,6 @@ extension WHATWG_URL.URL {
 
         let array = [UInt8](bytes)
 
-        // Trim leading/trailing whitespace (space and horizontal tab)
         let horizontalTab: UInt8 = 0x09
         var startIndex = 0
         var endIndex = array.count
@@ -130,7 +95,7 @@ extension WHATWG_URL.URL {
         let trimmed = Array(array[startIndex..<endIndex])
 
         guard !trimmed.isEmpty else {
-            // Empty input with base URL returns the base URL
+
             if let base = context.base {
                 self = base
                 return
@@ -180,9 +145,9 @@ extension WHATWG_URL.URL {
                         state = .opaquePath
                     }
                 } else if context.base != nil {
-                    // Not a valid scheme character - backtrack and treat as relative URL
+
                     buffer = ""
-                    pointer = -1  // Will be incremented to 0 by main loop
+                    pointer = -1
                     state = .noScheme
                 } else {
                     throw .invalidScheme(buffer)
@@ -199,7 +164,7 @@ extension WHATWG_URL.URL {
                     self = base
                     return
                 } else if c == UInt8.ascii.slash {
-                    // Absolute path - use base's host and port
+
                     url.host = base.host
                     url.port = base.port
                     state = .pathStart
@@ -271,7 +236,7 @@ extension WHATWG_URL.URL {
                 }
 
             case .host:
-                // Handle IPv6 addresses in brackets specially - don't stop at colons inside brackets
+
                 var insideBrackets = false
                 while pointer < trimmed.count {
                     let ch = trimmed[pointer]
@@ -280,7 +245,7 @@ extension WHATWG_URL.URL {
                     } else if ch == UInt8.ascii.rightSquareBracket {
                         insideBrackets = false
                     }
-                    // Only break on : if not inside brackets
+
                     if !insideBrackets
                         && (ch == UInt8.ascii.colon || ch == UInt8.ascii.slash
                             || ch == UInt8.ascii.questionMark || ch == UInt8.ascii.numberSign)
@@ -348,13 +313,13 @@ extension WHATWG_URL.URL {
                     }
 
                     if c == UInt8.ascii.slash {
-                        // Continue path
+
                     } else if c == UInt8.ascii.questionMark {
                         state = .query
                     } else if c == UInt8.ascii.numberSign {
                         state = .fragment
                     } else {
-                        // End of input - exit the parsing loop
+
                         break parsing
                     }
                 } else {
@@ -383,7 +348,6 @@ extension WHATWG_URL.URL {
                     pointer += 1
                 }
 
-                // Opaque paths preserve most characters as-is (only C0 controls need encoding)
                 url.path = .opaque(buffer)
                 buffer = ""
 
@@ -395,7 +359,7 @@ extension WHATWG_URL.URL {
                         state = .fragment
                     }
                 } else {
-                    // End of input
+
                     break parsing
                 }
 
@@ -414,9 +378,9 @@ extension WHATWG_URL.URL {
 
                 if pointer < trimmed.count && trimmed[pointer] == UInt8.ascii.numberSign {
                     state = .fragment
-                    // Main loop's pointer += 1 will skip the '#'
+
                 } else {
-                    // End of input
+
                     break parsing
                 }
 
@@ -428,7 +392,7 @@ extension WHATWG_URL.URL {
 
                 url.fragment = WHATWG_URL.PercentEncoding.encode(buffer, using: .fragment)
                 buffer = ""
-                // End of input - fragment is always the final state
+
                 break parsing
             }
 
@@ -439,24 +403,13 @@ extension WHATWG_URL.URL {
     }
 }
 
-// MARK: - Convenience Initializers
-
 extension WHATWG_URL.URL {
-    /// Parse a URL from a string
-    ///
-    /// - Parameter string: The string to parse
-    /// - Parameter base: Optional base URL for relative URL resolution
-    /// - Throws: `Error` if the string is not a valid URL
+
     public init(_ string: some StringProtocol, base: WHATWG_URL.URL? = nil) throws(Error) {
         let bytes = [Byte](string.utf8)
         try self.init(ascii: bytes, in: ParsingContext(base: base))
     }
 
-    /// Parse a URL from a string, returning nil on failure
-    ///
-    /// - Parameter string: The string to parse
-    /// - Parameter base: Optional base URL for relative URL resolution
-    /// - Returns: Parsed URL, or nil if invalid
     public init?(parsing string: some StringProtocol, base: WHATWG_URL.URL? = nil) {
         do throws(Error) {
             try self.init(string, base: base)
@@ -466,12 +419,8 @@ extension WHATWG_URL.URL {
     }
 }
 
-// MARK: - CustomStringConvertible
-
 extension WHATWG_URL.URL: CustomStringConvertible {
-    /// The canonical serialized URL text — the same the `ASCII.Serializable` verb
-    /// emits. Re-provided directly now that the retired deprecated ASCII-into-Byte
-    /// protocol no longer supplies the default.
+
     public var description: String {
         String(decoding: serialized, as: UTF8.self)
     }

@@ -1,8 +1,3 @@
-// WHATWG_URL.Parser Tests.swift
-// swift-whatwg-url
-//
-// Tests for WHATWG URL Basic URL Parser
-
 import Domain_Standard
 import RFC_791
 import Testing
@@ -11,23 +6,16 @@ import Testing
 
 @Suite
 struct `WHATWG_URL.URL Tests` {
-    // Canonical [TEST-005] sub-suites (cross-package grep-ability). This suite's
-    // tests are organized into the richer domain-specific sub-suites below
-    // instead; these stay empty markers.
+
     @Suite struct Unit {}
     @Suite struct `Edge Case` {}
     @Suite struct Integration {}
-
-    // MARK: - Absolute URLs
 
     @Suite
     struct `URL - Absolute URLs` {
         @Test
         func `string initializer converts UTF-8 bytes to Byte and parses`() throws {
-            // Regression for the string convenience initializer's byte
-            // conversion: its UTF-8 bytes must reach the ASCII initializer as
-            // the package's `Byte` element type, matching the sibling
-            // `Host(ascii:)` path.
+
             let url = try WHATWG_URL.URL("https://user:pass@example.com:8443/a/b?q=1#frag")
             #expect(url.scheme.value == "https")
             #expect(url.host == .domain(try Domain_Standard.Domain("example.com")))
@@ -46,7 +34,7 @@ struct `WHATWG_URL.URL Tests` {
             let url = try WHATWG_URL.URL("http://example.com")
             #expect(url.scheme.value == "http")
             #expect(url.host == .domain(try Domain_Standard.Domain("example.com")))
-            #expect(url.port == nil)  // Default port omitted
+            #expect(url.port == nil)
             #expect(url.path == .list([]))
         }
 
@@ -68,7 +56,7 @@ struct `WHATWG_URL.URL Tests` {
         @Test
         func `parse URL with default port omits port`() throws {
             let url = try WHATWG_URL.URL("http://example.com:80/path")
-            #expect(url.port == nil)  // Port 80 is default for http
+            #expect(url.port == nil)
         }
 
         @Test
@@ -105,8 +93,6 @@ struct `WHATWG_URL.URL Tests` {
         }
     }
 
-    // MARK: - Special Schemes
-
     @Suite
     struct `URL - Special Schemes` {
 
@@ -134,11 +120,9 @@ struct `WHATWG_URL.URL Tests` {
         @Test
         func `wss URL with default port omitted`() throws {
             let url = try WHATWG_URL.URL("wss://example.com:443/socket")
-            #expect(url.port == nil)  // 443 is default for wss
+            #expect(url.port == nil)
         }
     }
-
-    // MARK: - Non-Special Schemes
 
     @Suite
     struct `URL - Non-Special Schemes` {
@@ -166,8 +150,6 @@ struct `WHATWG_URL.URL Tests` {
             #expect(url.scheme.value == "customscheme")
         }
     }
-
-    // MARK: - Path Normalization
 
     @Suite
     struct `URL - Path Normalization` {
@@ -208,8 +190,6 @@ struct `WHATWG_URL.URL Tests` {
             #expect(url.path == .list(["a"]))
         }
     }
-
-    // MARK: - Relative URLs
 
     @Suite
     struct `URL - Relative URLs` {
@@ -258,8 +238,6 @@ struct `WHATWG_URL.URL Tests` {
             #expect(url.path == base.path)
         }
     }
-
-    // MARK: - IPv4 Addresses
 
     @Suite
     struct `URL - IPv4 Addresses` {
@@ -315,8 +293,6 @@ struct `WHATWG_URL.URL Tests` {
         }
     }
 
-    // MARK: - IPv6 Addresses
-
     @Suite
     struct `URL - IPv6 Addresses` {
 
@@ -324,7 +300,7 @@ struct `WHATWG_URL.URL Tests` {
         func `standard IPv6 with brackets`() throws {
             let url = try WHATWG_URL.URL("http://[2001:db8::1]/path")
             if case .ipv6 = url.host {
-                // Success - IPv6 parsed
+
             } else {
                 Issue.record("Expected IPv6 host")
             }
@@ -334,7 +310,7 @@ struct `WHATWG_URL.URL Tests` {
         func `IPv6 with zone ID stripped`() throws {
             let url = try WHATWG_URL.URL("http://[fe80::1%eth0]/path")
             if case .ipv6 = url.host {
-                // Success - IPv6 parsed with zone ID stripped
+
             } else {
                 Issue.record("Expected IPv6 host")
             }
@@ -344,7 +320,7 @@ struct `WHATWG_URL.URL Tests` {
         func `IPv4-embedded IPv6`() throws {
             let url = try WHATWG_URL.URL("http://[::ffff:192.0.2.1]/path")
             if case .ipv6 = url.host {
-                // Success - IPv4-embedded IPv6 parsed
+
             } else {
                 Issue.record("Expected IPv6 host")
             }
@@ -354,14 +330,12 @@ struct `WHATWG_URL.URL Tests` {
         func `IPv6 localhost`() throws {
             let url = try WHATWG_URL.URL("http://[::1]/path")
             if case .ipv6 = url.host {
-                // Success
+
             } else {
                 Issue.record("Expected IPv6 host")
             }
         }
     }
-
-    // MARK: - Percent Encoding
 
     @Suite
     struct `URL - Percent Encoding` {
@@ -381,12 +355,10 @@ struct `WHATWG_URL.URL Tests` {
         @Test
         func `special characters in userinfo are encoded`() throws {
             let url = try WHATWG_URL.URL("http://user@name:pass@example.com/")
-            // Username should be "user" and @ should be encoded
+
             #expect(url.username.contains("%40") == true)
         }
     }
-
-    // MARK: - Invalid URLs
 
     @Suite
     struct `URL - Invalid URLs` {
@@ -427,8 +399,6 @@ struct `WHATWG_URL.URL Tests` {
         }
     }
 
-    // MARK: - Edge Cases
-
     @Suite
     struct `URL - Edge Cases` {
 
@@ -441,13 +411,13 @@ struct `WHATWG_URL.URL Tests` {
         @Test
         func `trailing slash creates empty segment`() throws {
             let url = try WHATWG_URL.URL("http://example.com/")
-            // Implementation may vary - document expected behavior
+
         }
 
         @Test
         func `multiple slashes are preserved`() throws {
             let url = try WHATWG_URL.URL("http://example.com//a///b")
-            // Empty segments between slashes
+
         }
 
         @Test

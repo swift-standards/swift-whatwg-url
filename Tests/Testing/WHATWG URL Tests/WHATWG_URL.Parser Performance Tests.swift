@@ -1,16 +1,6 @@
-// WHATWG_URL.Parser Performance Tests.swift
-// swift-whatwg-url
-//
-// Parked swift-testing-dependent performance tests (.timed trait).
-// INERT: not wired into any Package.swift; parked here per [INST-TEST] until
-// the swift-testing performance harness is finished. Dangling references to
-// the `Performance Tests` host suite / `Test.Performance` are expected.
-
 import Testing
 
 @testable import WHATWG_URL
-
-// MARK: - Performance Tests
 
 extension `Performance Tests` {
     @Suite
