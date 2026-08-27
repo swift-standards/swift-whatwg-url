@@ -1,9 +1,9 @@
-public import Byte_Parser_Primitives
-public import Parser_Primitives
+public import Byte_Parser
+public import Parser
 
 extension WHATWG_URL.URL.Path {
 
-    public struct Parser: Parser_Primitives.Parser.`Protocol`, Sendable {
+    public struct Parser: Parser.Parser.`Protocol`, Sendable {
 
         public let context: WHATWG_URL.URL.Path.Context
 

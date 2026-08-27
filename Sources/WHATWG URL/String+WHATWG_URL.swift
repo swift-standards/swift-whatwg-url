@@ -1,4 +1,4 @@
-import ASCII_Serializer_Primitives
+import ASCII_Serializer
 public import WHATWG_Form_URL_Encoded
 
 extension StringProtocol {

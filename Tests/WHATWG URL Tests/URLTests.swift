@@ -1,4 +1,4 @@
-import ASCII_Serializer_Primitives
+import ASCII_Serializer
 import Domain_Standard
 import RFC_791
 import Testing
