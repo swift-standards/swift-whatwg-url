@@ -17,7 +17,7 @@ extension WHATWG_URL.URL.Path.Parser {
     public typealias Body = Never
 
     public borrowing func parse(
-        _ input: inout Byte.Input
+        _ input: inout ArraySlice<Byte>
     ) throws(WHATWG_URL.URL.Path.Error) -> WHATWG_URL.URL.Path {
         var bytes: [Byte] = []
         while let byte = input.next() {
@@ -34,7 +34,7 @@ extension WHATWG_URL.URL.Path {
         parser: Parser
     ) throws(Error) -> WHATWG_URL.URL.Path
     where Bytes.Element == Byte {
-        var input = Byte.Input(bytes)
+        var input = bytes[...]
         return try parser.parse(&input)
     }
 }
