@@ -34,27 +34,27 @@ let package = Package(
         ),
         .package(url: "https://github.com/swift-ietf/swift-rfc-4648.git", branch: "main"),
         .package(
-            url: "https://github.com/swift-primitives/swift-ascii-serializer-primitives.git",
+            url: "https://github.com/swift-molecules/swift-ascii-serializer.git",
             branch: "main"
         ),
         .package(
-            url: "https://github.com/swift-primitives/swift-ascii-primitives.git",
+            url: "https://github.com/swift-molecules/swift-ascii.git",
             branch: "main"
         ),
         .package(
-            url: "https://github.com/swift-primitives/swift-binary-primitives.git",
+            url: "https://github.com/swift-molecules/swift-binary.git",
             branch: "main"
         ),
         .package(
-            url: "https://github.com/swift-primitives/swift-parser-primitives.git",
+            url: "https://github.com/swift-molecules/swift-parser.git",
             branch: "main"
         ),
         .package(
-            url: "https://github.com/swift-primitives/swift-ascii-parser-primitives.git",
+            url: "https://github.com/swift-molecules/swift-ascii-parser.git",
             branch: "main"
         ),
         .package(
-            url: "https://github.com/swift-primitives/swift-byte-parser-primitives.git",
+            url: "https://github.com/swift-molecules/swift-byte-parser.git",
             branch: "main"
         ),
     ],
@@ -69,17 +69,17 @@ let package = Package(
                 .product(name: "RFC 5952", package: "swift-rfc-5952"),
                 .product(name: "Domain Standard", package: "swift-domain-standard"),
                 .product(
-                    name: "ASCII Serializer Primitives",
-                    package: "swift-ascii-serializer-primitives"
+                    name: "ASCII Serializer",
+                    package: "swift-ascii-serializer"
                 ),
-                .product(name: "ASCII Primitives", package: "swift-ascii-primitives"),
-                .product(name: "Binary Primitives", package: "swift-binary-primitives"),
-                .product(name: "Parser Primitives", package: "swift-parser-primitives"),
+                .product(name: "ASCII", package: "swift-ascii"),
+                .product(name: "Binary", package: "swift-binary"),
+                .product(name: "Parser", package: "swift-parser"),
                 .product(
-                    name: "Parseable ASCII Primitives",
-                    package: "swift-ascii-parser-primitives"
+                    name: "Parseable ASCII",
+                    package: "swift-ascii-parser"
                 ),
-                .product(name: "Byte Parser Primitives", package: "swift-byte-parser-primitives"),
+                .product(name: "Byte Parser", package: "swift-byte-parser"),
             ]
         ),
 
@@ -88,14 +88,14 @@ let package = Package(
             dependencies: [
                 .product(name: "RFC 4648", package: "swift-rfc-4648"),
                 .product(
-                    name: "ASCII Serializer Primitives",
-                    package: "swift-ascii-serializer-primitives"
+                    name: "ASCII Serializer",
+                    package: "swift-ascii-serializer"
                 ),
-                .product(name: "ASCII Primitives", package: "swift-ascii-primitives"),
-                .product(name: "Binary Primitives", package: "swift-binary-primitives"),
+                .product(name: "ASCII", package: "swift-ascii"),
+                .product(name: "Binary", package: "swift-binary"),
                 .product(
-                    name: "Parseable ASCII Primitives",
-                    package: "swift-ascii-parser-primitives"
+                    name: "Parseable ASCII",
+                    package: "swift-ascii-parser"
                 ),
             ]
         ),

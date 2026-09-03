@@ -1,4 +1,4 @@
-public import ASCII_Serializer_Primitives
+public import ASCII_Serializer
 public import Domain_Standard
 public import RFC_5952
 public import RFC_791

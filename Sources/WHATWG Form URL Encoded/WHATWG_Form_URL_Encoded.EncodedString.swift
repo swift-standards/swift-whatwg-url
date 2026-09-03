@@ -1,5 +1,5 @@
-public import ASCII_Serializer_Primitives
-public import Parseable_ASCII_Primitives
+public import ASCII_Serializer
+public import Parseable_ASCII
 
 extension WHATWG_Form_URL_Encoded {
 
