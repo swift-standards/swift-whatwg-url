@@ -2,16 +2,6 @@
 
 import PackageDescription
 
-extension String {
-    static let whatwgURL: Self = "WHATWG URL"
-    static let whatwgFormURLEncoded: Self = "WHATWG Form URL Encoded"
-}
-
-extension Target.Dependency {
-    static var whatwgURL: Self { .target(name: .whatwgURL) }
-    static var whatwgFormURLEncoded: Self { .target(name: .whatwgFormURLEncoded) }
-}
-
 let package = Package(
     name: "swift-whatwg-url",
     platforms: [
@@ -33,6 +23,8 @@ let package = Package(
         ),
     ],
     dependencies: [
+        .package(url: "https://github.com/swift-atoms/swift-byte.git", branch: "main"),
+        .package(url: "https://github.com/swift-atoms/swift-cursor.git", branch: "main"),
         .package(url: "https://github.com/swift-ietf/swift-rfc-3987.git", branch: "main"),
         .package(url: "https://github.com/swift-ietf/swift-rfc-791.git", branch: "main"),
         .package(url: "https://github.com/swift-ietf/swift-rfc-5952.git", branch: "main"),
@@ -71,7 +63,7 @@ let package = Package(
         .target(
             name: "WHATWG URL",
             dependencies: [
-                .whatwgFormURLEncoded,
+                .target(name: "WHATWG Form URL Encoded"),
                 .product(name: "RFC 3987", package: "swift-rfc-3987"),
                 .product(name: "RFC 791", package: "swift-rfc-791"),
                 .product(name: "RFC 5952", package: "swift-rfc-5952"),
@@ -111,23 +103,18 @@ let package = Package(
         .testTarget(
             name: "WHATWG Form URL Encoded Tests",
             dependencies: [
-                "WHATWG URL"
+                .target(name: "WHATWG URL")
             ]
         ),
         .testTarget(
             name: "WHATWG URL Tests",
             dependencies: [
-                "WHATWG URL"
+                .target(name: "WHATWG URL")
             ]
         ),
     ],
     swiftLanguageModes: [.v6]
 )
-
-extension String {
-    var tests: Self { self + " Tests" }
-    var foundation: Self { self + " Foundation" }
-}
 
 for target in package.targets where ![.system, .binary, .plugin, .macro].contains(target.type) {
     let ecosystem: [SwiftSetting] = [
